@@ -3,6 +3,7 @@ Date
 am <Date day="11" month="1" year="2016" format="dd.MM.yyyy">11.01.2016</Date> zur klinischen Kontrolle in unserer
 seit <Date>22.01.10</Date>:
 seit <Date>5.1.2009</Date>
+seit <Date>5.1.2029</Date>
 <Date day="1" month="10" year="2015">01.10.15</Date>
 Sturz am <Date day="20" month="Oktober" year="2012" format="dd. M yyyy">20. Oktober 2012</Date>
 BV-gesteuerte Infiltration ISG bds. mit je 40mg Kenacort und Lidocain 1% <Date month="12" year="2009" format="MM/yyyy">12/2009</Date>
@@ -20,10 +21,27 @@ es wurde am <Date>13.08</Date> ein MRI durchgefuehrt
 MRI Halsgefässe <Date>27.11.</Date> konnte
 #(nach Lublin et al. 2013) # TODO: citation, technically don't need to deidentifiy
 bis <Date>10.12</Date> weiter
+am <Date>30.11</Date> um 13:00, am <Date>23.11</Date> um 13:00,
+ab <Date>26.10</Date>,
+<Date>23.11</Date> um
+<Date>23.11</Date> :
+#<Date>24.11</Date>: Bettruhe
 <Date>29. Februar</Date>
 voraussichtlich im <Date>Oktober/November 2016</Date>
+#Nackenflexoren (7/10)
+(EM <Date>04/18</Date>)
+5/10 # probably on a scale
+ED <Date>5/10</Date>
+<Date>05/10</Date> # more likely a date
+<Date>August/16</Date>
+<Date>21/01/15</Date>
+Lungenembolien <Date>02/2014</Date>
 
 seit <Date>04</Date> 100% IV
+bis 28 mm
+5/10 mg
+<Date>10/20</Date>, <Date>11/15</Date>
+mit 2000 IE
 
 reactivate schwerer Tagesschläfrigkeit (ESS 13/24 Pt; <Date>09/06</Date>: 11/24 Pkt.) # TODO: hard to distinguish in a more general case
 Name wird nicht erinnert, seit <Date>Jan.06</Date> "schwächeres Präparat"
@@ -37,7 +55,7 @@ langsam aufdosieren in 100mg-Schritten, bis 1800-3600mg per diem
 <Date>2002</Date> in Frankreich Diagnose einer Arteritis.
 
 Einschlaflatenz von 6.2 min, Einschlaflatenz von 6.2min
-unter Tags mit einer Einschlaflatenz von 11.1 bzw. 9.22min.
+# unter Tags mit einer Einschlaflatenz von 11.1 bzw. 9.22min.
 TEMPERATUR von 38.9 Grad Celsius, von 31.3 Grad Celsius
 
 um 2000 Uhr # fp date
@@ -48,14 +66,23 @@ Gastroskopie <Date>11.2015</Date> #(only 2015 annotated)
 ab dem 13. postoperativen Tag
 im <Date>Juli</Date>, Im <Date>Juli</Date>,
 im <Date>Dezember 2018</Date> wurde
+Condylomabtragung <Date>03/2011</Date>.\n·	Obstruktives
+<Date>01/16</Date>:
+
+1.25 mg
+23/9/14 mmHg
+
 
 seit <Date>04/2015</Date> - <Date>02.04.2016</Date> Tysabri
 # Stationärer Aufenthalt <Date>02</Date> # TODO?
 
+Berger et al., 1999
+
 ## English Dates
 
 on <Date>March 22, 2013</Date>
-
+#<Date>Sept 21th, 2013</Date>
+#<Date>Sept. 21th, 2013</Date>
 
 ## Ranges
 
@@ -68,6 +95,9 @@ vom <Date day="16" month="3" format="dd.MM.">16.3.</Date>-<Date day="20" month="
 <Date>05</Date>/<Date>06.10.18</Date>
 Aufenthalt <Date>03.</Date>-<Date>15.09.</Date>
 <Date>05</Date>+<Date>06/18</Date> Zytoskopie
+Pemetrexed <Date>10/2012</Date> - <Date>02/2013</Date>,
+
+7-8/10 Punkten
 
 <Date>2006</Date>/<Date>07</Date> und weiter...
 #<Date>April</Date>/<Date>Mai 2018</Date> weiter # TODO: consider?

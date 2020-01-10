@@ -264,4 +264,26 @@ public class Utils {
 
         return feat;
     }
+
+    public static boolean possibleSlashDate(Map<String,AnnotationSet> bindings, Document doc) {
+        if(!bindings.containsKey("month") || !bindings.containsKey("year") ) {
+            return false;
+        }
+
+        String month = gate.Utils.stringFor(doc, bindings.get("month").iterator().next());
+        String year = gate.Utils.stringFor(doc, bindings.get("year").iterator().next());
+
+        int monthNum = org.ratschlab.util.Utils.maybeParseInt(month).orElse(0);
+        int yearNum = org.ratschlab.util.Utils.maybeParseInt(year).orElse(0);
+
+        if(monthNum > yearNum || (year.length() > 0 && year.charAt(0) == '0') || (month.length() > 0 && month.charAt(0) == '0')) {
+            return true; // not a scale
+        }
+
+        if(month.length() == 1) {
+            return false; // single digit month, probably part of scale.
+        }
+
+        return true;
+    }
 }
