@@ -11,7 +11,7 @@ Patient;OccupationContext;0;5
 Patientin;OccupationContext;0;5
 arbeitet;OccupationContext;5;5
 arbeitete;OccupationContext;0;5
-gearbeitet;OccupationContext;5;0
+gearbeitet;OccupationContext;5;5
 Ehemann;OccupationContext;5;5
 Ehefrau;OccupationContext;5;5
 Partner;OccupationContext;5;5
@@ -20,6 +20,8 @@ verheiratet;OccupationContext;5;5
 Tochter;OccupationContext;5;5
 Sohn;OccupationContext;5;5
 Job;OccupationContext;5;5
+Beruf;OccupationContext;5;5
+Profi;OccupationContext;5;5
 Tätigkeit;OccupationContext;5;5
 #Ehemann;NameContext;5;5
 #Ehefrau;NameContext;5;5

@@ -24,3 +24,11 @@ im <Occupation>Outofvoc</Occupation> arbeitstätig
 <Anamnese>der 20-jährige <Occupation>Student</Occupation></Anamnese>
 <Anamnese><Occupation>Jus-Student</Occupation></Anamnese>
 <Anamnese>arbeitet die Patientin</Anamnese>
+
+<Anamnese>Patient war Profi-<Occupation>Fussballer</Occupation>.</Anamnese>
+
+<SozialAnamnese>zuvor <Occupation>Maler</Occupation></SozialAnamnese>
+<SozialAnamnese>war <Occupation>Maler</Occupation></SozialAnamnese>
+<SozialAnamnese>war früher <Occupation>Maler</Occupation></SozialAnamnese>
+
+# TODO <SozialAnamnese><Occupation>Pensionierte kaufmännische Angestellte</Occupation>.</SozialAnamnese>

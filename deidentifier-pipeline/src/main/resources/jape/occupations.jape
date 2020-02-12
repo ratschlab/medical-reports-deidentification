@@ -39,6 +39,7 @@ Rule: OccupationsFromGazetteerLeftTrigger
 (
     (
         { Token.string ==~ "[Aa]ls|[Zz]uvor|[Ww]ar|([Ee]hemalige[r]?)|[Ff]rühere[r]?|([Ee]hrenamtliche[r]?|[Aa]ktuell|[Gg]erade)"} |
+        ({ Token.string ==~ "[Ww]ar"} | { Token.string == "früher"}) |
         ( {Token.string ==~ "[Ss]eit"} ({Token})[1,2] ) |
         {Token.string ==~ "jährige[r]?"} // xy jähriger Student
     )
