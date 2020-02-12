@@ -3,7 +3,11 @@
 The deidentification tool consists of a collection of command line applications written in Java.
 The applications is based on the [GATE framework](https://gate.ac.uk/)
 
-Here, a short overview over each command line application
+Here, a short overview over each command line application. Each square box
+represents a different command described in the following sections.
+
+![System overview](figs/system_overview.png)
+
 
 ## import
 

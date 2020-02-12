@@ -50,6 +50,10 @@ In case of JSON, the
 structure elements would be field names and nested objects. A JSON document can
 then be seen as a tree where the leaves are fields with a certain value.
 
+![simple report structure](figs/report_structure.png "Logo Title Text 1")
+
+
+
 ##### Paths in Field Tree
 
 In the various configuration files related to annotations, paths in the
