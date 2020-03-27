@@ -18,6 +18,7 @@ locations/country_iso_codes.lst:location:country_code:german
 locations/languages_manual.lst:location:language:german
 locations/citizenships.lst:location:citizenship:german
 locations/streetnames.lst:location:street:german
+locations/street_names_switzerland.lst:location:street:german
 locations/city_switzerland.lst:location:city:german
 locations/additional_locations.lst:location:city:german
 locations/city_german.lst:location:city:german
