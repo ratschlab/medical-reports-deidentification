@@ -37,7 +37,15 @@ ED <Date>5/10</Date>
 <Date>21/01/15</Date>
 Lungenembolien <Date>02/2014</Date>
 
+Anfang <Date>Dezember 2021</Date>
+Mitte <Date>Mai</Date>
+Ende <Date>August</Date>
+
 seit <Date>04</Date> 100% IV
+Fraktur, CT <Date>5/11</Date>
+Biopsie <Date>5/11</Date>
+Blublagraphie <Date>5/11</Date> Blublaomie <Date>5/11</Date>
+
 bis 28 mm
 5/10 mg
 <Date>10/20</Date>, <Date>11/15</Date>
@@ -98,12 +106,14 @@ Aufenthalt <Date>03.</Date>-<Date>15.09.</Date>
 Pemetrexed <Date>10/2012</Date> - <Date>02/2013</Date>,
 
 7-8/10 Punkten
+Th 11/12
+Bwk 9/11, BWK 9/11, BWK 11/12
 
 <Date>2006</Date>/<Date>07</Date> und weiter...
 #<Date>April</Date>/<Date>Mai 2018</Date> weiter # TODO: consider?
 
 
-
+seit 1.5 Jahren, seit 1.5J
 
 ## Ranges FP
 

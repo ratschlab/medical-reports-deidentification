@@ -67,7 +67,7 @@ Rule: OccupationsFromGazetteerWorkTriggered
 (
 
     { Token.string ==~ "([Aa]rbeitet[e]?)|([Vv]ormalige[r]?)|([Pp]ensionierte[r]?)|([Ee]meritierte[r]?)|[Ss]elbstständige[r]?"}
-    ({Lookup.majorType == "stop"})*
+    ({Lookup.majorType == "stop", !Token.string ==~ "seit"})*
     (
       ({Token.orth == "lowercase", !Token within Lookup.majorType == "stop"})? // adjective
       ({Token.orth ==~ "upperInitial|allCaps", ! Token.string ==~ "Patient(in)?"})+

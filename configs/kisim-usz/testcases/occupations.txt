@@ -32,3 +32,5 @@ im <Occupation>Outofvoc</Occupation> arbeitstätig
 <SozialAnamnese>war früher <Occupation>Maler</Occupation></SozialAnamnese>
 
 # TODO <SozialAnamnese><Occupation>Pensionierte kaufmännische Angestellte</Occupation>.</SozialAnamnese>
+
+arbeitet seit Anfang 2012 nicht mehr

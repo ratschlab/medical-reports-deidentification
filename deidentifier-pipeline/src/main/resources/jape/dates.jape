@@ -99,7 +99,7 @@ Macro: RANGE_SEPARATOR
 // TODO: move to lookups?
 Macro: UNIT
 (
-    {Token.string ==~ "mg|min|mm|cm|mmol|Grad|Pkt|%|mml|mmHg|s|Punkte|Punkten|Pkt|Pkte|Glomeruli|Glomerula|IE"}
+    {Token.string ==~ "mg|min|mm|cm|mmol|Grad|Pkt|%|mml|mmHg|s|Punkte|Punkten|Pkt|Pkte|Glomeruli|Glomerula|IE|Jahren|J|E/ml"}
 )
 
 Macro: REGULAR_DOT_DATE
@@ -274,17 +274,28 @@ Rule: MonthSlashDateTrigger
 Rule: MonthSlashDateLeftTrigger
 Priority: 200
 (
-    DATE_PRE
+    (
+        DATE_PRE |
+        { Token.string ==~ "(.*[omie|graphie|opsie])|CT|MRI" }
+    )
     MONTH_SLASH_DATE_TWO_DIGIT_YEAR
 )
 --> { Utils.addDateAnnotation("MonthSlashDateLeftTrigger", "other",  "MM/yy", "", bindings, doc, outputAS); }
 
-Rule: MonthSlashDateNegative
+Rule: MonthSlashDateNegativeUnit
 Priority: 100
 (
     (DATE_PRE)?
     MONTH_SLASH_DATE_TWO_DIGIT_YEAR
     UNIT
+)
+--> {}
+
+Rule: MonthSlashDateNegativeScaleTrigger
+Priority: 500
+(
+    {Token.string ==~ "Th|BWK|Bwk"}
+    MONTH_SLASH_DATE_TWO_DIGIT_YEAR
 )
 --> {}
 
@@ -314,6 +325,20 @@ Rule: MonthYear
     (YEAR):year
 ):date
 --> { Utils.addDateAnnotation("MonthYear", "other",  "M yyyy", "", bindings, doc, outputAS); }
+
+
+Rule: MonthYearUnspecificDate
+(
+    { Token.string ==~ "Anfang|Mitte|Ende" }
+    (
+        (
+           (MONTH_NAME_SHORT (DOT)?) |
+            MONTH_NAME_LONG
+        ):month
+        ((YEAR):year)?
+    ):date
+)
+--> { Utils.addDateAnnotation("MonthYearUnspecificDate", "other",  "M yyyy", "", bindings, doc, outputAS); }
 
 // May 4, 2019
 Rule: EnglishDates

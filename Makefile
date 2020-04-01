@@ -79,6 +79,11 @@ run-reports-kisim-ade13:
 	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_rerun/evaluation/corpus-stats.html	
 	python scripts/convert_ml_features_to_parquet.py ~/data/deid_poc/sets/kisim/diagnostics_ade13_rerun/ml-features.json
 
+run-reports-kisim-ade13-gold:
+	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -d /home/marczim/postgres_ade_delivery_201908.txt -o /home/marczim/data/deid_poc/sets/kisim/processed_kisim_ade13_gold --diagnostics-dir /home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_gold_rerun -m /data/share/gold_standard_annotation_partA --max-docs 200 -t 20 --doc-id-filter ../configs/ade_manual_batch.txt"
+	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_gold_rerun/evaluation/corpus-stats.html	
+	python scripts/convert_ml_features_to_parquet.py ~/data/deid_poc/sets/kisim/diagnostics_ade13_gold_rerun/ml-features.json
+
 
 run-reports-kisim-small-train:
 	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="$(KISIM_SMALL_EXEC_ARGS) --max-docs 100 --train --ml-model /tmp/kisim-small-model"

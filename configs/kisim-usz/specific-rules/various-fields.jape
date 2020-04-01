@@ -142,7 +142,7 @@ Rule: HospitalUnitInAddress
     (
         (
             ({Token.string ==~ "Interdisziplinäres"})?
-            {Token.string ==~ "Sprechstunde|Klinik|Poliklinik|Institut|Zentrum|Departement"}
+            {Token.string ==~ "Sprechstunde|Klinik|Poliklinik|Institut|Zentrum|Zentren|Departement"}
             ({Token.string == "und"} {Token.string == "Poliklinik"})?
             ({Token.string == "für"})
         ) |

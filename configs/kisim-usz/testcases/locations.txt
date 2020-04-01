@@ -16,6 +16,7 @@ Location; Addressor, Patienteninformation
 <Location>Klinik für Ohren-, Nasen-, Hals- und Gesichtschirurgie</Location>
 <Location>Klinik für Ohren-, Nasen-,\n Hals- und Gesichtschirurgie</Location>
 <Location>Klinik für Viszeral- und Transplantationschirurgie</Location>
+#<Location>Klinik Mund- Kiefer- u Gesichtschirurgie</Location>
 
 in <Location>Domat-Ems</Location>, <Location>St. Moritz</Location>
 US und UK und Ger # don't annotate as location
@@ -56,6 +57,7 @@ Dr. Gabbs, <Location>GE</Location>
 ## Organisational Units
 durch die Kollegen von <Location>PSY</Location>
 
+<Location>Intensivmedizin - OP - Management</Location> <Location>Intensivmedizin-OP-Management</Location>
 
 ## Patient address
 <Patienteninformation>Frau Vreni Muster, <Location>Am Platz</Location>, <Location>A-12234</Location> <Location>Musterwilen</Location></Patienteninformation>
@@ -80,6 +82,9 @@ Der Patient ist <Location>Grieche</Location>.
 in <Location>ZH</Location>
 <List><Medis><Text>ZH</Text></Medis></List>
 
+<Location>CH</Location>-<Location>8841</Location> <Location>Gross</Location>
+Gross (> 10cm)
+
 # False Positives
 mit dem Zug nach <Location>Bern</Location>
 T-Zell
@@ -88,3 +93,9 @@ T - Zell
 B - Zell
 NHL-B-Zell-Lymphom
 
+Luftweg
+
+A 41
+A41
+Segment A1
+Segment A 1

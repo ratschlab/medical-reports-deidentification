@@ -97,7 +97,8 @@ wird durch OA <Name>X. Meier</Name> durchgefuehrt
 Anwesend: <Name>Meier</Name>, <Name>Muster</Name>, <Name>Muster-Huber</Name>, <Name>Huber</Name>
 <Name>Meier</Name> / <Name>Muster</Name> / <Name>Huber</Name>
 
-
+erlitt Herr <Name>Muster</Name> Anfang Dezember 2019
+erlitt Herr <Name>M.</Name> Anfang Dezember 2019
 
 i. R. von Dg
 <Name>Maria Veryseldom</Name> hat...

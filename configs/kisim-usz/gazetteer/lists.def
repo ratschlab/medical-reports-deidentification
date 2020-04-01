@@ -43,6 +43,6 @@ usz/hospitals.lst:organization:hospital:german
 usz/institutions.lst:organization:organization:german
 usz_internal_gazetteers/related_organisations_usz.lst:organization:organization:german
 usz/buildings_usz.lst:location:building:german
-usz/organisational_units_usz.lst:location:oa_usz:german
+usz/organisational_units_usz.lst:location:ou_usz:german
 locations/location_false_positives.lst:Location:false_positives:german
 person_names/name_false_positives.lst:Name:false_positives:german

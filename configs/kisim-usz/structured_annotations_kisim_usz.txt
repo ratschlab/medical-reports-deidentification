@@ -68,7 +68,7 @@ Clinic; Location; type=organisational unit
 #Teilnehmer/Name; Name; type=medical staff
 //Operateur//Key; Name; type=medical staff
 
-#Fachtitel; Location; type=organisational unit
+Fachtitel; Location; type=organisational unit
 Sprechstunde; Location; type=organisational unit
 Team; Location; type=organisational unit
 

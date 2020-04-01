@@ -22,7 +22,7 @@ Rule: LocationLeftTrigger
 
 Rule: CityLookup
 (
-   ({ Lookup.majorType =~ "location", Lookup.minorType =~ "city" }):loc
+   ({ Lookup.majorType =~ "location", Lookup.minorType =~ "city", !Token.string ==~ "Gross" }):loc
 )
 --> :loc.Location = { rule = "CityLookup", type = "city" }
 

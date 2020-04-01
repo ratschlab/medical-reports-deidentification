@@ -93,7 +93,7 @@ Macro: SHORT_NAME
     (FIRST_NAME_INITIALS):firstname_SHORT_NAME
     (
         (NAME_PREPOSITIONS)? // de Meuron, von Wattenwil
-        {Token.orth == "upperInitial"} // surname
+        {Token.orth == "upperInitial", !Token.string ==~ "Anfang|Mitte|Ende"} // surname
         ((DASH)? (NAME_PREPOSITIONS)? {Token.orth == "upperInitial"})? // second surname
     ):lastname_SHORT_NAME
 )
@@ -342,7 +342,7 @@ Rule: UniqueDoubleName
     (
         ({Token within {Lookup.majorType ==~ "name"}})
         DASH
-        ({Token within {Lookup.majorType ==~ "name"}})
+        ({Token within {Lookup.majorType ==~ "name"}, !Token.string ==~ "Spiegel"})
     )
 ):name --> { Utils.addNameAnnotation("UniqueDoubleName", "other", "", bindings, doc, outputAS); }
 
@@ -352,7 +352,7 @@ Priority: 0
 (
     (CIVIL_STYLE): style
     (
-        ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"})+ |
+        ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende"})+ |
         ({Token.string ==~ "[A-Z]"} {Token.string == "."}):lastname_SimpleDetectPatient |
         (SHORT_NAME)
     ):name

@@ -59,7 +59,7 @@ Rule: Floor
 
 Rule: AnnotateOUs
 (
-    ({Lookup.majorType == "location", Lookup.minorType == "oa_usz"})
-):loc --> :loc.Location = { rule = "AnnotateOUs", type = "street" }
+    ({Lookup.majorType == "location", Lookup.minorType == "ou_usz"})
+):loc --> :loc.Location = { rule = "AnnotateOUs", type = "organisational unit" }
 
 

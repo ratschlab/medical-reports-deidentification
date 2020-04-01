@@ -88,21 +88,8 @@ A la Vy du Plan Dessous
 A-Ry
 A. M. Wettstein-Wegli
 A.-F.-Molz-Gasse
-A1
-A14
-A1H
-A2
-A22
-A3
 A3 Ein- Ausfahrt 35 Horg
 A3 Ein- Ausfahrt 35 Horgen
-A3-A98
-A4
-A5
-A51
-A52
-A53
-A7
 AMP-Str.
 AMP-Strasse
 AR. Nitrochemie
@@ -380,6 +367,7 @@ Acherestrasse
 Achereweg
 Acherfang
 Acherguet
+Acherhof
 Acherhofstr.
 Acherhofstrasse
 Acherhubel
@@ -4776,7 +4764,6 @@ Atligsporweg
 Atlingerstr.
 Atlingerstrasse
 Atlistenweg
-Atrium
 Atschaweg
 Attelwilerstr.
 Attelwilerstrasse
@@ -6551,7 +6538,6 @@ BBC-Str.
 BBC-Strasse
 BKW-Str.
 BKW-Strasse
-BLS
 BMF-Str.
 BMF-Strasse
 BT-Weg
@@ -6618,7 +6604,7 @@ Bacheggliweg
 Bacheggweg
 Bachenbülacherstr.
 Bachenbülacherstrasse
-Bacherenstr.
+Bacherestr.
 Bacherestrass
 Bachergrundboden
 Bachergrundweg
@@ -10169,7 +10155,6 @@ Blapbachweidli
 Blarerstr.
 Blarerstrasse
 Blarerweg
-Blase
 Blasenberg
 Blasenbergerstr.
 Blasenbergerstrasse
@@ -11073,7 +11058,6 @@ Bohlhaldenweg
 Bohlistr.
 Bohlistrasse
 Bohlseite
-Bohlseitenallmi
 Bohlseitensäge
 Bohlstr.
 Bohlstrasse
@@ -11182,7 +11166,6 @@ Bolgengasse
 Bolgenstr.
 Bolgenstrasse
 Bolgerweg
-Boli
 Boligen
 Bolihübel
 Bolimattstr.
@@ -13075,7 +13058,6 @@ Bruppichstrasse
 Bruschenberg
 Bruschgaleschg
 Brusgnano
-Brust
 Brusteneggstr.
 Brusteneggstrasse
 Bruster
@@ -13253,7 +13235,6 @@ Brückstr.
 Brückstrasse
 Brückweidli
 Brüderhofweg
-Brüdern
 Brüdernsage
 Brüederbergstr.
 Brüederbergstrasse
@@ -13514,7 +13495,6 @@ Brünndliweg
 Brünnelackerstr.
 Brünnelackerstrasse
 Brünneli
-Brünneli-Wäg
 Brünneliacherweg
 Brünneliacker
 Brünneliackerweg
@@ -14901,7 +14881,6 @@ Bussnangerweg
 Busswil
 Busswilstr.
 Busswilstrasse
-Bussy
 Bustelbach
 Bustelhalde
 Bustelstr.
@@ -14995,7 +14974,6 @@ Bylandweg
 Bynda
 Byssmeren
 Bystadel
-Bàltich
 Bäbelers
 Bäbenmattweg
 Bäbikerstr.
@@ -15892,7 +15870,6 @@ Büchslenstr.
 Büchslenstrasse
 Büchslenweg
 Büchsweg
-Bücken
 Bückenweg
 Bückenwegli
 Bücklerstr.
@@ -16239,7 +16216,6 @@ Bündackerstrasse
 Bündastr.
 Bündastrasse
 Bünde
-Bündel
 Bündeliweg
 Bündelstr.
 Bündelstrasse
@@ -17290,7 +17266,6 @@ Cavadurastr.
 Cavadurastrasse
 Cavadè
 Cavalasca
-Cavargna
 Cave di Riveo
 Cavendel
 Cavorgia
@@ -18107,6 +18082,7 @@ Ch. Sous-la-Ville
 Ch. Sous-le-Bois
 Ch. Sous-le-Château
 Ch. Sous-le-Mont
+Ch. Sous-le-Moulin
 Ch. Sous-le-Temple
 Ch. Sous-le-Têt
 Ch. Sous-le-Village
@@ -18225,7 +18201,6 @@ Ch. aux Channey
 Ch. aux Lanciaux
 Ch. aux Maisonnettes
 Ch. aux Oies
-Ch. champs Boigea
 Ch. chez la Tante
 Ch. clef des champs
 Ch. d'Afflon
@@ -21299,6 +21274,7 @@ Ch. de la Récille
 Ch. de la Répiaz
 Ch. de la Réselle
 Ch. de la Réserve
+Ch. de la Réserve-Nat.
 Ch. de la Résidence
 Ch. de la Résurgence
 Ch. de la Rétuelle
@@ -21959,6 +21935,7 @@ Ch. des Coins
 Ch. des Coires
 Ch. des Coissires
 Ch. des Colibris
+Ch. des Collardes
 Ch. des Collines
 Ch. des Collonges
 Ch. des Collèges
@@ -22868,6 +22845,7 @@ Ch. des Pluviers
 Ch. des Pléiades
 Ch. des Pochattes
 Ch. des Pointies
+Ch. des Pointus
 Ch. des Poiriers
 Ch. des Polies
 Ch. des Polisseurs
@@ -25549,6 +25527,7 @@ Champmain
 Champmartin
 Champois de Sorvilier
 Champot
+Champs Bettens
 Champs Boira
 Champs Carnaux
 Champs Charbon
@@ -25772,7 +25751,6 @@ Charrenstrasse
 Charrhaltenstr.
 Charrhaltenstrasse
 Charris
-Charrière
 Charrière d'Estavayer
 Charrière du Droit
 Charrière-des-Morts
@@ -26666,6 +26644,7 @@ Chemin Sous-la-Ville
 Chemin Sous-le-Bois
 Chemin Sous-le-Château
 Chemin Sous-le-Mont
+Chemin Sous-le-Moulin
 Chemin Sous-le-Scex-de-Chernex
 Chemin Sous-le-Temple
 Chemin Sous-le-Têt
@@ -26766,7 +26745,6 @@ Chemin aux Channey
 Chemin aux Lanciaux
 Chemin aux Maisonnettes
 Chemin aux Oies
-Chemin champs Boigea
 Chemin chez la Tante
 Chemin d'Afflon
 Chemin d'Aigremont
@@ -29901,6 +29879,7 @@ Chemin de la Récille
 Chemin de la Répiaz
 Chemin de la Réselle
 Chemin de la Réserve
+Chemin de la Réserve-Naturelle
 Chemin de la Résidence
 Chemin de la Résurgence
 Chemin de la Rétuelle
@@ -30576,6 +30555,7 @@ Chemin des Coins
 Chemin des Coires
 Chemin des Coissires
 Chemin des Colibris
+Chemin des Collardes
 Chemin des Collines
 Chemin des Collonges
 Chemin des Collèges
@@ -31494,6 +31474,7 @@ Chemin des Pluviers
 Chemin des Pléiades
 Chemin des Pochattes
 Chemin des Pointies
+Chemin des Pointus
 Chemin des Poiriers
 Chemin des Polies
 Chemin des Polisseurs
@@ -36716,6 +36697,7 @@ Crêt-Blanc
 Crêt-Jeanneret
 Crêt-Meylan
 Crêt-Pellaton
+Crêt-aux-Moines
 Crêt-de-l'Anneau
 Crêt-de-la-Mosse
 Crêt-de-la-Rive
@@ -37287,7 +37269,6 @@ Delggstrasse Bürg
 Della de la Vie
 Dellacher
 Dellacker
-Delle
 Dellenackerweg
 Dellenbodenweg
 Dellenhaus
@@ -39123,7 +39104,6 @@ E.-Fahrni-Str.
 E.-Wysard-Str.
 E.F. Wernerstr.
 E.F. Wernerstrasse
-EMS
 Earhart-Str.
 Earhart-Strasse
 Ebauchesstr.
@@ -41599,7 +41579,6 @@ Erlackerstrasse
 Erlawäg
 Erlematt
 Erlemätti
-Erlen
 Erlen Rietli
 Erlen-Hohlstr.
 Erlen-Hohlstrasse
@@ -43662,6 +43641,7 @@ Ferme des Onchères
 Ferme des Peupliers
 Ferme des Rosiers
 Ferme des Sagnes
+Ferme du Château
 Fermel
 Fermelbode
 Fermelmäder
@@ -44479,7 +44459,6 @@ Fläschackerstrasse
 Fläscherstr.
 Fläscherstrasse
 Fläscherweg
-Fläschli
 Flöhbodenstr.
 Flöhbodenstrasse
 Flöhrebenstr.
@@ -44956,7 +44935,6 @@ Forstweg
 Forstweg Oberhaus
 Forstweg im Vogelsberg
 Forstwerkhofweg
-Fort
 Fortackerstr.
 Fortackerstrasse
 Fortauenweg
@@ -46128,7 +46106,6 @@ Fultigenegg
 Fultigenstr.
 Fultigenstrasse
 Fulwasser
-Fund
 Funkackerstr.
 Funkackerstrasse
 Funkenbüchelweg
@@ -46595,7 +46572,6 @@ Förstersweidweg
 Försterweg
 Förstlen
 Förstlenweg
-Förstli
 Fösera
 Fösli-Gerzenberg
 Fösli-Grund
@@ -46755,7 +46731,6 @@ G.-F.-Heilmann-Str.
 G.-de-Courgenay-Platz
 GA Vogler-Str.
 GA Vogler-Strasse
-GEissacherweg
 Gaaggereweidli
 Gaasshoftobel
 Gaasstobel
@@ -48465,7 +48440,7 @@ Geretsmatt
 Geretsried
 Geretsweg
 Geretswil
-Geretswilerstr. 
+Geretswilstr.
 Geretswilstrasse
 Geretwinkel
 Geretwinkelweg
@@ -50345,6 +50320,7 @@ Grand-Saint-Michel
 Grand-Verger
 Grand-Vigne
 Grand-Vivy
+Grand-Vy
 Grande Avenue
 Grande Charrière
 Grande Combe
@@ -52671,7 +52647,6 @@ Gurnigelweg
 Gurreweidli
 Gurschegn
 Gurschen
-Gurt
 Gurtberg
 Gurtbergstr.
 Gurtbergstrasse
@@ -53212,7 +53187,6 @@ Gääliweg
 Gîte d'Avau
 Gòrda di Sopra
 Gòrda di Sotto
-Gòrdola
 Gôt Pintg
 Göblistr.
 Göblistrasse
@@ -56661,7 +56635,6 @@ Hertlisriet
 Hertnerstr.
 Hertnerstrasse
 Herweg
-Herz
 Herzberg
 Herzberghof
 Herzbergstr.
@@ -57150,7 +57123,6 @@ Hinderguet
 Hindergässli
 Hinderhalta
 Hinderherbrig
-Hinderhitzbergstr.
 Hinderholz
 Hinderholz-Weg
 Hinderholzweg
@@ -57166,6 +57138,7 @@ Hinderi Möser
 Hinderi Stelli
 Hinderi Waligstr.
 Hinderi Waligstrasse
+Hinderitzbergstr.
 Hinderitzbergstrasse
 Hinderleist
 Hinderlohstr.
@@ -63942,7 +63915,6 @@ Im Loorain
 Im Loorenhölzli
 Im Loretscher
 Im Lostorf
-Im Lot
 Im Lotenbach
 Im Luchli
 Im Lupbächli
@@ -67210,7 +67182,6 @@ J.L. Custerstr.
 J.L. Custerstrasse
 J.V. Widmannstr.
 J.V. Widmannstrasse
-J15
 Jaberg
 Jabergstr.
 Jabergstrasse
@@ -68002,31 +67973,6 @@ Jüppenweg
 Jüppeweg
 Jüsti
 Jüstliweg
-K10
-K11
-K11a
-K12
-K15
-K16a
-K17a
-K18
-K30
-K33
-K33b
-K34
-K35
-K36
-K37
-K4
-K40
-K47
-K48
-K55
-K56
-K56a
-K56b
-K58
-K65
 KSL-Str.
 KSL-Strasse
 KWC-Gasse
@@ -70348,7 +70294,6 @@ Kollbrunnerstrasse
 Kollbrunnweg
 Kollegiumstr.
 Kollegiumstrasse
-Koller
 Kollerackerweg
 Kollerberg
 Kollerhüsli
@@ -70360,7 +70305,6 @@ Kollertreppe
 Kollerweg
 Kollerweidstrasse
 Kollmattweg
-Kolonie
 Koloniegut
 Koloniestr.
 Koloniestrasse
@@ -71913,7 +71857,6 @@ L'Oselière
 L'Oubèquetta
 L'Ouche
 L'Oujonnet
-L.
 L. Bartenschlag-Str.
 La Badouda
 La Badsaula
@@ -72698,6 +72641,7 @@ La Rochalle
 La Roche
 La Roche St-Jean
 La Roche ès Corbets
+La Roche-Devant
 La Roche-Queune
 La Rocheta-Dessous
 La Rocheta-Dessus
@@ -73770,6 +73714,7 @@ Lank
 Lankenbergstr.
 Lankenbergstrasse
 Lankersgäbris
+Lankert
 Lankholz
 Lankholz-Hochschwand
 Lankstr.
@@ -73860,7 +73805,6 @@ Lasmatt
 Lassberg
 Lassenberger
 Lassigen
-Lasàgn
 Lat
 Latarschstr.
 Latarschstrasse
@@ -74510,7 +74454,6 @@ Le Fondras
 Le Fordon
 Le Fornel
 Le Fornel-du-Haut
-Le Fort
 Le Fourchaux
 Le Franoz
 Le Friand
@@ -74602,7 +74545,6 @@ Le Maix-Rochat
 Le Maley
 Le Malforin
 Le Malié
-Le Malrang
 Le Manège
 Le Marais
 Le Maran
@@ -74977,7 +74919,6 @@ Le-Corbusier-Platz
 Lebacher
 Lebacker
 Lebau
-Leber
 Leberbäumlistr.
 Leberbäumlistrasse
 Leberenhole
@@ -75612,7 +75553,6 @@ Lenterstr.
 Lenterstrasse
 Lenterweg
 Lentschacker
-Lentschenstr.
 Lentscheraweg
 Lentulusrain
 Lentulusstr.
@@ -75696,7 +75636,6 @@ Lerberstrasse
 Lerbhaldenstr.
 Lerbhaldenstrasse
 Lerch
-Lerche
 Lercheberg
 Lerchebergweg
 Lerchen
@@ -75793,6 +75732,7 @@ Les Aubiers
 Les Aubépins
 Les Augelats
 Les Auges
+Les Auges-Dessus
 Les Autins
 Les Auvattes
 Les Avattes
@@ -76594,6 +76534,7 @@ Les Splayes
 Les Sudains
 Les Sugits
 Les Sâles
+Les Tailles
 Les Taillères
 Les Tannes
 Les Tardys
@@ -76789,7 +76730,6 @@ Letziweg
 Letziwiesstr.
 Letziwiesstrasse
 Letzweg
-Leu
 Leuackerweg
 Leubachweg
 Leuberg
@@ -77971,6 +77911,7 @@ Lommiswilstr.
 Lommiswilstrasse
 Lomont
 Lonce
+Lonchy
 Long-Vernez
 Longchamp
 Longchamps
@@ -78059,7 +78000,7 @@ Loorenstr.
 Loorenstrasse
 Loorentobelweg
 Loorenweg
-Loorenzelgstr.
+Loorenzälgstr.
 Loorenzälgstrasse
 Looreweg
 Loorhaustr.
@@ -78191,7 +78132,6 @@ Lothringerplatz
 Lothringerstr.
 Lothringerstrasse
 Lotissement du Port
-Lotri
 Lottenacher
 Lottenacker
 Lottenhof
@@ -78674,6 +78614,7 @@ Lächlenweg
 Lächlerstr.
 Lächlerstrasse
 Lächlerweg
+Lächstr.
 Lächstrasse
 Lädelifelsweg
 Lädelistr.
@@ -78702,7 +78643,6 @@ Lägernhochwacht
 Lägernstr.
 Lägernstrasse
 Lägernweg
-Lägernweidstr.
 Lägerweidli
 Lägerz
 Lägeten
@@ -78913,6 +78853,7 @@ Läntigen
 Läntigenstr.
 Läntigenstrasse
 Läntiweg
+Läntschenstr.
 Läntschenstrasse
 Länzehof
 Länzert
@@ -80189,7 +80130,6 @@ Marmorstr.
 Marmorstrasse
 Marmorweg
 Marmoud
-Marn
 Marna
 Marne de la Coudre
 Maronigässli
@@ -81765,6 +81705,7 @@ Mittler-Hurtgraben
 Mittler-Hüslen
 Mittler-Kratzern
 Mittler-Langhubel
+Mittler-Langnau
 Mittler-Lindebüel
 Mittler-Lindenegg
 Mittler-Pörtere
@@ -82210,7 +82151,6 @@ Monrütistr.
 Monrütistrasse
 Monsteinerstr.
 Monsteinerstrasse
-Mont
 Mont Brenin
 Mont Girod
 Mont Grand
@@ -82303,14 +82243,10 @@ Montgeneaux
 Montgremay
 Monti Aragno
 Monti Belli
-Monti Juri
-Monti Tampori
 Monti della Tagliata
 Monti di Artore
 Monti di Basso
-Monti di Carasso
 Monti di Cortói
-Monti di Daro
 Monti di Faèd
 Monti di Gerra
 Monti di Gordola
@@ -82321,7 +82257,6 @@ Monti di Nevedone
 Monti di Piazzogna
 Monti di Piodina
 Monti di Porta
-Monti di Ravecchia
 Monti di Vairano
 Montjean
 Montjol
@@ -82863,7 +82798,6 @@ Mozartstr.
 Mozartstrasse
 Mozartweg
 Mt de Baulmes d'en Haut
-Mti Juri
 Muacher
 Muchelrietstr.
 Muchelrietstrasse
@@ -83034,6 +82968,7 @@ Munimattgässli
 Munimattstr.
 Munimattstrasse
 Munimattweg
+Munimoos
 Munistein
 Munitionsfabrik
 Muniweidstr.
@@ -84260,7 +84195,6 @@ Mülleremoos
 Mülleren
 Müllerenstr.
 Müllerenstrasse
-Müllerhaus
 Müllerholzstr.
 Müllerholzstrasse
 Müllerholzweg
@@ -84546,7 +84480,6 @@ Nadelstrasse
 Nadiggass-Weg
 Nadiggasse
 Nadigweg
-Nagel
 Nageldach
 Nageldachweg
 Nagelfluestr.
@@ -84673,7 +84606,6 @@ Nationalquai
 Nationalstr.
 Nationalstrasse
 Nationalstrasse A4
-Nationalstrasse N4
 Nationalstrasseweg
 Natschengässli
 Natternweg
@@ -87554,6 +87486,8 @@ Oberdiliweg
 Oberdjardin
 Oberdorf
 Oberdorf Alfermée
+Oberdorf Park
+Oberdorf Platz
 Oberdorf Tüscherz
 Oberdorf-Ebnet
 Oberdorf-Freienalp
@@ -87703,7 +87637,6 @@ Obere Breite
 Obere Breiten
 Obere Breitenstr.
 Obere Breitenstrasse
-Obere Breitenweg
 Obere Breitlen
 Obere Brend
 Obere Briggerstr.
@@ -88239,7 +88172,6 @@ Obere Leinsiten
 Obere Leistr.
 Obere Leistrasse
 Obere Lenge Streich
-Obere Lentschenstr.
 Obere Lenzstr.
 Obere Lenzstrasse
 Obere Lettenstr.
@@ -88262,10 +88194,11 @@ Obere Lochstrasse
 Obere Loostr.
 Obere Loostrasse
 Obere Lussstrasse
+Obere Lägerenweidstr.
 Obere Lägerenweidstrasse
-Obere Lägernweidstr.
 Obere Läggenstr.
 Obere Läggenstrasse
+Obere Läntschenstr.
 Obere Läntschenstrasse
 Obere Lättenstr.
 Obere Lättenstrasse
@@ -89138,7 +89071,6 @@ Oberer Ringweg
 Oberer Rischweg
 Oberer Rofelserweg
 Oberer Roggenhalm
-Oberer Roggesbüel-Weg
 Oberer Rolliring
 Oberer Rosenbergweg
 Oberer Rossiweg
@@ -91929,7 +91861,6 @@ Pass. du Terraillet
 Pass. du Très-Sec
 Pass.-s.-Gare de St-Jean
 Passabungertweg
-Passage
 Passage Abraham-Gagnebin
 Passage Au Réduit
 Passage Auguste-Pidou
@@ -95120,6 +95051,8 @@ Prinziweg
 Prise Blaise
 Prise Bridel
 Prise Comtesse
+Prise Cornu
+Prise Roget
 Prise-Cosandier
 Prise-Fège
 Prise-Féquenet
@@ -96496,7 +96429,6 @@ Rahn Gätziberg
 Rahn-Bühl
 Rahnstr.
 Rahnstrasse
-Rai
 Raiackerstr.
 Raiackerstrasse
 Raida
@@ -96889,7 +96821,6 @@ Rappenholzstr.
 Rappenholzstrasse
 Rappenholzweg
 Rappenloch
-Rappenloch-Wäg
 Rappenlochfussweg
 Rappenlochweg
 Rappenlochwäg
@@ -99070,7 +99001,6 @@ Ringelstr.
 Ringelstrasse
 Ringelweg
 Ringenzeichen
-Ringer
 Ringgackerstr.
 Ringgackerstrasse
 Ringgasse
@@ -99381,7 +99311,6 @@ Ritzlimoos
 Ritzliweg
 Riu da Pozz
 Riv zóra
-Riva
 Riva Antonio Caccia
 Riva Bellavista
 Riva Cantonetto
@@ -99961,7 +99890,6 @@ Rodlerstr.
 Rodlerstrasse
 Rodrisstr.
 Rodrisstrasse
-Rodstr.
 Rodtegg
 Rodteggstr.
 Rodteggstrasse
@@ -100263,7 +100191,6 @@ Ronach
 Ronachhüttli
 Ronalpstr.
 Ronalpstrasse
-Roncaa
 Roncaccio
 Roncaiolo
 Ronch da Guald
@@ -100343,6 +100270,7 @@ Ronystr.
 Ronystrasse
 Roodigstr.
 Roodigstrasse
+Roodstr.
 Roodstrasse
 Rooli
 Roor
@@ -101368,6 +101296,7 @@ Route d'Alle
 Route d'Allières
 Route d'Ambilly
 Route d'Amont
+Route d'Ancex
 Route d'Anchettes
 Route d'Andix
 Route d'Anet
@@ -101824,6 +101753,7 @@ Route de Cray
 Route de Cremin
 Route de Cremières
 Route de Creuse
+Route de Crevel
 Route de Crissier
 Route de Crochet
 Route de Crochy
@@ -102747,6 +102677,7 @@ Route de l'Est
 Route de l'Estivage
 Route de l'Etang
 Route de l'Etannet
+Route de l'Etoile
 Route de l'Etraz
 Route de l'Etriva
 Route de l'Etrua
@@ -104549,6 +104480,7 @@ Rte d'Alle
 Rte d'Allières
 Rte d'Ambilly
 Rte d'Amont
+Rte d'Ancex
 Rte d'Anchettes
 Rte d'Andix
 Rte d'Anet
@@ -105000,6 +104932,7 @@ Rte de Cray
 Rte de Cremin
 Rte de Cremières
 Rte de Creuse
+Rte de Crevel
 Rte de Crissier
 Rte de Crochet
 Rte de Crochy
@@ -105922,6 +105855,7 @@ Rte de l'Estivage
 Rte de l'Etambeau
 Rte de l'Etang
 Rte de l'Etannet
+Rte de l'Etoile
 Rte de l'Etraz
 Rte de l'Etriva
 Rte de l'Etrua
@@ -107584,7 +107518,6 @@ Ruchwisstr.
 Ruchwisstrasse
 Ruckhaldentreppe
 Ruckhaldenweg
-Rudacherweg
 Rudeli
 Rudenwil
 Rudenz
@@ -110095,6 +110028,7 @@ Rue des Monts
 Rue des Moraines
 Rue des Morasses
 Rue des Mornets
+Rue des Motels
 Rue des Motteys
 Rue des Mouettes
 Rue des Moulins
@@ -111640,7 +111574,6 @@ Rufelistrasse
 Rufeliweg
 Rufelstr.
 Rufelstrasse
-Rufen
 Rufena
 Rufenacker
 Rufenastr.
@@ -113346,7 +113279,6 @@ S.da Madonna d. Fontana
 SBB Areal
 SBB Bahnareal
 Sa' Nazei
-Sa'Nazei
 Saagastr.
 Saagastrasse
 Saalbaustr.
@@ -116054,7 +115986,6 @@ Schlittmoosstr.
 Schlittmoosstrasse
 Schlittrain
 Schlittweg
-Schllössligasse
 Schloffenacker
 Schloh-Fuchsloch
 Schloh-Hüsliweid
@@ -116335,7 +116266,6 @@ Schlupfstrasse
 Schlupfweg
 Schlurhalde
 Schlurpengrabenweg
-Schluss
 Schlussbach
 Schlussbachweg
 Schlusselmad
@@ -121203,7 +121133,6 @@ Sigmattstrasse
 Sigmundstr.
 Sigmundstrasse
 Sigmundweg
-Sign
 Signal de Bougy
 Signalacherstr.
 Signalacherstrasse
@@ -121367,7 +121296,6 @@ Simenackerstr.
 Simenackerstrasse
 Simismoos
 Simisrüti
-Simiàn
 Simmelackerstr.
 Simmelackerstrasse
 Simmelenmattweg
@@ -122665,7 +122593,6 @@ Spilwald
 Spilweg
 Spilächerstr.
 Spilächerstrasse
-Spina
 Spina-Neugutweg
 Spinadascio
 Spinapitschna
@@ -123043,7 +122970,6 @@ Springplatzstrasse
 Spritzenhausweg
 Sproochbrugg
 Sprossemoos
-Sprung
 Sprungschärm
 Sprungstr.
 Sprungstrasse
@@ -124968,7 +124894,6 @@ Steiäckerliweg
 Stejeweid
 Stellacher
 Stellbach
-Stelle
 Stelleweg
 Stelli
 Stelliboden
@@ -125310,7 +125235,6 @@ Stierwisenweg
 Stifelacher
 Stifelweg
 Stifelwis
-Stift
 Stiftenweg
 Stiftgässli
 Stiftsgasse
@@ -127043,10 +126967,8 @@ Stöckacker
 Stöckackerstr.
 Stöckackerstrasse
 Stöckalp
-Stöcke
 Stöckebniweg
 Stöckelimad
-Stöcken
 Stöcken-Sandloch
 Stöckenackerstr.
 Stöckenackerstrasse
@@ -127967,6 +127889,7 @@ Suréscia
 Surìa
 Surücha
 Surütti
+Sus La Croix
 Sus la Chapelle
 Sus la Joux
 Sus la Roche
@@ -129517,7 +129440,6 @@ Tgavugl
 Tgeas
 Tgeas La Palè
 Tges' Alva
-Tges'Alva
 Tgioc
 Tgiplat
 Tgoms
@@ -130745,7 +130667,6 @@ Tronegg
 Tronscia
 Troostbärg
 Tropenhausweg
-Tropfen
 Tropign
 Tropitt
 Tros
@@ -131489,7 +131410,6 @@ Tychweg
 Typographengässli
 Typonweg
 Tächenbühl
-Tächenwisweg
 Tächerrei
 Tächmatt
 Täfeli
@@ -132041,9 +131961,9 @@ Uehaldeweg
 Uekerstr.
 Uekerstrasse
 Uelberg
-Ueli Derrer Pl.
 Ueli Rotachweg
 Ueli Rotachweg-Kapelle
+Ueli-Derrer Pl.
 Ueli-Derrer Platz
 Ueli-Gässli
 Ueliacherweg
@@ -132854,7 +132774,6 @@ Unter Hungerschwand
 Unter Hächlisberg
 Unter Hälig
 Unter Häusern
-Unter Höchopfweg
 Unter Höhe
 Unter Hübeli
 Unter Hüttenboden
@@ -134722,7 +134641,6 @@ Unterer Tschingel
 Unterer Turm
 Unterer Turnplatzweg
 Unterer Twäriberg
-Unterer Töbeli-Weg
 Unterer Tüfenberg
 Unterer Utenberg
 Unterer Vorderwaldweg
@@ -136722,10 +136640,8 @@ Vetterwil
 Vettigen
 Vettigen-Chreuel
 Veye Môtie
-Vi
 Vi Begl
 Vi-des-Glas
-Via
 Via 1. Agosto
 Via 19 Giugno
 Via A la Gescia
@@ -142103,7 +142019,6 @@ Voia Tgaplotta seura
 Voia Tgaplotta sot
 Voia Viglia
 Voia Viglia digl Bogn
-Voia d'Aclas
 Voia d'aclas
 Voia da Brinzauls
 Voia da Bual
@@ -142576,6 +142491,7 @@ Vorderbrenden
 Vorderbrugger
 Vorderbrunnen
 Vorderbrüel
+Vorderbuech
 Vorderbui
 Vorderburst-Türlisboden
 Vorderbäpur
@@ -142920,7 +142836,6 @@ Vorderhausstr.
 Vorderhausstrasse
 Vorderhawaldweg
 Vorderheg
-Vorderhitzbergweg
 Vorderhof
 Vorderholz
 Vorderholzweg
@@ -143161,7 +143076,6 @@ Vorsässring
 Vorsässstr.
 Vorsässstrasse
 Vorsässweg
-Vortag
 Vortaue
 Vortauenstr.
 Vortauenstrasse
@@ -143459,8 +143373,7 @@ Waisenweg
 Waiza
 Waizacker
 Wakerelochwäg
-Wakerenloch-Wäg
-Wakerenstr.
+Wakerestr.
 Wakerestrass
 Walabalm
 Walaboda
@@ -145404,7 +145317,6 @@ Wendelsaustrasse
 Wendelstr.
 Wendelstrasse
 Wendelweg
-Wenden
 Wendi
 Wendlerweg
 Wendolinsgasse
@@ -145806,7 +145718,6 @@ Widdergasse
 Widdermoos
 Widderplatz
 Widderweg
-Wide
 Widegass
 Widegg
 Widehau
@@ -146999,7 +146910,9 @@ Winterthurstr.
 Winterthurstrasse
 Wintertschi
 Winterweg
+Winteröscht
 Wintrigmatta
+Wintrösch
 Winzelenweg
 Winzelnbergstr.
 Winzelnbergstrasse
@@ -147016,7 +146929,6 @@ Winzenbergstrasse
 Winzenbergweg
 Winzenriedstr.
 Winzenriedstrasse
-Winzer-Steig
 Winzerhalde
 Winzersteig
 Winzerstr.
@@ -148602,6 +148514,7 @@ Zaunacker
 Zaunackerstr.
 Zaunackerstrasse
 Zaunerweg
+Zaunfabrik
 Zaungasse
 Zaunmattweg
 Zaunplatz
@@ -150395,6 +150308,7 @@ al Stradón da Magia
 al Stradón da Soméi
 al Strecin
 al Strecìn di Pedrinòla
+al Strécion
 al Sált
 al Talèe
 al Temporiv
@@ -150522,7 +150436,6 @@ di là dall'Acqua di Dent
 di là dall'Acqua di Dentro
 ds Enisch Gadä
 el Busc' del Ram
-el Busc'del Ram
 el Camp di Nav
 el Cios di Murún
 el Ciòs
