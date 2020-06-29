@@ -54,6 +54,7 @@ Rule: VariousIDsLeftTriggered
     (
         ({Token.string ==~ "[A-Z]{1,}"})?
         {Token.string ==~ "[0-9]{1,}"}
+        ({Token.string ==~ "[A-Z]"})?
     ):id
 ) -->
 :id.ID = { rule = "VariousIDsLeftTriggered", type = "other" }
@@ -69,3 +70,12 @@ Rule: AHVNumber
      {Token.string ==~ "[0-9]{2}"}
 ):id -->
 :id.ID = { rule = "AHVNumber", type = "social security number" }
+
+Rule: LeftTriggeredID
+(
+    { Token.string ==~ "[A-Z]" }
+    { Token.string ==~ "[0-9]{4}" }
+    { Token.string ==~ "[.-]"}
+    { Token.string ==~ "[0-9]{3,5}" }
+):id -->
+:id.ID = { rule = "LeftTriggeredID", type = "other" }

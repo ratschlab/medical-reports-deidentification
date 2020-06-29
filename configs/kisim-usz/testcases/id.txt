@@ -2,10 +2,14 @@ ID; Verlauf, Patienteninformation
 
 PatNr <ID>123345</ID>
 <Verlauf>30.01.1970, \# <ID>1234556</ID> Fall <ID>343456</ID> </Verlauf> # note that \# escapes to #
-Aggregatwechsel <ID>1234</ID> Serien-Nr: <ID>XYZ 12343</ID> S / N <ID>345</ID> S / N: <ID>3345</ID>
+Aggregatwechsel <ID>1234</ID> Serien-Nr: <ID>XYZ 12343</ID>
+S / N <ID>345</ID>
+S / N: <ID>3345</ID>
 <Patienteninformation>OUTOFVOC-D'XYZ Jeanne Marie, geb. 01.01.1900\r\n Pat-Nr. <ID>23444</ID>\r\n am Musterstrasse 21a, CH-1234 Musterwilen</Patienteninformation>
 SN: <ID>234</ID> SNr: <ID>2344</ID>
 Seriennummer <ID>12344</ID>
+
+<ID>H 2016.1238</ID> <ID>H 2016-1238</ID>
 
 ## Social Security Number (AHV)
 

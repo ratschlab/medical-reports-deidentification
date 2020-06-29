@@ -205,7 +205,7 @@ examples:
 Rule: DotDatesNoYearRightTrigger
 (
     (DATE_NO_YEAR) :date
-    {Token.string ==~ "um|[:]"}
+    {Token.string ==~ "um|[:,)]"}
 )
 --> { Utils.addDateAnnotation("DotDatesNoYearRightTrigger", "other", "dd.MM.", "", bindings, doc, outputAS); }
 
@@ -307,6 +307,15 @@ Priority: 500
 //    {Token.string == ")"}
 //)
 //--> {}
+
+Rule: DayLeftTrigger
+(
+    ({Token.string ==~ "Nacht"} {Token.string ==~ "vom"})
+    (
+        (DAY_IN_MONTH): day
+    ):date
+    DOT
+) --> { Utils.addDateAnnotation("DayLeftTrigger", "other",  "d", "", bindings, doc, outputAS); }
 
 /*
 examples:

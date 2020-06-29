@@ -50,7 +50,9 @@ Rule: AgeLeftRightContext
         ({Token.string == "im"} {Token.string == "Alter"} {Token.string == "von"} )
     )
     (POSSIBLE_AGE):age
-    {Token.string ==~ "Jahren|gestorben"}
+    ( {Token.string ==~ "Jahren|gestorben|verstorben"} |
+       ({Token.string ==~ "[J|j]"} {Token.string ==~ "."})
+    )
 )
 -->
 :age.Age = {rule = "AgeLeftRightContext"}
