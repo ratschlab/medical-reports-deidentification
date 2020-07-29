@@ -2,7 +2,13 @@ package org.ratschlab.deidentifier.utils.paths;
 
 import gate.Annotation;
 import gate.AnnotationSet;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -107,5 +113,22 @@ public class PathConstraint {
         }
 
         return new PathConstraint(originalFieldNamePattern, completePath);
+    }
+
+
+    public static List<PathConstraint> loadFieldBlacklistPath(File path) throws IOException {
+        CSVParser records = CSVParser.parse(path, Charset.defaultCharset(), CSVFormat.newFormat(';').withCommentMarker('#'));
+
+        List<PathConstraint> ret = new ArrayList<>();
+
+        for(CSVRecord r : records) {
+            if (r.size() < 1) {
+                continue;
+            }
+
+            ret.add(PathConstraint.constructPath(r.get(0)));
+        }
+
+        return ret;
     }
 }

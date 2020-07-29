@@ -112,7 +112,7 @@ public class SubstitutionCmd implements Runnable {
 
             Function<Document, DeidentificationSubstituter> substFactory = getSubstFactory();
 
-            List<PathConstraint> fieldBlacklist = this.fieldsBlacklistPath != null ? loadFieldBlacklistPath(this.fieldsBlacklistPath) : Collections.emptyList();
+            List<PathConstraint> fieldBlacklist = this.fieldsBlacklistPath != null ? PathConstraint.loadFieldBlacklistPath(this.fieldsBlacklistPath) : Collections.emptyList();
 
             WorkflowConcern sink;
 
@@ -258,21 +258,5 @@ public class SubstitutionCmd implements Runnable {
 
             return new ReplacementTagsSubstitution();
         };
-    }
-
-    private List<PathConstraint> loadFieldBlacklistPath(File path) throws IOException {
-        CSVParser records = CSVParser.parse(path, Charset.defaultCharset(), CSVFormat.newFormat(';').withCommentMarker('#'));
-
-        List<PathConstraint> ret = new ArrayList<>();
-
-        for(CSVRecord r : records) {
-            if (r.size() < 1) {
-                continue;
-            }
-
-            ret.add(PathConstraint.constructPath(r.get(0)));
-        }
-
-        return ret;
     }
 }
