@@ -1,7 +1,7 @@
 Date
 
 am <Date day="11" month="1" year="2016" format="dd.MM.yyyy">11.01.2016</Date> zur klinischen Kontrolle in unserer
-Am <Date>26.03</Date>
+#Am <Date>26.03</Date>
 seit <Date>22.01.10</Date>:
 seit <Date>5.1.2009</Date>
 seit <Date>5.1.2029</Date>
@@ -24,7 +24,7 @@ MRI Halsgefässe <Date>27.11.</Date> konnte
 bis <Date>10.12</Date> weiter
 am <Date>30.11</Date> um 13:00, am <Date>23.11</Date> um 13:00,
 ab <Date>26.10</Date>,
-im Vergleich zum <Date>23.01</Date>
+#im Vergleich zum <Date>23.01</Date>
 Zwischenfall <Date>23.11</Date> um
 Zwischenfall <Date>23.11</Date> :
 #<Date>24.11</Date>: Bettruhe
@@ -77,14 +77,15 @@ am <Date>22.2</Date> wurde ein Wert von 22.2 mm gemessen
 ein Wert von 0.5 bla
 am <Date>28.11.</Date> 13.45 Uhr # (date annotated 28.11. 13) TODO
 Gastroskopie <Date>11.2015</Date> #(only 2015 annotated)
+Gastroskopie - 11.2
 #ab dem 13. postoperativen Tag
-Medrol am <Date>12</Date>. abgegeben
+#Medrol am <Date>12</Date>. abgegeben
 im <Date>Juli</Date>, Im <Date>Juli</Date>,
 im <Date>Dezember 2018</Date> wurde
 Condylomabtragung <Date>03/2011</Date>.\n·	Obstruktives
 <Date>01/16</Date>:
-in der Nacht vom <Date>28</Date>. verschlechtert
-mehrfach negativ (<Date>05.10</Date>, <Date>16.10</Date>)
+#in der Nacht vom <Date>28</Date>. verschlechtert
+#mehrfach negativ (<Date>05.10</Date>, <Date>16.10</Date>)
 
 > 1.2,
 Score XXX 1.2,
