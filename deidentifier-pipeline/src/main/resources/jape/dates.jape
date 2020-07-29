@@ -37,7 +37,7 @@ Macro: MONTH_NAME_LONG
 
 Macro: MONTH_NAME_SHORT
 (
-    {Token.string ==~ "Jan|Feb|Mär|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Dez"}
+    {Token.string ==~ "Jan|Feb|Mär|Apr|Mai|Jun|Jul|Aug|Sep|Sept|Okt|Nov|Dez"}
 )
 
 Macro: MONTH_NAME
@@ -75,17 +75,14 @@ Macro: YEAR
 
 Macro: DATE_PRE
 (
-  {Token.string == "am"} |
-  {Token.string == "ab"} |
-  {Token.string == "bis"} |
-  {Token.string == "den"} |
-  {Token.string == "dem"} |
-  {Token.string == "seit"} |
-  {Token.string == "vom"} |
+  {Token.string ==~ "[Aa][bm]"} |
+  {Token.string ==~ "[Bb]is"} |
+  {Token.string ==~ "[Dd]e[nm]"} |
+  {Token.string ==~ "[Ss]eit"} |
+  {Token.string ==~ "[Vv]om"} |
+  {Token.string == "zum"} | // im Vergleich zum
   {Token.string == "Erstdiagnose" } | // TODO probably need to generalize this a bit, e.g. *diagnose
-  {Token.string == "ED"} | // Erstdiagnose
-  {Token.string == "EM"} |
-  {Token.string == "ES"} |
+  {Token.string ==~ "E[D|M|S]"} | // Erstdiagnose
   {Token.string == "Aufenthalt"}
 )
 
@@ -198,6 +195,18 @@ Priority: 100
     (UNIT)
 ) --> {}
 
+Rule: DotDatesNegativeRightTrigger
+Priority: 100
+(
+    (
+        ({Token.string == "Score"}  ({Token})?) |
+        {Token.string ==~ "[>]"} |
+        ( { Token.string == ":"} ({Token.string == "-"})?)
+    )
+    (DATE_NO_YEAR)
+    {Token.kind != "number"}
+) --> {}
+
 /*
 examples:
  22.01:
@@ -294,7 +303,7 @@ Priority: 100
 Rule: MonthSlashDateNegativeScaleTrigger
 Priority: 500
 (
-    {Token.string ==~ "Th|BWK|Bwk"}
+    {Token.string ==~ "Th|BWK|Bwk|VAS|gute|ATS"}
     MONTH_SLASH_DATE_TWO_DIGIT_YEAR
 )
 --> {}
@@ -310,11 +319,15 @@ Priority: 500
 
 Rule: DayLeftTrigger
 (
-    ({Token.string ==~ "Nacht"} {Token.string ==~ "vom"})
+    (
+        ({Token.string == "Nacht"} {Token.string == "vom"}) |
+        {Token.string == "am"}
+     )
     (
         (DAY_IN_MONTH): day
     ):date
     DOT
+    { Token.kind != "number"}
 ) --> { Utils.addDateAnnotation("DayLeftTrigger", "other",  "d", "", bindings, doc, outputAS); }
 
 /*
@@ -370,7 +383,8 @@ Rule: MonthNameOnly
     (
         (MONTH_NAME):month
     ):date
-    {Token.string !=~ "[/0-9]+"}  // don't interfer with MonthYear and ApproximateMonthYear
+    (DOT)?
+    {Token.string !=~ "[/0-9.]+"}  // don't interfer with MonthYear and ApproximateMonthYear
 )
 --> { Utils.addDateAnnotation("MonthNameOnly", "other",  "M", "", bindings, doc, outputAS); }
 

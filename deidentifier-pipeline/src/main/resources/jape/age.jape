@@ -20,8 +20,16 @@ examples:
 Rule: AgeRightContextTrigger
 (
     (POSSIBLE_AGE):age
-    (DASH)?
-    ({Token.string ==~ "jährig|jährige[rnm]?"})
+    (
+        ((DASH)? ({Token.string ==~ "jährig|jährige[rnm]?"})) |
+        (
+            (
+                ({Token.string == "Jahre"} {Token.string ==~ "alte[r]?"} ) |
+                {Token.string ==~ "[Jj]"}
+            )
+            {Token.string ==~ "Patient|Patientin"}
+        )
+    )
 )
 -->
 :age.Age = {rule = "AgeRightContextTrigger"}
@@ -51,7 +59,7 @@ Rule: AgeLeftRightContext
     )
     (POSSIBLE_AGE):age
     ( {Token.string ==~ "Jahren|gestorben|verstorben"} |
-       ({Token.string ==~ "[J|j]"} {Token.string ==~ "."})
+       ({Token.string ==~ "[J|j]"})
     )
 )
 -->
@@ -75,10 +83,12 @@ Rule: AgeYearOfLife
 /*
 examples:
   26j
+  26-j
 */
 Rule: AgeRightContextShort
 (
     (POSSIBLE_AGE):age
+    (DASH)?
     {Token.string ==~ "j"}
 )
 -->

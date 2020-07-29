@@ -60,6 +60,7 @@ und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
 
 # DisplayName field
 <DisplayName><Name>D. Veryseldom</Name></DisplayName>
+<DisplayName><Name>D. Veryseldom-Seldom</Name></DisplayName>
 
 <Name>Yvonne</Name> darf heute nach Hause gehen. # Yvonne exclusively appears as name in Gazetteer
 Iris darf heute nach Hause gehen. # POS Tag based, but don't annotate since it is also a medical term
@@ -68,6 +69,7 @@ stammen die Töchter <Name>Beatrice</Name> und <Name>Kathrin</Name>. Die Diagnos
 
 Anwesende: <Name>Huber</Name>, <Name>Meier</Name>, <Name>Zwygart</Name>
 
+Praxis Dr. <Name>Huber/Meier</Name>
 
 # false positives
 <Name>Andreas Neuhaus</Name> # false positive location
@@ -113,6 +115,10 @@ ASAHI Sion Blue
 ASAHI Gaia
 Tachykardes Vorhofflimmern ED
 
+Mo-Mi-Fr
+Anti-Mi
+Anti Mi
+
 Endo-Button
 Ko
 CT Schädel
@@ -141,3 +147,5 @@ Ground-Glass-Opazitäten
 Fraktur der Spina
 Pozzi Schema
 Zink-Spiegel
+
+hat 3 Kinder und 6 Enkel

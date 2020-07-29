@@ -51,7 +51,7 @@ public class SubstitutionTest {
     @Test
     public void testSimpleSubstitution() {
         try {
-            String xmlDoc = String.format("<%s>%s</%s>", DUMMY_TAG, "This is a date: <TheDate>21.10.2017</TheDate> and <TheDate>24.10.2017</TheDate> should be replaced", DUMMY_TAG);
+            String xmlDoc = String.format("<%s>%s</%s>", DUMMY_TAG, "This is a date <TheDate>21.10.2017</TheDate> and <TheDate>24.10.2017</TheDate> should be replaced", DUMMY_TAG);
 
             Document doc = GateTools.documentFromXmlString(xmlDoc);
             GateTools.processDoc(doc, pipeline);
@@ -78,7 +78,7 @@ public class SubstitutionTest {
     @Test
     public void testOverlapSubstitution() {
         try {
-            String xmlDoc = String.format("<%s>%s</%s>", DUMMY_TAG, "This is a date: <TheDate>21.10.2017</TheDate> and <TheDate>24.10.2017</TheDate> should be replaced", DUMMY_TAG);
+            String xmlDoc = String.format("<%s>%s</%s>", DUMMY_TAG, "This is a date <TheDate>21.10.2017</TheDate> and <TheDate>24.10.2017</TheDate> should be replaced", DUMMY_TAG);
 
             Document doc = GateTools.documentFromXmlString(xmlDoc);
             GateTools.processDoc(doc, pipeline);

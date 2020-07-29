@@ -111,7 +111,7 @@ Macro: FIRST_NAME_INITIALS
 Rule: NamesInDisplayName
 (
     (FIRST_NAME_INITIALS):firstname_NamesInDisplayName
-    (({Token.orth == "upperInitial", Token within DisplayName})+):lastname_NamesInDisplayName
+    (({Token.orth == "upperInitial", Token within DisplayName}|{Token.string == "-"})+):lastname_NamesInDisplayName
 ):name --> { Utils.addNameAnnotation("NamesInDisplayName", "medical staff", "fs l", bindings, doc, outputAS); }
 
 

@@ -17,15 +17,19 @@ im <Occupation>Outofvoc</Occupation> arbeitstätig
 <Anamnese>Arbeitgeber: <Occupation>SBB</Occupation></Anamnese>
 
 <Anamnese>Zuweisung per Rettungsdienst</Anamnese>
-<Anamnese><Occupation>Rettungsdienst</Occupation></Anamnese> # annotating, since it is at the beginning of the sentence
+<Anamnese>Rettungsdienst</Anamnese> # annotating, since it is at the beginning of the sentence
 <Anamnese>Patient ist in der <Occupation>Geschäftsführung</Occupation> </Anamnese>
 <Anamnese>als <Occupation>Lehrer</Occupation> für <Occupation>Mathematik</Occupation></Anamnese>
 <Anamnese><Occupation>Mathematiklehrer</Occupation></Anamnese>
 <Anamnese>der 20-jährige <Occupation>Student</Occupation></Anamnese>
 <Anamnese><Occupation>Jus-Student</Occupation></Anamnese>
 <Anamnese>arbeitet die Patientin</Anamnese>
-
+<Anamnese>vorher <Occupation>Maler</Occupation>  </Anamnese>
+<Anamnese>Ehemals <Occupation>Maler</Occupation>  </Anamnese>
+<Anamnese>verheiratet mit einem ehemaligen <Occupation>Maler</Occupation> </Anamnese>
+<Anamnese> balabla (<Occupation>Maler</Occupation>) bla </Anamnese>
 <Anamnese>Patient war Profi-<Occupation>Fussballer</Occupation>.</Anamnese>
+<Anamnese>Verheiratet, <Occupation>Hausfrau</Occupation> </Anamnese>
 
 <SozialAnamnese>zuvor <Occupation>Maler</Occupation></SozialAnamnese>
 <SozialAnamnese>war <Occupation>Maler</Occupation></SozialAnamnese>

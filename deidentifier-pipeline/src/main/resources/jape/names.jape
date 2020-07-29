@@ -68,7 +68,7 @@ Macro: FIRSTNAME_LOOKUP
 
 Macro: DOUBLE_NAME
 (
-    (UPPER_INITIAL_TOKEN) (DASH) (UPPER_INITIAL_TOKEN)
+    (UPPER_INITIAL_TOKEN) (DASH|{Token.string=="/"}) (UPPER_INITIAL_TOKEN)
 )
 
 // example: Andrea Muster, Andrea-Maria Muster, Andrea M. Muster, Andrea Muster-Meier
@@ -120,7 +120,7 @@ Macro: STYLE
         ({Token.string == "pract"} ({Token.string == "."})?) |
         ({Token.string == "Professor"})
     )+
-    ({Token.string ==~ "[a-z]{2,}"} {Token.string == "."})[0,2] // e.g: "med. dent.", or "sc. nat."
+    ({Token.string ==~ "[a-z]{2,}"} ({Token.string == "."})?)[0,2] // e.g: "med. dent.", or "sc. nat."
 )
 
 Macro: ABBREV_ROLES
@@ -207,7 +207,7 @@ Rule: StaffSurnameEnumeration
 
 Rule: StaffSurnameEnumerationTriggered
 (
-    {Token.string ==~ "Anwesend[e]?"}
+    ({Token.string ==~ "Anwesend[e]?"})
     ({Token})?
     ((NAME_PREPOSITIONS)? UPPER_INITIAL_TOKEN | DOUBLE_NAME):first_tok
 
@@ -375,7 +375,6 @@ Rule: DoubleNameLeftTriggered
     ):name
 ) --> { Utils.addNameAnnotation("DoubleNameLeftTriggered", "patient", "l", bindings, doc, outputAS); },
        :style.Style = { rule = "DoubleNameLeftTriggered"}
-
 
 // example: Liebe Maria
 Rule: FirstNameInSalutation

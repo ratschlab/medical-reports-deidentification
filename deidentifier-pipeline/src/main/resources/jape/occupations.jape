@@ -38,7 +38,7 @@ Rule: OccupationsFromGazetteerInOccupationContext
 Rule: OccupationsFromGazetteerLeftTrigger
 (
     (
-        { Token.string ==~ "[Aa]ls|[Zz]uvor|[Ww]ar|([Ee]hemalige[r]?)|[Ff]rühere[r]?|([Ee]hrenamtliche[r]?|[Aa]ktuell|[Gg]erade)"} |
+        { Token.string ==~ "[Aa]ls|[Zz]uvor|[Vv]orher|[Ww]ar|([Ee]hemalige[rn]?)|[Ff]rühere[r]?|([Ee]hrenamtliche[r]?|[Aa]ktuell|[Gg]erade)"} |
         ({ Token.string ==~ "[Ww]ar"} | { Token.string == "früher"}) |
         ( {Token.string ==~ "[Ss]eit"} ({Token})[1,2] ) |
         {Token.string ==~ "jährige[r]?"} // xy jähriger Student
@@ -54,7 +54,6 @@ Rule: OccupationsLeftTriggered
         ({Token.string == "von"} {Token.string == "Beruf"}) |
         ({Token.string ==~ "Beruf|Arbeit"} {Token.string == ":"}) |
         ({Token.string ==~ "[Gg]elernte[r]?"}) |
-        ({Token.string ==~ "[Pp]ensionierte[r]?"}) |
         ({Token.string ==~ "Lehre|Ausbildung"} {Token.string ==~ "als|:"})
     )
     ({Token.orth == "upperInitial"}):occ
@@ -62,6 +61,14 @@ Rule: OccupationsLeftTriggered
     (WORKPLACE)?
 ) --> :occ.Occupation = { rule = "OccupationsLeftTriggered" },
       :loc.Occupation = { rule = "OccupationsLeftTriggered" }
+
+Rule: OccupationsRetiredLeftTriggered
+(
+    ( {Token.string ==~ "[Pp]ensionierte[r]?"} {Token.orth == "upperInitial"}):occ
+    (WORKPLACE)?
+) --> :occ.Occupation = { rule = "OccupationsRetiredLeftTriggered" },
+      :loc.Occupation = { rule = "OccupationsRetiredLeftTriggered" }
+
 
 Rule: OccupationsFromGazetteerWorkTriggered
 (
@@ -80,7 +87,7 @@ Rule: OccupationsFromGazetteerWorkTriggered
 
 Rule: OccupationsLeftTriggeredAnamnesis
 (
-     { Token.string ==~ "ehemals"}
+     { Token.string ==~ "[Ee]hemals"}
      ( {Token.orth ==~ "upperInitial|allCaps", Token within {AnamnesisField}}):occ
     (WORKPLACE)?
 ) --> :occ.Occupation = { rule = "OccupationsLeftTriggeredAnamnesis" },
@@ -96,6 +103,13 @@ Rule: OccupationsFromGazetteerRightTriggered
      ):occ
     { Token.string ==~ "((arbeits)?tätig)|gearbeitet"}
 ) --> :occ.Occupation = { rule = "OccupationsFromGazetteerRightTriggered"}
+
+Rule: OccupationsFromGazetteerParenthesis
+(
+    {Token.string == "("}
+    ({Lookup.majorType == "occupation", Lookup within {AnamnesisField}}):occ
+     {Token.string == ")"}
+) --> :occ.Occupation = { rule = "OccupationsFromGazetteerParenthesis"}
 
 Rule: EmployerFromGazetter
 (

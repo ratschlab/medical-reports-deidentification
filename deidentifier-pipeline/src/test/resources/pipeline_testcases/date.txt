@@ -1,6 +1,7 @@
 Date
 
 am <Date day="11" month="1" year="2016" format="dd.MM.yyyy">11.01.2016</Date> zur klinischen Kontrolle in unserer
+Am <Date>26.03</Date>
 seit <Date>22.01.10</Date>:
 seit <Date>5.1.2009</Date>
 seit <Date>5.1.2029</Date>
@@ -23,8 +24,9 @@ MRI Halsgefässe <Date>27.11.</Date> konnte
 bis <Date>10.12</Date> weiter
 am <Date>30.11</Date> um 13:00, am <Date>23.11</Date> um 13:00,
 ab <Date>26.10</Date>,
-<Date>23.11</Date> um
-<Date>23.11</Date> :
+im Vergleich zum <Date>23.01</Date>
+Zwischenfall <Date>23.11</Date> um
+Zwischenfall <Date>23.11</Date> :
 #<Date>24.11</Date>: Bettruhe
 <Date>29. Februar</Date>
 voraussichtlich im <Date>Oktober/November 2016</Date>
@@ -40,6 +42,8 @@ Lungenembolien <Date>02/2014</Date>
 Anfang <Date>Dezember 2021</Date>
 Mitte <Date>Mai</Date>
 Ende <Date>August</Date>
+im <Date>Sept. 2010</Date>
+im <Date>Sept</Date>. wurde
 
 seit <Date>04</Date> 100% IV
 Fraktur, CT <Date>5/11</Date>
@@ -68,10 +72,13 @@ TEMPERATUR von 38.9 Grad Celsius, von 31.3 Grad Celsius
 
 um 2000 Uhr # fp date
 am <Date>22.2</Date> wurde ein Wert von 22.2 mm gemessen
+... Nacht vom <Date>09.08</Date> wurde...
+... Nacht vom <Date>09.08.</Date> wurde...
 ein Wert von 0.5 bla
 am <Date>28.11.</Date> 13.45 Uhr # (date annotated 28.11. 13) TODO
 Gastroskopie <Date>11.2015</Date> #(only 2015 annotated)
-ab dem 13. postoperativen Tag
+#ab dem 13. postoperativen Tag
+Medrol am <Date>12</Date>. abgegeben
 im <Date>Juli</Date>, Im <Date>Juli</Date>,
 im <Date>Dezember 2018</Date> wurde
 Condylomabtragung <Date>03/2011</Date>.\n·	Obstruktives
@@ -79,6 +86,12 @@ Condylomabtragung <Date>03/2011</Date>.\n·	Obstruktives
 in der Nacht vom <Date>28</Date>. verschlechtert
 mehrfach negativ (<Date>05.10</Date>, <Date>16.10</Date>)
 
+> 1.2,
+Score XXX 1.2,
+Wirbelsaeule: -1.2,
+(VAS 10/10)
+-<Date>28.05.2015</Date> 231
+-<Date>12.03.13</Date> stationaer
 1.25 mg
 23/9/14 mmHg
 

@@ -21,7 +21,7 @@ Macro: WORKPLACE
 
 Rule: OccupationsFromGazetteerAnamnesisSentenceAnnotationStart
 (
-    ({ Lookup.majorType == "occupation", Lookup within {AnamnesisField}}): occ
+    ({ Lookup.majorType == "occupation", Lookup within {AnamnesisField}, Token.string !=~ "Rettungsdienst|PTA"}): occ
     (WORKPLACE)?
 )--> :loc.Occupation = { rule = "OccupationsFromGazetteerAnamnesisSentenceAnnotationStart"},
     {

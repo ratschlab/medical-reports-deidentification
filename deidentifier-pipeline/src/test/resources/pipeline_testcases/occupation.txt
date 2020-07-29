@@ -16,4 +16,4 @@ gelernte <Occupation>Malerin</Occupation>
 Lehre als <Occupation>Maler</Occupation>
 vormaliger <Occupation>Maurer</Occupation>
 <Occupation>Pflanzenwissenschaftler</Occupation> oder <Occupation>Pflanzenwissenschaftlerin</Occupation>
-Patient ist Pensionierter <Occupation>Forscher</Occupation>
+Patient ist <Occupation>pensionierter Forscher</Occupation>

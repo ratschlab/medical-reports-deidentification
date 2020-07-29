@@ -11,6 +11,7 @@ Herr Dr. <Name>Öetker</Name>
 Herr Dr. <Name>Max Öetker</Name>
 Herr Dr. <Name firstname="A" lastname="Öetker">A. Öetker</Name>
 Herr Dr. med. <Name firstname="A" lastname="Öetker">A. Öetker</Name>
+Dr. med <Name>Muster</Name>
 <Name>A. Muster</Name>, Assistenzarzt
 <Name>Ä. Muster</Name> Oberärztin
 pract. med. <Name>A. Muster</Name>, Assistenzarzt
@@ -54,7 +55,6 @@ von <Name>Hans Meier</Name>, OA
 Beim Bruder, <Name>Hans Meier</Name>, wurde...
 
 Liebe <Name>Maria</Name>, lieber <Name>Hans-Peter</Name>
-
 # Patients / Others
 <Name>AVERYLONGSURNAME Jean</Name> hello world # gazetteer based
 <Name>A. Meier</Name> hat ...
@@ -96,6 +96,8 @@ wird durch OA <Name>X. Meier</Name> durchgefuehrt
 
 Anwesend: <Name>Meier</Name>, <Name>Muster</Name>, <Name>Muster-Huber</Name>, <Name>Huber</Name>
 <Name>Meier</Name> / <Name>Muster</Name> / <Name>Huber</Name>
+Praxis Dr. <Name>Huber/Meier</Name>
+
 
 erlitt Herr <Name>Muster</Name> Anfang Dezember 2019
 erlitt Herr <Name>M.</Name> Anfang Dezember 2019
