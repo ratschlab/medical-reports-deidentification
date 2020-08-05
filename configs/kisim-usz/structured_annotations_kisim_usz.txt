@@ -50,6 +50,8 @@ ZIMMER; Location; type=address
 /Header/Klinik; Location; type=organisational unit
 Clinic; Location; type=organisational unit
 #Institution; Location; type=organisation
+SENDER; Location; type=organisational unit
+
 
 # DOCTORS/STAFF
 #DisplayName; Name; type=doctor; CodeList
