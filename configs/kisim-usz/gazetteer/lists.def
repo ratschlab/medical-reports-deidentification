@@ -1,4 +1,5 @@
 general/general_wordlist_with_uppercased.lst:general:general
+general/general_wordlist_manual.lst:general:general
 general/stop.lst:stop:stop:german
 general/abbreviations_stop.lst:stop:stop:german
 person_names/firstnames_switzerland_frequent.lst:name:firstname:frequent
