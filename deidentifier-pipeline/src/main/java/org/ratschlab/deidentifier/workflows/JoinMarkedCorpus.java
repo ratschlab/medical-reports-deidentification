@@ -4,17 +4,21 @@ import gate.*;
 import gate.creole.ResourceInstantiationException;
 import gate.persist.PersistenceException;
 import gate.persist.SerialDataStore;
+import org.ratschlab.deidentifier.utils.paths.PathConstraint;
+import org.ratschlab.gate.FilterDocuments;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class JoinMarkedCorpus extends DefaultWorkflowConcern {
-    public JoinMarkedCorpus(File corpusPath, String markedAnnotationName, int threads) {
+    public JoinMarkedCorpus(File corpusPath, String markedAnnotationName, List<PathConstraint> evaluationFieldsBlacklist, int threads) {
         this.markedAnnotationName = markedAnnotationName;
+        this.evaluationBlacklist = evaluationFieldsBlacklist;
 
         markedCorpusDir = IntStream.range(0, threads).
                 mapToObj(x ->
@@ -33,6 +37,7 @@ public class JoinMarkedCorpus extends DefaultWorkflowConcern {
 
     private List<DataStore> markedCorpusDir;
     private String markedAnnotationName;
+    private List<PathConstraint> evaluationBlacklist;
 
     @Override
     public Document preProcessDoc(Document doc) {
@@ -40,7 +45,9 @@ public class JoinMarkedCorpus extends DefaultWorkflowConcern {
     }
 
     @Override
-    public Document postProcessDoc(Document doc) {
+    public Document postProcessDoc(Document docOrig) {
+        Document doc = evaluationBlacklist.isEmpty() ? docOrig : FilterDocuments.filterDocument(docOrig, evaluationBlacklist);
+
         int workerId = (Integer) doc.getFeatures().get(PipelineWorkflow.WORKFLOW_INDEX);
 
         DataStore markedCorpusDs = markedCorpusDir.get(workerId);
@@ -64,6 +71,10 @@ public class JoinMarkedCorpus extends DefaultWorkflowConcern {
                     markedDoc = (Document) Factory.createResource("gate.corpora.DocumentImpl",
                             Utils.featureMap(DataStore.DATASTORE_FEATURE_NAME, markedCorpusDs,
                                     DataStore.LR_ID_FEATURE_NAME, id));
+
+                    if(!evaluationBlacklist.isEmpty()) {
+                        markedDoc = FilterDocuments.filterDocument(markedDoc, evaluationBlacklist);
+                    }
                 } catch (ResourceInstantiationException e) {
                     e.printStackTrace();
                 }

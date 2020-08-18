@@ -14,16 +14,15 @@ import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.sources.ImportCmd;
 import org.ratschlab.deidentifier.sources.KisimSource;
 import org.ratschlab.deidentifier.utils.DbCommands;
+import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.deidentifier.workflows.*;
 import org.ratschlab.gate.GateTools;
 import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Annotate Corpus", name = "annotate")
@@ -47,6 +46,9 @@ public class AnnotationCmd extends DbCommands implements Runnable {
 
     @CommandLine.Option(names = {"--diagnostics-dir"}, description = "Marked Corpus Dir")
     private String diagnosticsDirPath = null;
+
+    @CommandLine.Option(names = {"--fields-blacklist-eval"}, description = "Path to files giving field blacklist used during evaluation")
+    private File fieldsBlacklistPath = null;
 
     @CommandLine.Option(names = {"-t"}, description = "Number of threads")
     private int threads = -1;
@@ -91,7 +93,16 @@ public class AnnotationCmd extends DbCommands implements Runnable {
                 return f;
             });
 
-            markedCorpusDir.map(path -> new JoinMarkedCorpus(path, PHI_ANNOTATION_NAME, threads)).
+            List<PathConstraint> evaluationFieldsBlacklist = Optional.ofNullable(fieldsBlacklistPath).map(f -> {
+                try {
+                    return PathConstraint.loadFieldBlacklistPath(f);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return Collections.<PathConstraint>emptyList();
+            }).orElse(Collections.emptyList());
+
+            markedCorpusDir.map(path -> new JoinMarkedCorpus(path, PHI_ANNOTATION_NAME, evaluationFieldsBlacklist, threads)).
                     ifPresent(w -> concerns.add(w));
 
 

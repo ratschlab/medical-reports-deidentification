@@ -74,20 +74,40 @@ run-reports-kisim-proj-batch3:
 
 run-reports-kisim-proj: run-reports-kisim-proj-batch1 run-reports-kisim-proj-batch2 run-reports-kisim-proj-batch3
 
+
+# ade13 wrt to annotation of annotator I
 run-reports-kisim-ade13:
 	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -d /home/marczim/postgres_ade_delivery_201908.txt -o /home/marczim/data/deid_poc/sets/kisim/processed_kisim_ade13 --diagnostics-dir /home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_rerun -m  /data/share/ade-manual-batch13 --max-docs 200 -t 20 --doc-id-filter ../configs/ade_manual_batch.txt"
 	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_rerun/evaluation/corpus-stats.html	
 	python scripts/convert_ml_features_to_parquet.py ~/data/deid_poc/sets/kisim/diagnostics_ade13_rerun/ml-features.json
 
+
+# ade13 wrt to gold standard (annotator I and II)
 run-reports-kisim-ade13-gold:
 	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -d /home/marczim/postgres_ade_delivery_201908.txt -o /home/marczim/data/deid_poc/sets/kisim/processed_kisim_ade13_gold --diagnostics-dir /home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_gold_rerun -m /data/share/gold_standard_annotation_partA --max-docs 200 -t 20 --doc-id-filter ../configs/ade_manual_batch.txt"
 	python scripts/convert_ml_features_to_parquet.py ~/data/deid_poc/sets/kisim/diagnostics_ade13_gold_rerun/ml-features.json
 	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_gold_rerun/evaluation/corpus-stats.html	
 
+
+# excluding addressfields to see change in location performance 
+run-reports-kisim-ade13-gold-no-addr:
+	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -d /home/marczim/postgres_ade_delivery_201908.txt -o /home/marczim/data/deid_poc/sets/kisim/processed_kisim_ade13_gold_no_addr --diagnostics-dir /home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_gold_no_addr -m /data/share/gold_standard_annotation_partA --max-docs 200 -t 20 --doc-id-filter ../configs/ade_manual_batch.txt --fields-blacklist-eval ../configs/addr_field_blacklist.txt"
+	python scripts/convert_ml_features_to_parquet.py ~/data/deid_poc/sets/kisim/diagnostics_ade13_gold_no_addr/ml-features.json
+	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade13_gold_no_addr/evaluation/corpus-stats.html
+
+
+# ade14 wrt to annotation of annotator I
+run-reports-kisim-ade14:
+	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -d /home/marczim/postgres_ade_delivery_201908.txt -o /home/marczim/data/deid_poc/sets/kisim/processed_kisim_ade14 --diagnostics-dir /home/marczim/data/deid_poc/sets/kisim/diagnostics_ade14_rerun -m /data/share/ade-manual-batch14 --skip-docs 200 --max-docs 200 -t 20 --doc-id-filter ../configs/ade_manual_batch.txt"
+	python scripts/convert_ml_features_to_parquet.py ~/data/deid_poc/sets/kisim/diagnostics_ade14_rerun/ml-features.json
+	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade14_rerun/evaluation/corpus-stats.html
+
+
+# ade14 wrt to gold standard (annotator I and II)
 run-reports-kisim-ade14-gold:
 	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -d /home/marczim/postgres_ade_delivery_201908.txt -o /home/marczim/data/deid_poc/sets/kisim/processed_kisim_ade14_gold --diagnostics-dir /home/marczim/data/deid_poc/sets/kisim/diagnostics_ade14_gold_rerun -m /data/share/gold_standard_annotation_partB --skip-docs 200 --max-docs 200 -t 20 --doc-id-filter ../configs/ade_manual_batch.txt"
 	python scripts/convert_ml_features_to_parquet.py ~/data/deid_poc/sets/kisim/diagnostics_ade14_gold_rerun/ml-features.json
-	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade14_gold_rerun/evaluation/corpus-stats.html	
+	firefox file:///home/marczim/data/deid_poc/sets/kisim/diagnostics_ade14_gold_rerun/evaluation/corpus-stats.html
 
 
 run-reports-kisim-small-train:

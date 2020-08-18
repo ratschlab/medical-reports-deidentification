@@ -1,0 +1,13 @@
+AddrLine
+Addressor
+Adressat
+Adressliste
+Institution
+Klinik
+Land
+Ort
+PLZ
+PatAdr
+PatInfo
+PatPersonalien
+Patpersonalien
