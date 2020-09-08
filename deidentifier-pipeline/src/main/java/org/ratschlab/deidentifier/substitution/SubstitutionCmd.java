@@ -159,6 +159,7 @@ public class SubstitutionCmd implements Runnable {
             new SimpleDateFormat("dd.MM.yy"), new SimpleDateFormat("dd.MM.yyyy"),
             new SimpleDateFormat("MM/yy"), new SimpleDateFormat("MM/yyyy"), new SimpleDateFormat("M/yyyy"),
             new SimpleDateFormat("MM.yyyy"), new SimpleDateFormat("dd.MM."),
+            new SimpleDateFormat("d.MM."), new SimpleDateFormat("dd.MM"), new SimpleDateFormat("d.MM"),
             new SimpleDateFormat("yyyy"), new SimpleDateFormat("M yyyy"));
     public static void attemptExtractDate(Annotation an, Document doc) {
         FeatureMap feat = an.getFeatures();
