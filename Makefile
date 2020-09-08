@@ -160,7 +160,7 @@ zip-distribution:
 	cp -r configs/kisim-usz $(STAGING)/
 	cp -r deployment/* $(STAGING)
 
-	unix2dos -n scripts/pipeline.ps1 $(STAGING)/pipeline.ps1
+	unix2dos -n scripts/example_pipeline.ps1 $(STAGING)/example_pipeline.ps1
 	cp deidentifier-pipeline/target/deidentifier-0.1-SNAPSHOT.jar $(STAGING)/lib
 
 	unix2dos $(STAGING)/*.txt $(STAGING)/*.bat
