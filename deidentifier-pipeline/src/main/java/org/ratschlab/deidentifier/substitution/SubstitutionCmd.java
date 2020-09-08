@@ -114,19 +114,23 @@ public class SubstitutionCmd implements Runnable {
 
             List<PathConstraint> fieldBlacklist = this.fieldsBlacklistPath != null ? PathConstraint.loadFieldBlacklistPath(this.fieldsBlacklistPath) : Collections.emptyList();
 
-            WorkflowConcern sink;
+            List<WorkflowConcern> sinks = new ArrayList<>();
 
             Function<Document, String> kisim2Json = d -> new KisimFormat().documentToJson(d);
             if(outputDir != null) {
-                sink = new WriteDocsToFiles(outputDir, kisim2Json, d -> String.format("%s.json", d.getName()));
-            } else if(databaseConfigPath != null) {
-                sink = new WriteDocsToDatabase(new KisimSource(databaseConfigPath), kisim2Json);
-            } else {
+                sinks.add(new WriteDocsToFiles(outputDir, kisim2Json, d -> String.format("%s.json", d.getName())));
+            }
+
+            if(databaseConfigPath != null) {
+                sinks.add(new WriteDocsToDatabase(new KisimSource(databaseConfigPath), kisim2Json));
+            }
+
+            if(outputDir == null && databaseConfigPath == null) {
                 throw new IllegalArgumentException("-o and --db-config cannot be both undefined!");
             }
 
             concerns.add(new SubstituteAndWrite(new DeidentificationSubstitution(finalAnnotationName, substFactory, true, fieldBlacklist),
-                    sink));
+                    sinks));
 
             Set<String> docIds = loadDocTypeSet(docTypeFilterPath);
 
