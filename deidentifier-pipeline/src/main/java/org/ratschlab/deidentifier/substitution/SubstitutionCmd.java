@@ -118,7 +118,7 @@ public class SubstitutionCmd implements Runnable {
 
             Function<Document, String> kisim2Json = d -> new KisimFormat().documentToJson(d);
             if(outputDir != null) {
-                sinks.add(new WriteDocsToFiles(outputDir, kisim2Json, d -> String.format("%s.json", d.getName())));
+                sinks.add(new WriteDocsToFiles(outputDir, kisim2Json, d -> String.format("%s.json", d.getName().replaceAll("\\|", "_"))));
             }
 
             if(databaseConfigPath != null) {
