@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.typesafe.config.Config;
 import gate.Corpus;
 import gate.Document;
+import gate.Factory;
 import gate.Gate;
 import gate.creole.SerialAnalyserController;
 import gate.util.Benchmark;
@@ -130,7 +131,12 @@ public class AnnotationCmd extends DbCommands implements Runnable {
 
                 PipelineWorkflow<Document> workflow = new PipelineWorkflow<>(
                         inputCorpus.stream(),
-                        d -> Optional.of(GateTools.copyDocument(d)),
+                        d -> {
+                            Document copy = GateTools.copyDocument(d);
+                            inputCorpus.unloadDocument(d);
+                            Factory.deleteResource(d);
+                            return Optional.of(copy);
+                        },
                         myController,
                         threads,
                         concerns);

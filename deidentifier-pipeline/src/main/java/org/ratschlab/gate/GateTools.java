@@ -259,21 +259,28 @@ public class GateTools {
     }
 
     public static Document copyDocument(Document origDoc) {
-        DocumentImpl doc = new DocumentImpl();
-        doc.setFeatures(origDoc.getFeatures());
-        doc.setContent(new DocumentContentImpl(origDoc.getContent().toString()));
-        doc.setPreserveOriginalContent(origDoc.getPreserveOriginalContent());
-        doc.setMarkupAware(origDoc.getMarkupAware());
+        try {
+            Document doc = Factory.newDocument("");
 
-        doc.setName(origDoc.getName());
+            doc.setFeatures(origDoc.getFeatures());
+            doc.setContent(new DocumentContentImpl(origDoc.getContent().toString()));
+            doc.setPreserveOriginalContent(origDoc.getPreserveOriginalContent());
+            doc.setMarkupAware(origDoc.getMarkupAware());
 
-        for (String an : origDoc.getAnnotationSetNames()) {
-            AnnotationSet as = origDoc.getAnnotations(an);
-            doc.getAnnotations(an).addAll(as);
+            doc.setName(origDoc.getName());
+
+            for (String an : origDoc.getAnnotationSetNames()) {
+                AnnotationSet as = origDoc.getAnnotations(an);
+                doc.getAnnotations(an).addAll(as);
+            }
+
+            doc.getAnnotations().addAll(origDoc.getAnnotations());
+
+            return doc;
+        } catch (ResourceInstantiationException e) {
+            e.printStackTrace();
         }
 
-        doc.getAnnotations().addAll(origDoc.getAnnotations());
-
-        return doc;
+        return null;
     }
 }
