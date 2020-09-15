@@ -81,12 +81,15 @@ public class PipelineWorkflow<I> {
         Source<Document, NotUsed> workflow = buildWorkflow();
 
         final AtomicInteger docCnt = new AtomicInteger(0);
-        final CompletionStage<Done> done = workflow.runForeach(doc -> {
+        final CompletionStage<Done> completion = workflow.runForeach(doc -> {
 
             int cnt = docCnt.addAndGet(1);
 
-            if (cnt % 100 == 0) {
-                log.info("Processed " + cnt + " Documents");
+            if (cnt % 10 == 0) {
+                double megaBytes = java.lang.Math.pow(1024, 2);
+                Runtime r = Runtime.getRuntime();
+                String usage = String.format("Memory usage: %dMB/%dMB", (int) ((r.maxMemory() - r.freeMemory())/megaBytes), (int) (r.maxMemory()/megaBytes));
+                log.info(String.format("Processed %d Documents. %s", cnt, usage));
             }
 
             Factory.deleteResource(doc);
@@ -95,7 +98,13 @@ public class PipelineWorkflow<I> {
 
         log.info(String.format("Executing using %d pipeline runners", nrParallelGatePipelines));
 
-        done.thenRun(() -> {
+        completion.exceptionally(e -> {
+            log.error("Unhandled exception in stream", e);
+            system.terminate();
+            return Done.done();
+        });
+
+        completion.thenRun(() -> {
             log.info("Processed total" + docCnt.get() + " Documents");
 
             doneHooks.forEach(r -> {
@@ -122,6 +131,7 @@ public class PipelineWorkflow<I> {
                     SerialAnalyserController localController = nrParallelGatePipelines > 1 ? (SerialAnalyserController) Factory.duplicate(gatePipelineController) : gatePipelineController;
 
                     Flow<I, Optional<Document>, NotUsed> preprocessDocsOpt =  Flow.fromFunction(input -> docConversion.apply(input));
+
                     Flow<I, Document, NotUsed> preprocessDocs = preprocessDocsOpt.
                             filter(od -> od.isPresent()).
                             map(od -> {
