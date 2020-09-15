@@ -1,6 +1,7 @@
 package org.ratschlab.deidentifier.workflows;
 
 import gate.Document;
+import gate.Factory;
 import org.ratschlab.deidentifier.substitution.SubstitutionStrategy;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class SubstituteAndWrite extends DefaultWorkflowConcern {
             writer.postProcessDoc(substDoc);
         }
 
+        Factory.deleteResource(substDoc);
         return doc; //returning original document on purpose!
     }
 

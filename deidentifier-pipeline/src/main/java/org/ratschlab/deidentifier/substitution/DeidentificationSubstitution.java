@@ -34,6 +34,8 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
             // TODO: factor out to different concern
             Document origDoc = FilterDocuments.filterDocument(rawDoc, filterTags);
 
+            Factory.deleteResource(rawDoc);
+
             AnnotationSet markups = origDoc.getAnnotations(Gate.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
             String phiAnnotationsCopyName = "phiAnnotationsCopy";
@@ -82,6 +84,7 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
 
                 substDoc.setFeatures(origDoc.getFeatures());
 
+                Factory.deleteResource(origDoc);
                 return substDoc;
             } catch (Exception ex) {
                 ex.printStackTrace();
