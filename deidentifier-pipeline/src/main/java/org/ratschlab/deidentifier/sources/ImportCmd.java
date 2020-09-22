@@ -9,6 +9,7 @@ import gate.util.GateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.utils.DbCommands;
+import org.ratschlab.deidentifier.utils.StdOutErrLog;
 import org.ratschlab.gate.GateTools;
 import picocli.CommandLine;
 
@@ -34,6 +35,7 @@ public class ImportCmd extends DbCommands implements Runnable {
     private File corpusOutputDir = null;
 
     public static void main(String[] args) {
+        StdOutErrLog.tieSystemOutAndErrToLog();
         CommandLine.run(new ImportCmd(), args);
     }
 

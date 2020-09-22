@@ -15,6 +15,7 @@ import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.sources.ImportCmd;
 import org.ratschlab.deidentifier.sources.KisimSource;
 import org.ratschlab.deidentifier.utils.DbCommands;
+import org.ratschlab.deidentifier.utils.StdOutErrLog;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.deidentifier.workflows.*;
 import org.ratschlab.gate.GateTools;
@@ -57,6 +58,7 @@ public class AnnotationCmd extends DbCommands implements Runnable {
     public static final String PHI_ANNOTATION_NAME = "phi-annotations";
     
     public static void main(String[] args) {
+        StdOutErrLog.tieSystemOutAndErrToLog();
         CommandLine.run(new AnnotationCmd(), args);
     }
 

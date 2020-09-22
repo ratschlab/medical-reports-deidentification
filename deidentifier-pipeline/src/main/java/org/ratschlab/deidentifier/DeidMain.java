@@ -4,6 +4,7 @@ import org.ratschlab.deidentifier.dev.DiagnosticsCmd;
 import org.ratschlab.deidentifier.pipelines.testing.PipelineTesterCmd;
 import org.ratschlab.deidentifier.sources.ImportCmd;
 import org.ratschlab.deidentifier.substitution.SubstitutionCmd;
+import org.ratschlab.deidentifier.utils.StdOutErrLog;
 import picocli.CommandLine;
 
 @CommandLine.Command(mixinStandardHelpOptions = true, description = "Deid entry point", name = "Deid", version="deid dev",
@@ -23,6 +24,7 @@ public class DeidMain implements Runnable {
     }
 
     public static void main(String[] args) {
+        StdOutErrLog.tieSystemOutAndErrToLog();
         CommandLine.run(new DeidMain(), args);
     }
 }
