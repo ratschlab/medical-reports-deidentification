@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class KisimSource {
-    private static final Logger log = Logger.getLogger(KisimSource.class);
 
+    private static final Logger log = Logger.getLogger(KisimSource.class);
     private Connection conn;
 
     private String readSqlQuery;
@@ -30,22 +30,41 @@ public class KisimSource {
     private String destTable;
     private Set<String> destColumns;
 
+    private static final String JDBC_URL_KEY = "jdbc_url";
+    private static final String JSON_FIELD_NAME_KEY = "json_field_name";
+    public static final String REPORT_TYPE_ID_NAME_KEY = "report_type_id_name";
+    public static final String REPORTID_FIELD_NAME_KEY = "reportid_field_name";
+    public static final String QUERY_KEY = "query";
+
+    private static final Set<String> mandatoryFields = new HashSet<>(Arrays.asList(JDBC_URL_KEY, JSON_FIELD_NAME_KEY,
+        REPORT_TYPE_ID_NAME_KEY, REPORTID_FIELD_NAME_KEY, QUERY_KEY));
+
     public KisimSource(File propertiesFile) throws IOException, SQLException {
         Properties props = new Properties();
 
         log.info("Reading database config from " + propertiesFile.getAbsolutePath());
         props.load(new FileInputStream(propertiesFile));
 
-        conn = DriverManager.getConnection(props.getProperty("jdbc_url"), props);
+        for(String field : mandatoryFields) {
+            if(props.getProperty(field) == null) {
+                throw new IllegalArgumentException(String.format("Field %s is missing in file %s", field, propertiesFile.getAbsolutePath()));
+            }
+        }
 
-        contentFieldName = props.getProperty("json_field_name").toUpperCase();
-        reportIdFieldName = props.getProperty("reportid_field_name").toUpperCase();
-        reportTypeIdName = props.getProperty("report_type_id_name").toUpperCase();
+        conn = DriverManager.getConnection(props.getProperty(JDBC_URL_KEY), props);
+
+        contentFieldName = props.getProperty(JSON_FIELD_NAME_KEY).toUpperCase();
+        reportIdFieldName = props.getProperty(REPORTID_FIELD_NAME_KEY).toUpperCase();
+        reportTypeIdName = props.getProperty(REPORT_TYPE_ID_NAME_KEY).toUpperCase();
 
         destTable = props.getProperty("dest_table", "");
 
-        destColumns = Arrays.stream(props.getProperty("dest_columns", "").split(",")).map(s -> s.trim().toUpperCase()).collect(Collectors.toSet());
-        readSqlQuery = props.getProperty("query").toUpperCase();
+        destColumns = Arrays.stream(props.getProperty("dest_columns", "")
+            .split(","))
+            .map(s -> s.trim().toUpperCase())
+            .collect(Collectors.toSet());
+        
+        readSqlQuery = props.getProperty(QUERY_KEY).toUpperCase();
     }
 
     public Stream<Map<String, Object>> readRecords() {

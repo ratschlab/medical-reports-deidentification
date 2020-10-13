@@ -3,7 +3,7 @@ user=sa
 password=sa
 query=SELECT DAT,CONTENT,FCODE,REPORTNR,additional_col FROM sample_reports
 json_field_name=CONTENT
-rsseportid_field_name=REPORTNR
+reportid_field_name=REPORTNR
 report_type_id_name=FCODE
 date_field_name=DAT
 
