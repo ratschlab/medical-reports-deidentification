@@ -135,7 +135,6 @@ public class AnnotationCmd extends DbCommands implements Runnable {
                         inputCorpus.stream(),
                         d -> {
                             Document copy = GateTools.copyDocument(d);
-                            inputCorpus.unloadDocument(d);
                             Factory.deleteResource(d);
                             return Optional.of(copy);
                         },
