@@ -38,14 +38,14 @@ public class KisimSource {
 
         conn = DriverManager.getConnection(props.getProperty("jdbc_url"), props);
 
-        contentFieldName = props.getProperty("json_field_name");
-        reportIdFieldName = props.getProperty("reportid_field_name");
-        reportTypeIdName = props.getProperty("report_type_id_name");
+        contentFieldName = props.getProperty("json_field_name").toUpperCase();
+        reportIdFieldName = props.getProperty("reportid_field_name").toUpperCase();
+        reportTypeIdName = props.getProperty("report_type_id_name").toUpperCase();
 
         destTable = props.getProperty("dest_table", "");
-        destColumns = new HashSet(Arrays.asList(props.getProperty("dest_columns", "").split(",")));
 
-        readSqlQuery = props.getProperty("query");
+        destColumns = Arrays.stream(props.getProperty("dest_columns", "").split(",")).map(s -> s.trim().toUpperCase()).collect(Collectors.toSet());
+        readSqlQuery = props.getProperty("query").toUpperCase();
     }
 
     public Stream<Map<String, Object>> readRecords() {
@@ -92,12 +92,14 @@ public class KisimSource {
             colNameList.add(contentFieldName);
 
             List<String> colVals = new ArrayList<>();
-            colVals.add(content.replace("'", "''"));
+            colVals.add(String.format("'%s'", content.replace("'", "''")));
 
             additionalCols.forEach((k, v) -> {
-                if (destColumns.contains(k.toString())) {
+                if (destColumns.contains(k.toString().toUpperCase())) {
                     colNameList.add(k.toString());
-                    colVals.add(v.toString().replace("'", "''"));
+
+                    String colVal = v != null ? String.format("'%s'", v.toString().replace("'", "''")) : "NULL";
+                    colVals.add(colVal);
                 }
             });
 
@@ -109,10 +111,10 @@ public class KisimSource {
                 colVals.add("");
             });
 
-            String query = String.format("INSERT INTO %s (%s) VALUES ('%s')",
+            String query = String.format("INSERT INTO %s (%s) VALUES (%s)",
                     destTable,
                     colNameList.stream().collect(Collectors.joining(",")),
-                    colVals.stream().collect(Collectors.joining("','"))
+                    colVals.stream().collect(Collectors.joining(","))
             );
 
             st.addBatch(query);

@@ -1,0 +1,12 @@
+jdbc_url=jdbc:h2:mem:default
+user=sa
+password=sa
+query=SELECT DAT,CONTENT,FCODE,REPORTNR,additional_col FROM sample_reports
+json_field_name=CONTENT
+rsseportid_field_name=REPORTNR
+report_type_id_name=FCODE
+date_field_name=DAT
+
+# for writing back
+dest_table=processed_reports
+dest_columns=CONTENT,REPORTNR,fcode, DAT,additional_col

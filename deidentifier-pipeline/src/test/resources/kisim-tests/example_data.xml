@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sample_reports reportnr="1" additional_col="sample value" dat="2020-10-02" fcode="EXAMPLE" content="{}"/>
+    <sample_reports reportnr="2" dat="2020-10-02" fcode="EXAMPLE" content="{}"/>
+</dataset>
