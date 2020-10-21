@@ -147,7 +147,8 @@ public class GateTools {
         List<File> storesExisting = stores.stream().filter(f -> new File(f, docSubDirName).exists()).collect(Collectors.toList());
 
         if(storesExisting.isEmpty()) {
-            throw new IllegalArgumentException("stores was empty. Expect at least one element");
+            throw new IllegalArgumentException(String.format("Stores were all empty in. Expect at least one element. Stores: %s",
+                stores.stream().map(f -> f.getAbsolutePath()).collect(Collectors.joining(","))));
         }
 
         int nrDocsOrig = storesExisting.stream().
