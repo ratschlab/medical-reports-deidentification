@@ -67,6 +67,7 @@ public class WriteToSerializedCorpus extends DefaultWorkflowConcern {
         doc.getFeatures().remove(PipelineWorkflow.WORKFLOW_INDEX);
 
         corpus.add(doc);
+        corpus.unloadDocument(doc); // also writes document to disk
         return doc;
     }
 
