@@ -12,19 +12,23 @@ import gate.creole.Plugin;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
-import org.apache.log4j.Logger;
 import org.ratschlab.gate.GateTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PipelineUtils {
 
-    private static final Logger LOGGER = Logger.getLogger(PipelineUtils.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PipelineUtils.class.getName());
 
     // make class instance
     public static String DEFAULT_ENCODING = "UTF-8";

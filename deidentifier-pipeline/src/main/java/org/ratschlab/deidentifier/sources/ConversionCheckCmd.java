@@ -5,8 +5,9 @@ import gate.Document;
 import gate.Gate;
 import gate.util.GateException;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.utils.DbCommands;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 @CommandLine.Command(mixinStandardHelpOptions = true, description = "Roundtrip test between JSON <--> GATE format", name = "conversioncheck")
 public class ConversionCheckCmd extends DbCommands implements Runnable {
 
-    private static final Logger log = Logger.getLogger(ConversionCheckCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(ConversionCheckCmd.class);
 
     @CommandLine.Option(names = {"-o"}, description = "Writing out error cases", required = true)
     private File outfile = null;
@@ -46,14 +47,14 @@ public class ConversionCheckCmd extends DbCommands implements Runnable {
 
                     return !checkConversion(p.getLeft(), p.getRight(), out);
                 } catch (IOException e) {
-                    log.error(e);
+                    log.error("Exception thrown", e);
                     return true;
                 }
             }).count();
 
             log.info(String.format("Checked %d documents, found %d errors (see details in %s)", cnt.get(), errorCnt, outfile.getAbsolutePath()));
         } catch(GateException | IOException | SQLException ex) {
-            log.error(ex);
+            log.error("Exception thrown", ex);
         }
     }
 

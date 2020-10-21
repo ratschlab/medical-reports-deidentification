@@ -8,7 +8,8 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.util.stream.StreamSupport;
         name = "Trigger Based Context Annotator",
         comment = "Annotates contexts based on trigger words")
 public class TriggerBasedContextAnnotator extends AbstractLanguageAnalyser {
-    private static final Logger log = Logger.getLogger(AbstractLanguageAnalyser.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractLanguageAnalyser.class);
 
     /**
      * Annotation set name from which this PR will take its input annotations.

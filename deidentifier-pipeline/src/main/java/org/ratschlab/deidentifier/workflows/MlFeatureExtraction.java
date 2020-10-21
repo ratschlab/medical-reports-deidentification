@@ -9,7 +9,6 @@ import gate.AnnotationSet;
 import gate.Document;
 import gate.FeatureMap;
 import org.apache.commons.io.FileUtils;
-import scala.concurrent.java8.FuturesConvertersImpl;
 
 import java.io.File;
 import java.io.IOException;

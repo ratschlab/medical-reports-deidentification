@@ -2,7 +2,8 @@ package org.ratschlab.deidentifier.pipelines.testing;
 
 import gate.Gate;
 import gate.util.GateException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 @CommandLine.Command(description = "Tests a pipeline", name = "test")
 public class PipelineTesterCmd implements Runnable {
-    private static final Logger log = Logger.getLogger(PipelineTesterCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(PipelineTesterCmd.class);
 
     @CommandLine.Parameters(index = "0", description = "Pipeline Configuration File")
     private File pipelineConfigFile;

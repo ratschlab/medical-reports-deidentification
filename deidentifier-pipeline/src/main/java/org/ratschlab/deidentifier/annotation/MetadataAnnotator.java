@@ -7,7 +7,8 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ import java.util.Set;
         name = "Metadata Annotator",
         comment = "Annotates tokens based on previous metadata")
 public class MetadataAnnotator extends AbstractLanguageAnalyser {
-    private static final Logger log = Logger.getLogger(MetadataAnnotator.class);
+    private static final Logger log = LoggerFactory.getLogger(MetadataAnnotator.class);
 
     /**
      * Annotation set name from which this PR will take its input annotations.

@@ -1,6 +1,9 @@
 package org.ratschlab.deidentifier.substitution;
 
-import gate.*;
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Document;
+import gate.GateConstants;
 import gate.corpora.DocumentContentImpl;
 import gate.corpora.DocumentImpl;
 import gate.util.InvalidOffsetException;

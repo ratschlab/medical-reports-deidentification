@@ -4,10 +4,10 @@ import gate.*;
 import gate.creole.ResourceInstantiationException;
 import gate.util.InvalidOffsetException;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PipelineTestSuite {
-    private static final Logger log = Logger.getLogger(PipelineTestSuite.class);
+    private static final Logger log = LoggerFactory.getLogger(PipelineTestSuite.class);
 
     public static final String LINE_NR_KEY = "linenr";
     public static final String DUMMY_TAG = "dummy";

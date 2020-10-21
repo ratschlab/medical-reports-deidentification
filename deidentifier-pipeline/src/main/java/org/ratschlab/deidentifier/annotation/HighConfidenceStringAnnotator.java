@@ -8,7 +8,8 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.util.InvalidOffsetException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
         name = "HighConfidenceStringAnnotator",
         comment = "Annotates Substrings based on high confidence annotations")
 public class HighConfidenceStringAnnotator extends AbstractLanguageAnalyser {
-    private static final Logger log = Logger.getLogger(HighConfidenceStringAnnotator.class);
+    private static final Logger log = LoggerFactory.getLogger(HighConfidenceStringAnnotator.class);
 
 
     /**

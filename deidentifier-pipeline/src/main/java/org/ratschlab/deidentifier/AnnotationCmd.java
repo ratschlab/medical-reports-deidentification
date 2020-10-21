@@ -10,26 +10,25 @@ import gate.Gate;
 import gate.creole.SerialAnalyserController;
 import gate.util.Benchmark;
 import gate.util.GateException;
-import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.sources.ImportCmd;
 import org.ratschlab.deidentifier.sources.KisimSource;
 import org.ratschlab.deidentifier.utils.DbCommands;
-import org.ratschlab.deidentifier.utils.StdOutErrLog;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.deidentifier.workflows.*;
 import org.ratschlab.gate.GateTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Annotate Corpus", name = "annotate")
 public class AnnotationCmd extends DbCommands implements Runnable {
-    private static final Logger log = Logger.getLogger(AnnotationCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(AnnotationCmd.class);
 
     @CommandLine.Option(names = {"-i"}, description = "Input corpus dir")
     private String corpusInputDirPath = null;
@@ -56,9 +55,9 @@ public class AnnotationCmd extends DbCommands implements Runnable {
     private int threads = -1;
 
     public static final String PHI_ANNOTATION_NAME = "phi-annotations";
-    
+
     public static void main(String[] args) {
-        StdOutErrLog.tieSystemOutAndErrToLog();
+        org.ratschlab.util.Utils.tieSystemOutAndErrToLog();
         CommandLine.run(new AnnotationCmd(), args);
     }
 

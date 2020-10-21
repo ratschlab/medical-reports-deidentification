@@ -11,7 +11,8 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.util.InvalidOffsetException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
         name = "AdjustSentenceBoundaries",
         comment = "Adjust Sentence Boundaries, s.t. it doesn go over fields")
 public class AdjustSentenceBoundaries extends AbstractLanguageAnalyser {
-    private static final Logger log = Logger.getLogger(AdjustSentenceBoundaries.class);
+    private static final Logger log = LoggerFactory.getLogger(AdjustSentenceBoundaries.class);
 
     /**
      * Annotation set name from which this PR will take its input annotations.

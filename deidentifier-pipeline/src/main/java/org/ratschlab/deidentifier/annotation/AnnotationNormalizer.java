@@ -5,13 +5,14 @@ import gate.*;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import gate.creole.metadata.*;
 import gate.creole.metadata.Optional;
+import gate.creole.metadata.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
         name = "AnnotationNormalizer",
         comment = "Adds annotation syonyoms")
 public class AnnotationNormalizer extends AbstractLanguageAnalyser {
-    private static final Logger log = Logger.getLogger(AnnotationNormalizer.class);
+    private static final Logger log = LoggerFactory.getLogger(AnnotationNormalizer.class);
 
     private static final String tmpAnnotationName = "__AnnotationNormalizer_Temp_Annotation";
 

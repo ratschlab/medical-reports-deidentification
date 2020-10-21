@@ -3,7 +3,8 @@ package org.ratschlab.deidentifier.sources;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +19,7 @@ import java.util.stream.Stream;
 
 public class KisimSource {
 
-    private static final Logger log = Logger.getLogger(KisimSource.class);
+    private static final Logger log = LoggerFactory.getLogger(KisimSource.class);
     private Connection conn;
 
     private String readSqlQuery;
@@ -63,7 +64,7 @@ public class KisimSource {
             .split(","))
             .map(s -> s.trim().toUpperCase())
             .collect(Collectors.toSet());
-        
+
         readSqlQuery = props.getProperty(QUERY_KEY).toUpperCase();
     }
 

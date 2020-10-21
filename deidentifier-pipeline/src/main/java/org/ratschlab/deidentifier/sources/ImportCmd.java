@@ -7,10 +7,11 @@ import gate.Gate;
 import gate.persist.PersistenceException;
 import gate.util.GateException;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.utils.DbCommands;
-import org.ratschlab.deidentifier.utils.StdOutErrLog;
 import org.ratschlab.gate.GateTools;
+import org.ratschlab.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -29,13 +30,13 @@ import java.util.stream.Stream;
 @CommandLine.Command(description = "Import reports from database", name = "import")
 public class ImportCmd extends DbCommands implements Runnable {
 
-    private static final Logger log = Logger.getLogger(ImportCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(ImportCmd.class);
 
     @CommandLine.Option(names = {"-o"}, description = "Output corpus dir", required = true)
     private File corpusOutputDir = null;
 
     public static void main(String[] args) {
-        StdOutErrLog.tieSystemOutAndErrToLog();
+        Utils.tieSystemOutAndErrToLog();
         CommandLine.run(new ImportCmd(), args);
     }
 

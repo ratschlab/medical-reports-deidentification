@@ -10,8 +10,9 @@ import gate.Factory;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
-import org.apache.log4j.Logger;
 import org.ratschlab.gate.GateTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class PipelineWorkflow<I> {
-    private static final Logger log = org.apache.log4j.Logger.getLogger(PipelineWorkflow.class);
+    private static final Logger log = LoggerFactory.getLogger(PipelineWorkflow.class);
 
     public PipelineWorkflow(Stream<I> docSource, Function<I, Optional<Document>> docConversion,
                             List<Function<Document, Document>> preprocessing,

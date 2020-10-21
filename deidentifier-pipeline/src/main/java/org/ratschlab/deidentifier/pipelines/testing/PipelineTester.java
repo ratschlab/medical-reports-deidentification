@@ -6,11 +6,12 @@ import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
-import org.apache.log4j.Logger;
 import org.junit.jupiter.api.function.Executable;
 import org.ratschlab.deidentifier.ConfigUtils;
 import org.ratschlab.deidentifier.pipelines.PipelineConfigKeys;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import static org.hamcrest.number.OrderingComparison.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class PipelineTester {
-    private static final Logger log = Logger.getLogger(PipelineTester.class);
+    private static final Logger log = LoggerFactory.getLogger(PipelineTester.class);
 
     private SerialAnalyserController pipeline;
     private String finalOutputAs;

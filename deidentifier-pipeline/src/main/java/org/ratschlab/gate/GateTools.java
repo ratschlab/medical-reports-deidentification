@@ -2,7 +2,6 @@ package org.ratschlab.gate;
 
 import gate.*;
 import gate.corpora.DocumentContentImpl;
-import gate.corpora.DocumentImpl;
 import gate.corpora.SerialCorpusImpl;
 import gate.creole.AnnotationSchema;
 import gate.creole.ExecutionException;
@@ -12,7 +11,8 @@ import gate.persist.PersistenceException;
 import gate.persist.SerialDataStore;
 import gate.util.GateException;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GateTools {
-    private static final Logger log = Logger.getLogger(GateTools.class);
+    private static final Logger log = LoggerFactory.getLogger(GateTools.class);
 
     public static Optional<Document> readDocumentFromFile(File f)  {
         try {

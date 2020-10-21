@@ -1,15 +1,16 @@
 package org.ratschlab.deidentifier.substitution;
 
 import gate.FeatureMap;
-import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.annotation.FeatureKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.DateTimeException;
 import java.time.Period;
 import java.util.Random;
 
 public class DateShiftSubstitution extends ScrubberSubstitution {
-    private static final Logger log = Logger.getLogger(DateShiftSubstitution.class);
+    private static final Logger log = LoggerFactory.getLogger(DateShiftSubstitution.class);
 
     public long randomSeed;
     public int defaultYear;

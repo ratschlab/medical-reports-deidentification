@@ -1,13 +1,16 @@
 package org.ratschlab.deidentifier.annotation;
 
 import com.google.common.collect.ImmutableMap;
-import gate.*;
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Document;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.RunTime;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.Int;
 
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.stream.Collectors;
         comment = "Removes annotations overlapping")
 public class RemoveOverlappingAnnotations extends AbstractLanguageAnalyser {
 
-    private static final Logger log = Logger.getLogger(RemoveOverlappingAnnotations.class);
+    private static final Logger log = LoggerFactory.getLogger(RemoveOverlappingAnnotations.class);
 
     /**
      * Annotation set name from which this PR will take its input annotations.

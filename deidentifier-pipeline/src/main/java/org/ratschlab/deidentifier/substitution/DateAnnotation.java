@@ -1,9 +1,10 @@
 package org.ratschlab.deidentifier.substitution;
 
 import gate.FeatureMap;
-import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.annotation.FeatureKeys;
 import org.ratschlab.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class DateAnnotation {
-    private static final Logger log = Logger.getLogger(DateAnnotation.class);
+    private static final Logger log = LoggerFactory.getLogger(DateAnnotation.class);
 
     private String format;
     private LocalDate date;

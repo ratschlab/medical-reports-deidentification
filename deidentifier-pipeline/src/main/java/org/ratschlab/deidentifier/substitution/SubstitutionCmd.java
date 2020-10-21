@@ -4,24 +4,20 @@ import com.google.common.collect.ImmutableList;
 import gate.*;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.log4j.Logger;
 import org.ratschlab.deidentifier.annotation.FeatureKeys;
-import org.ratschlab.deidentifier.sources.KisimFormat;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
+import org.ratschlab.deidentifier.sources.KisimFormat;
 import org.ratschlab.deidentifier.sources.KisimSource;
-import org.ratschlab.deidentifier.utils.StdOutErrLog;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.deidentifier.workflows.*;
 import org.ratschlab.gate.GateTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.sql.SQLException;
@@ -34,7 +30,7 @@ import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Apply Substitution to Annotated Corpus", name = "substitute")
 public class SubstitutionCmd implements Runnable {
-    private static final Logger log = Logger.getLogger(SubstitutionCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(SubstitutionCmd.class);
 
     @CommandLine.Parameters(index = "0", description = "Corpus Dir")
     private File annotatedCorpusDir;
@@ -82,7 +78,7 @@ public class SubstitutionCmd implements Runnable {
     // TODO: add strats option
 
     public static void main(String[] args) {
-        StdOutErrLog.tieSystemOutAndErrToLog();
+        org.ratschlab.util.Utils.tieSystemOutAndErrToLog();
         CommandLine.run(new SubstitutionCmd(), args);
     }
 

@@ -9,7 +9,6 @@ import org.ratschlab.gate.FilterDocuments;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

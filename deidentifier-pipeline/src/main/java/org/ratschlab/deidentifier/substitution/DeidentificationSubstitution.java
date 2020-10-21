@@ -7,7 +7,6 @@ import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.gate.FilterDocuments;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;

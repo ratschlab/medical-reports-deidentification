@@ -6,7 +6,8 @@ import gate.creole.ExecutionException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.RunTime;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
         comment = "Annotates tokens based on previous metadata")
 public class AnnotationCleanup extends AbstractLanguageAnalyser {
 
-    private static final Logger log = Logger.getLogger(AnnotationNormalizer.class);
+    private static final Logger log = LoggerFactory.getLogger(AnnotationNormalizer.class);
 
     /**
      * Annotation set name from which this PR will take its input annotations.
