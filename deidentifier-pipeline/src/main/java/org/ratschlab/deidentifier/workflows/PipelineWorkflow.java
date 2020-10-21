@@ -108,13 +108,16 @@ public class PipelineWorkflow<I> {
         completion.thenRun(() -> {
             log.info("Processed total" + docCnt.get() + " Documents");
 
-            doneHooks.forEach(r -> {
+            try {
+                doneHooks.forEach(r -> {
                     r.run();
-            });
-
-            log.info("terminating");
-            // TODO delete worker dirs!
-            system.terminate();
+                });
+            } catch(RuntimeException e) {
+                log.error("Error during done hooks", e);
+            } finally {
+                log.info("terminating");
+                system.terminate();
+            }
         });
     }
 
