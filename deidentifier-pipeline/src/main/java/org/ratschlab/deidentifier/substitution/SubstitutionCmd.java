@@ -24,12 +24,13 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Apply Substitution to Annotated Corpus", name = "substitute")
-public class SubstitutionCmd implements Runnable {
+public class SubstitutionCmd implements Callable<Integer> {
     private static final Logger log = LoggerFactory.getLogger(SubstitutionCmd.class);
 
     @CommandLine.Parameters(index = "0", description = "Corpus Dir")
@@ -79,7 +80,7 @@ public class SubstitutionCmd implements Runnable {
 
     public static void main(String[] args) {
         org.ratschlab.util.Utils.tieSystemOutAndErrToLog();
-        CommandLine.run(new SubstitutionCmd(), args);
+        System.exit(CommandLine.call(new SubstitutionCmd(), args));
     }
 
     public static Set<String> loadDocTypeSet(File path) throws IOException {
@@ -90,7 +91,7 @@ public class SubstitutionCmd implements Runnable {
     }
 
     @Override
-    public void run() {
+    public Integer call() {
         // TODO: really?
         if(outputDir != null && outputDir.exists()) {
             try {
@@ -145,11 +146,16 @@ public class SubstitutionCmd implements Runnable {
             workflow.run();
         } catch (GateException| MalformedURLException e) {
             e.printStackTrace();
+            return 1;
         } catch(IOException e) {
             e.printStackTrace();
+            return 1;
         } catch (SQLException e) {
             e.printStackTrace();
+            return 1;
         }
+
+        return 0;
     }
 
     private static final List<SimpleDateFormat> dateFormats = ImmutableList.of(new SimpleDateFormat("dd.M.yy"),

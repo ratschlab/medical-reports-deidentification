@@ -22,13 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Import reports from database", name = "import")
-public class ImportCmd extends DbCommands implements Runnable {
+public class ImportCmd extends DbCommands implements Callable<Integer> {
 
     private static final Logger log = LoggerFactory.getLogger(ImportCmd.class);
 
@@ -37,12 +39,11 @@ public class ImportCmd extends DbCommands implements Runnable {
 
     public static void main(String[] args) {
         Utils.tieSystemOutAndErrToLog();
-        CommandLine.run(new ImportCmd(), args);
+        System.exit(CommandLine.call(new ImportCmd(), args));
     }
 
     @Override
-    public void run() {
-
+    public Integer call() {
         try {
             Gate.init();
 
@@ -60,10 +61,14 @@ public class ImportCmd extends DbCommands implements Runnable {
             Corpus corpus = GateTools.getOutputCorpus(corpusOutputDir);
             corpus.setName("All_reports");
 
+            final AtomicInteger docCnt = new AtomicInteger(0);
             docs.forEach(d -> {
                 corpus.add(d);
                 corpus.unloadDocument(d);
+                docCnt.incrementAndGet();
             });
+
+            log.info("Loaded {} documents.", docCnt.get());
 
             try {
                 corpus.sync();
@@ -77,8 +82,10 @@ public class ImportCmd extends DbCommands implements Runnable {
 
         } catch (IOException | GateException | SQLException e) {
             e.printStackTrace();
+            return 1;
         }
 
+        return 0;
     }
 
     public static Stream<Map<String, Object>> documentRecordsStream(KisimSource ks, Optional<String> docTypeFilterPath, Optional<String> docIdFilterPath) {

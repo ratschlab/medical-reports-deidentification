@@ -74,8 +74,7 @@ public class PipelineWorkflow<I> {
 
     private List<Runnable> doneHooks;
 
-
-    public void run(){
+    public void run() {
         final ActorSystem system = ActorSystem.create("Gate-Streams-Pipeline");
         final Materializer materializer = ActorMaterializer.create(system);
 
@@ -96,7 +95,6 @@ public class PipelineWorkflow<I> {
             Factory.deleteResource(doc);
         }, materializer);
 
-
         log.info(String.format("Executing using %d pipeline runners", nrParallelGatePipelines));
 
         completion.exceptionally(e -> {
@@ -105,22 +103,23 @@ public class PipelineWorkflow<I> {
             return Done.done();
         });
 
-        completion.thenRun(() -> {
+        CompletionStage<Void> stage = completion.thenRun(() -> {
             log.info("Processed total" + docCnt.get() + " Documents");
 
             try {
                 doneHooks.forEach(r -> {
                     r.run();
                 });
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 log.error("Error during done hooks", e);
             } finally {
                 log.info("terminating");
                 system.terminate();
             }
         });
-    }
 
+        stage.toCompletableFuture().join();
+    }
 
     private Source<Document, NotUsed> buildWorkflow() {
 

@@ -8,9 +8,10 @@ import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 @CommandLine.Command(description = "Tests a pipeline", name = "test")
-public class PipelineTesterCmd implements Runnable {
+public class PipelineTesterCmd implements Callable<Integer> {
     private static final Logger log = LoggerFactory.getLogger(PipelineTesterCmd.class);
 
     @CommandLine.Parameters(index = "0", description = "Pipeline Configuration File")
@@ -20,11 +21,11 @@ public class PipelineTesterCmd implements Runnable {
     private File testCasesDirectory;
 
     public static void main(String[] args) {
-        CommandLine.run(new PipelineTesterCmd(), args);
+        System.exit(CommandLine.call(new PipelineTesterCmd(), args));
     }
 
     @Override
-    public void run() {
+    public Integer call() {
         try {
             Gate.init();
 
@@ -42,8 +43,12 @@ public class PipelineTesterCmd implements Runnable {
             }
         } catch (GateException e) {
             e.printStackTrace();
+            return 1;
         } catch (IOException e) {
             e.printStackTrace();
+            return 1;
         }
+
+        return 0;
     }
 }

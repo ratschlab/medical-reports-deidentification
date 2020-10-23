@@ -15,11 +15,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @CommandLine.Command(mixinStandardHelpOptions = true, description = "Roundtrip test between JSON <--> GATE format", name = "conversioncheck")
-public class ConversionCheckCmd extends DbCommands implements Runnable {
+public class ConversionCheckCmd extends DbCommands implements Callable<Integer> {
 
     private static final Logger log = LoggerFactory.getLogger(ConversionCheckCmd.class);
 
@@ -27,7 +28,7 @@ public class ConversionCheckCmd extends DbCommands implements Runnable {
     private File outfile = null;
 
     @Override
-    public void run() {
+    public Integer call() {
         try {
             Gate.init();
 
@@ -55,7 +56,10 @@ public class ConversionCheckCmd extends DbCommands implements Runnable {
             log.info(String.format("Checked %d documents, found %d errors (see details in %s)", cnt.get(), errorCnt, outfile.getAbsolutePath()));
         } catch(GateException | IOException | SQLException ex) {
             log.error("Exception thrown", ex);
+            return 1;
         }
+
+        return 0;
     }
 
     public static boolean checkConversion(String docId, String kisimJson, PrintStream out) throws IOException {
@@ -89,6 +93,6 @@ public class ConversionCheckCmd extends DbCommands implements Runnable {
     }
 
     public static void main(String[] args) {
-        CommandLine.run(new ConversionCheckCmd(), args);
+        System.exit(CommandLine.call(new ConversionCheckCmd(), args));
     }
 }

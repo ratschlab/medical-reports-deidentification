@@ -24,10 +24,11 @@ import picocli.CommandLine;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Annotate Corpus", name = "annotate")
-public class AnnotationCmd extends DbCommands implements Runnable {
+public class AnnotationCmd extends DbCommands implements Callable<Integer> {
     private static final Logger log = LoggerFactory.getLogger(AnnotationCmd.class);
 
     @CommandLine.Option(names = {"-i"}, description = "Input corpus dir")
@@ -58,14 +59,14 @@ public class AnnotationCmd extends DbCommands implements Runnable {
 
     public static void main(String[] args) {
         org.ratschlab.util.Utils.tieSystemOutAndErrToLog();
-        CommandLine.run(new AnnotationCmd(), args);
+        System.exit(CommandLine.call(new AnnotationCmd(), args));
     }
 
     @Override
-    public void run() {
+    public Integer call() {
         if(corpusInputDirPath == null && databaseConfigPath == null) {
             System.err.println("Need at least -i or -d");
-            System.exit(1);
+            return 1;
         }
 
         try {
@@ -174,9 +175,13 @@ public class AnnotationCmd extends DbCommands implements Runnable {
             }
         } catch (GateException e) {
             e.printStackTrace();
+            return 1;
         } catch (Exception e) {
             e.printStackTrace();
+            return 1;
         }
+
+        return 0;
     }
 
 }
