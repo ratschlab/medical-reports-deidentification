@@ -142,8 +142,8 @@ public class PipelineUtils {
         String schemaUrlDirResolved = resolvePath(schemaUrlDir);
         List<AnnotationSchema> schemas = annotationTypes.stream().map(s -> {
             try {
-                return GateTools.loadSchema(new URL(schemaUrlDirResolved + File.separator + s.toLowerCase() + ".xml"));
-            } catch (IOException | ResourceInstantiationException e) {
+                return GateTools.loadSchema(new URL(schemaUrlDirResolved + "/" + s.toLowerCase() + ".xml"));
+            } catch (IOException | ResourceInstantiationException | URISyntaxException e) {
                 e.printStackTrace();
             }
             return null;

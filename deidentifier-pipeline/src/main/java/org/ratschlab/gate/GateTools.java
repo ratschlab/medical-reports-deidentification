@@ -3,10 +3,7 @@ package org.ratschlab.gate;
 import gate.*;
 import gate.corpora.DocumentContentImpl;
 import gate.corpora.SerialCorpusImpl;
-import gate.creole.AnnotationSchema;
-import gate.creole.ExecutionException;
-import gate.creole.ResourceInstantiationException;
-import gate.creole.SerialAnalyserController;
+import gate.creole.*;
 import gate.persist.PersistenceException;
 import gate.persist.SerialDataStore;
 import gate.util.GateException;
@@ -17,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
@@ -241,9 +239,9 @@ public class GateTools {
         });
     }
 
-    public static AnnotationSchema loadSchema(URL masterFileUrl) throws ResourceInstantiationException, IOException {
+    public static AnnotationSchema loadSchema(URL masterFileUrl) throws ResourceInstantiationException, URISyntaxException {
         FeatureMap features = Factory.newFeatureMap();
-        features.put("xmlFileUrl", masterFileUrl);
+        features.put("xmlFileUrl", new ResourceReference(masterFileUrl));
 
         return (AnnotationSchema) Factory.createResource("gate.creole.AnnotationSchema", features);
     }
