@@ -115,8 +115,8 @@ public class KisimSource {
             colVals.add(String.format("'%s'", content.replace("'", "''")));
 
             additionalCols.forEach((k, v) -> {
-                if (destColumns.contains(k.toString().toUpperCase())) {
-                    colNameList.add(k.toString());
+                if (destColumns.contains(k.toString().toUpperCase()) && !colNameList.contains(k.toString().toUpperCase())) {
+                    colNameList.add(k.toString().toUpperCase());
 
                     String colVal = v != null ? String.format("'%s'", v.toString().replace("'", "''")) : "NULL";
                     colVals.add(colVal);
@@ -128,7 +128,7 @@ public class KisimSource {
 
             emptyCols.forEach(s -> {
                 colNameList.add(s);
-                colVals.add("");
+                colVals.add("''");
             });
 
             String query = String.format("INSERT INTO %s (%s) VALUES (%s)",
