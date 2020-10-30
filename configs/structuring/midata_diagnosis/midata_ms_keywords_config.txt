@@ -1,0 +1,2 @@
+#icd10-code;keywords
+G35;Multiple Sklerose,Multipler Sklerose,Multipler Sklerosis,Multiple Sklerosis,MS,Encephalomyelitis disseminata

@@ -43,5 +43,14 @@
         <RESOURCE>
             <CLASS>org.ratschlab.deidentifier.annotation.TriggerBasedContextAnnotator</CLASS>
         </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.structuring.KeywordAnnotator</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.structuring.AnnotationConsolidation</CLASS>
+        </RESOURCE>
+
     </CREOLE>
 </CREOLE-DIRECTORY>

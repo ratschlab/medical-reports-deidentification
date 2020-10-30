@@ -1,0 +1,4 @@
+Diagnosis
+
+Verdacht auf <Diagnosis code="G35" rank="suspected">Multiple Sklerosis</Diagnosis>
+Patientin leidet an <Diagnosis code="G35" rank="confirmed">MS</Diagnosis>

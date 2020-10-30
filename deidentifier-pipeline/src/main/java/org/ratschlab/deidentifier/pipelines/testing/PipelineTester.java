@@ -10,6 +10,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.ratschlab.deidentifier.ConfigUtils;
 import org.ratschlab.deidentifier.pipelines.PipelineConfigKeys;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
+import org.ratschlab.structuring.KeywordBasedDiagnosisExtraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +30,27 @@ public class PipelineTester {
     private SerialAnalyserController pipeline;
     private String finalOutputAs;
 
+    public enum PipelineType {
+        Deidentification, DiagnosisExtraction
+    }
+
     public PipelineTester(File configFile) throws GateException {
+        this(configFile, PipelineType.Deidentification);
+    }
+
+    public PipelineTester(File configFile, PipelineType type) throws GateException {
         Config conf = ConfigUtils.loadConfig(configFile);
-        this.pipeline = PipelineFactory.getRuleBasedPipeline(conf);
+
+        switch(type) {
+            case Deidentification: {
+                this.pipeline = PipelineFactory.getRuleBasedPipeline(conf);
+                break;
+            }
+            case DiagnosisExtraction:
+                this.pipeline = KeywordBasedDiagnosisExtraction.getExtractionPipeline(conf);
+                break;
+        }
+
         this.finalOutputAs = conf.getString(PipelineConfigKeys.FINAL_ANNOTATION_SET_NAME);
     }
 
@@ -55,7 +74,7 @@ public class PipelineTester {
 
             int setSize = cands.size();
 
-            String line = gate.Utils.stringFor(doc, doc.getAnnotations());
+            String line = doc.getContent().toString();
 
             String errorLine = line.substring(0, a.getStartNode().getOffset().intValue()) +
                         "~" + Utils.cleanStringFor(doc, a) + "~" +

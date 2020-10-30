@@ -20,6 +20,9 @@ public class PipelineTesterCmd implements Callable<Integer> {
     @CommandLine.Parameters(index = "1", description = "Testcases Directory")
     private File testCasesDirectory;
 
+    @CommandLine.Option(names = {"--pipeline"}, description = "Pipeline: ${COMPLETION-CANDIDATES}", defaultValue = "Deidentification")
+    private PipelineTester.PipelineType pipelineType = null;
+
     public static void main(String[] args) {
         System.exit(CommandLine.call(new PipelineTesterCmd(), args));
     }
@@ -33,7 +36,7 @@ public class PipelineTesterCmd implements Callable<Integer> {
                     pipelineConfigFile.getAbsolutePath(),
                     testCasesDirectory.getAbsolutePath()));
 
-            PipelineTester ts = new PipelineTester(pipelineConfigFile);
+            PipelineTester ts = new PipelineTester(pipelineConfigFile, pipelineType);
 
             if(testCasesDirectory.isDirectory()) {
                 ts.runAllTestcases(testCasesDirectory);

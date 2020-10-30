@@ -1,0 +1,16 @@
+Phase: DiagnosisCertainty
+Input: Token Diagnosis
+Options: control=appelt
+
+/*
+Rule: AllDiag
+(
+    ({ Dia }) :tok
+) --> :tok.Diagnosis2 = { rule = "SuspectedDiagnosis", rank = "all" }
+*/
+
+Rule: SuspectedDiagnosis
+(
+    { Token.string == "Verdacht" } { Token.string == "auf"}
+    (({Diagnosis})+):diag
+) --> :diag.Diagnosis = { rule = "SuspectedDiagnosis", rank = "suspected", code = :diag.Diagnosis.code }
