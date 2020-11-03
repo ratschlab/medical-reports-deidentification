@@ -42,7 +42,7 @@ public class WriteAnnotationsToTxt extends WorkflowConcernWithQueue<String> {
                 List<String> fields = new ArrayList<>(Arrays.asList(docId,
                         r.getAnnotationText().replaceAll(colSep, "SEP"),
                         r.getCode(),
-                        r.getRank()
+                        r.getReliability()
                 ));
 
                 return fields.stream().collect(Collectors.joining(colSep));
@@ -54,7 +54,7 @@ public class WriteAnnotationsToTxt extends WorkflowConcernWithQueue<String> {
     @Override
     protected void queueFlushAction(List<String> batch, boolean firstFlush) {
         if(firstFlush) {
-            String header = Arrays.asList("docId", "annotationText", "code", "rank").stream().collect(Collectors.joining(colSep));
+            String header = Arrays.asList("docId", "annotationText", "code", "reliability").stream().collect(Collectors.joining(colSep));
             outStream.println(header);
         }
 

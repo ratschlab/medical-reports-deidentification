@@ -2,7 +2,7 @@ Phase: DiagnosisCertainty
 Input: Diagnosis
 Options: control=appelt
 
-Rule: DefaultRank
+Rule: DefaultReliability
 (
-    ({Diagnosis.rank == ""}):diag
-) --> :diag.Diagnosis = { rule = "DefaultRank", rank = "confirmed", :diag.Diagnosis}
+    ({Diagnosis.reliability == ""}):diag
+) --> :diag.Diagnosis = { rule = "DefaultReliability", reliability = "confirmed", :diag.Diagnosis}

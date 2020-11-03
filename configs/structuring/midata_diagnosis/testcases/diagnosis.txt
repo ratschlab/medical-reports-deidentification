@@ -1,6 +1,7 @@
 Diagnosis; Fragestellung Addressor Header
 
-Verdacht auf <Diagnosis code="G35" rank="suspected">Multiple Sklerosis</Diagnosis>
-Patientin leidet an <Diagnosis code="G35" rank="confirmed">MS</Diagnosis>
+Verdacht auf <Diagnosis code="G35" reliability="suspected">Multiple Sklerosis</Diagnosis>
+Patientin leidet an <Diagnosis code="G35" reliability="confirmed">MS</Diagnosis>
 <Fragestellung>Abklaerung auf Verdacht auf Multiple Sklerose</Fragestellung>
 <Header><Addressor>Multiple Sklerose</Addressor></Header>
+

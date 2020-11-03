@@ -59,24 +59,24 @@ public class AnnotationConsolidation extends AbstractLanguageAnalyser {
 
         toRemove.forEach(a -> inputAS.remove(a));
 
-        // if no rank has been determined, use confirmed as default rank
+        // if no reliability has been determined, use confirmed as default reliability
         inputAS.get("Diagnosis").stream().
-            filter(a -> !a.getFeatures().containsKey("rank")).
-            forEach(a -> a.getFeatures().put("rank", "confirmed"));
+            filter(a -> !a.getFeatures().containsKey("reliability")).
+            forEach(a -> a.getFeatures().put("reliability", "confirmed"));
 
         doc.getFeatures().put(ANNOTATIONS_OUTPUT_FIELD_KEY, outputFields(doc, inputAS));
 
     }
 
     private boolean shouldBeRemoved(Annotation annot, AnnotationSet inputAS) {
-        if(annot.getFeatures().containsKey("rank")) {
+        if(annot.getFeatures().containsKey("reliability")) {
             return false;
         }
 
         AnnotationSet overlaps  = inputAS.get("Diagnosis", annot.getStartNode().getOffset(), annot.getEndNode().getOffset());
 
-        // keep other with a rank
-        return overlaps.stream().anyMatch(a -> a.getFeatures().containsKey("rank"));
+        // keep other with a reliability
+        return overlaps.stream().anyMatch(a -> a.getFeatures().containsKey("reliability"));
     }
 
     private List<DiagnosisAnnotationRecord> outputFields(Document doc, AnnotationSet as) {
@@ -87,8 +87,8 @@ public class AnnotationConsolidation extends AbstractLanguageAnalyser {
 
                     return new DiagnosisAnnotationRecord(annotText,
                             m.getOrDefault("code", "").toString(),
-                            m.getOrDefault("rank", "").toString());
-                }).collect(Collectors.groupingBy(f -> f.getCode() + f.getRank()));
+                            m.getOrDefault("reliability", "").toString());
+                }).collect(Collectors.groupingBy(f -> f.getCode() + f.getReliability()));
 
         return records.entrySet().stream().map(e->e.getValue().get(0)).collect(Collectors.toList());
     }

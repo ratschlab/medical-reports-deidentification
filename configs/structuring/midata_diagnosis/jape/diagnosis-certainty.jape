@@ -6,11 +6,11 @@ Options: control=appelt
 Rule: AllDiag
 (
     ({ Dia }) :tok
-) --> :tok.Diagnosis2 = { rule = "SuspectedDiagnosis", rank = "all" }
+) --> :tok.Diagnosis2 = { rule = "SuspectedDiagnosis", reliability = "all" }
 */
 
 Rule: SuspectedDiagnosis
 (
     { Token.string == "Verdacht" } { Token.string == "auf"}
     (({Diagnosis})+):diag
-) --> :diag.Diagnosis = { rule = "SuspectedDiagnosis", rank = "suspected", code = :diag.Diagnosis.code }
+) --> :diag.Diagnosis = { rule = "SuspectedDiagnosis", reliability = "suspected", code = :diag.Diagnosis.code }
