@@ -12,13 +12,15 @@ import gate.creole.metadata.RunTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CreoleResource(
     name = "Annotation Consolidation",
     comment = "Cleans up Annotations")
 public class AnnotationConsolidation extends AbstractLanguageAnalyser {
+
+    public static final String ANNOTATIONS_OUTPUT_FIELD_KEY = "output_fields";
 
     private static final Logger log = LoggerFactory.getLogger(AnnotationConsolidation.class);
 
@@ -61,6 +63,9 @@ public class AnnotationConsolidation extends AbstractLanguageAnalyser {
         inputAS.get("Diagnosis").stream().
             filter(a -> !a.getFeatures().containsKey("rank")).
             forEach(a -> a.getFeatures().put("rank", "confirmed"));
+
+        doc.getFeatures().put(ANNOTATIONS_OUTPUT_FIELD_KEY, outputFields(doc, inputAS));
+
     }
 
     private boolean shouldBeRemoved(Annotation annot, AnnotationSet inputAS) {
@@ -73,4 +78,19 @@ public class AnnotationConsolidation extends AbstractLanguageAnalyser {
         // keep other with a rank
         return overlaps.stream().anyMatch(a -> a.getFeatures().containsKey("rank"));
     }
+
+    private List<DiagnosisAnnotationRecord> outputFields(Document doc, AnnotationSet as) {
+        Map<String, List<DiagnosisAnnotationRecord>> records = as.get("Diagnosis").stream().
+                map(a -> {
+                    FeatureMap m = a.getFeatures();
+                    String annotText = gate.Utils.cleanStringFor(doc, a);
+
+                    return new DiagnosisAnnotationRecord(annotText,
+                            m.getOrDefault("code", "").toString(),
+                            m.getOrDefault("rank", "").toString());
+                }).collect(Collectors.groupingBy(f -> f.getCode() + f.getRank()));
+
+        return records.entrySet().stream().map(e->e.getValue().get(0)).collect(Collectors.toList());
+    }
+
 }

@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,25 +32,22 @@ public class WriteAnnotationsToTxt extends WorkflowConcernWithQueue<String> {
     }
 
     @Override
-    public Document postProcessMergedDoc(Document doc) {
-        doc.getAnnotations(annotationSetName).get("Diagnosis").stream().
-            map(a -> {
-                FeatureMap m = a.getFeatures();
+    public Document postProcessDoc(Document doc) {
+        List<DiagnosisAnnotationRecord> records = (List<DiagnosisAnnotationRecord>) doc.getFeatures().get(AnnotationConsolidation.ANNOTATIONS_OUTPUT_FIELD_KEY);
 
-                String docId = getDocId.apply(doc);
-                String annotText = gate.Utils.cleanStringFor(doc, a).replaceAll(colSep, "SEP");
+        if(records != null) {
+            String docId = getDocId.apply(doc);
 
-                List<String> fields = new ArrayList<>(Arrays.asList(
-                    docId,
-                    annotText));
-
-                List<String> fieldNames = Arrays.asList("code", "rank");
-
-                fields.addAll(fieldNames.stream().map(k -> m.getOrDefault(k, "").toString()).collect(Collectors.toList()));
+            records.stream().map(r -> {
+                List<String> fields = new ArrayList<>(Arrays.asList(docId,
+                        r.getAnnotationText().replaceAll(colSep, "SEP"),
+                        r.getCode(),
+                        r.getRank()
+                ));
 
                 return fields.stream().collect(Collectors.joining(colSep));
             }).forEach(s -> this.addToQueue(s));
-
+        }
         return doc;
     }
 

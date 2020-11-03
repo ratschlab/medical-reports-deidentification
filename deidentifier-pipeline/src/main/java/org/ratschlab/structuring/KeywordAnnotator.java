@@ -1,29 +1,25 @@
 package org.ratschlab.structuring;
 
-import com.google.common.collect.Lists;
 import gate.*;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.metadata.*;
+import gate.creole.metadata.Optional;
 import gate.util.InvalidOffsetException;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.ratschlab.deidentifier.annotation.AnnotationNormalizer;
-import org.ratschlab.deidentifier.annotation.NormalizationEntry;
+import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @CreoleResource(
     name = "KeywordAnnotator",
@@ -77,48 +73,57 @@ public class KeywordAnnotator extends AbstractLanguageAnalyser {
         this.outputASName = outputASName;
     }
 
-    public Map<Pattern, List<String>> getPatternDict() {
+    public Map<Pattern, List<KeywordAnnotatorCfgRecord>> getPatternDict() {
         return patternDict;
     }
 
-    private Map<Pattern, List<String>> patternDict;
+    private Map<Pattern, List<KeywordAnnotatorCfgRecord>> patternDict;
 
     // make it sharable, s.t. it gets duplicated when the PR gets duplicated
     @Sharable
-    public void setPatternDict(Map<Pattern, List<String>> patternDict) {
+    public void setPatternDict(Map<Pattern, List<KeywordAnnotatorCfgRecord>> patternDict) {
         this.patternDict = patternDict;
     }
 
     @Override
     public Resource init() throws ResourceInstantiationException {
-        File f = org.ratschlab.deidentifier.annotation.Utils.createFileFromUrlOrPath(configPath);
-        try {
-            setPatternDict(this.parseConfigFile(f));
-        } catch(IOException e) {
-            throw new ResourceInstantiationException(e);
+        if(configPath != null) {
+            File f = org.ratschlab.deidentifier.annotation.Utils.createFileFromUrlOrPath(configPath);
+            try {
+                setPatternDict(this.parseConfigFile(f));
+            } catch (IOException e) {
+                throw new ResourceInstantiationException(e);
+            }
         }
 
-        return this;
+        return super.init();
     }
     // TODO: keyword map
     // in principle a gazetter, but could become more complex with inclusion and exclusion lists.
 
-    public static  Map<Pattern,  List<String>> parseConfigFile(File f) throws IOException {
+    public static  Map<Pattern, List<KeywordAnnotatorCfgRecord>> parseConfigFile(File f) throws IOException {
         log.info(String.format("Reading keyword annotation file from %s", f.getAbsoluteFile()));
 
         CSVParser records = CSVParser.parse(f, Charset.defaultCharset(), CSVFormat.newFormat(';').withCommentMarker('#'));
 
-        Map<Pattern, List<String>>  ret = new HashMap<>();
+        Map<Pattern, List<KeywordAnnotatorCfgRecord>>  ret = new HashMap<>();
 
         for(CSVRecord r : records) {
             if (r.size() <= 1) {
                 continue;
             }
 
+            List<PathConstraint> path = new ArrayList<>();
+            if(r.size() > 2) {
+                String paths = r.get(2);
+
+                path = Arrays.stream(paths.split(",")).map(p -> PathConstraint.constructPath(p)).collect(Collectors.toList());
+            }
+
             for(String keyword : r.get(1).split(",")) {
                 Pattern pat = Pattern.compile(keyword.trim());
 
-                List<String> lst;
+                List<KeywordAnnotatorCfgRecord> lst;
                 if(ret.containsKey(pat)) {
                     lst = ret.get(pat);
                 } else {
@@ -126,7 +131,7 @@ public class KeywordAnnotator extends AbstractLanguageAnalyser {
                     ret.put(pat, lst);
                 }
 
-                lst.add(r.get(0).trim());
+                lst.add(new KeywordAnnotatorCfgRecord(r.get(0).trim(), path));
             }
         }
 
@@ -144,25 +149,35 @@ public class KeywordAnnotator extends AbstractLanguageAnalyser {
         // java
 
         String content = doc.getContent().toString();
-        for(Map.Entry<Pattern, List<String>> e : this.patternDict.entrySet()) {
+        for(Map.Entry<Pattern, List<KeywordAnnotatorCfgRecord>> e : this.patternDict.entrySet()) {
             Pattern keyword = e.getKey();
-            List<String> diagnosis = e.getValue();
+            List<KeywordAnnotatorCfgRecord> rec = e.getValue();
 
             Matcher keywordMatcher = keyword.matcher(content);
 
             while (keywordMatcher.find()) {
-                for(String d : diagnosis) {
+                for(KeywordAnnotatorCfgRecord r : rec) {
                     FeatureMap featureMap = Factory.newFeatureMap();
-                    featureMap.put("code", d);
+                    featureMap.put("code", r.getCode());
                     // TODO: rule or source feature
+                    Integer id = null;
                     try {
-
-                        // TODO: check
-
-                        outputAS.add((long) keywordMatcher.start(), (long) keywordMatcher.end(), "Diagnosis", featureMap);
+                       id = outputAS.add((long) keywordMatcher.start(), (long) keywordMatcher.end(), "Diagnosis", featureMap);
                     } catch (InvalidOffsetException ex) {
                         ex.printStackTrace();
                     }
+
+                    if(id != null) {
+                        Annotation a = outputAS.get(id);
+
+                        if(r.getBlacklistPath().stream().anyMatch(p ->
+                                PathConstraint.parentConstraintsValid(doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME), a,
+                                        p.getExpectedParents(), Collections.EMPTY_SET))) {
+                            outputAS.remove(a);
+                        }
+                    }
+
+
                 }
 
                 keywordMatcher.start();

@@ -2,6 +2,7 @@ package org.ratschlab.deidentifier.workflows;
 
 import gate.Corpus;
 import gate.Document;
+import gate.Factory;
 import gate.persist.PersistenceException;
 import gate.util.GateException;
 import org.apache.commons.io.FileUtils;
@@ -68,6 +69,9 @@ public class WriteToSerializedCorpus extends DefaultWorkflowConcern {
 
         corpus.add(doc);
         corpus.unloadDocument(doc); // also writes document to disk
+
+        Factory.deleteResource(doc);
+        //return null;
         return doc;
     }
 
