@@ -147,6 +147,7 @@ public class KeywordAnnotator extends AbstractLanguageAnalyser {
         AnnotationSet inputAS = doc.getAnnotations(inputASName);
         AnnotationSet outputAS = doc.getAnnotations(outputASName);
         // java
+        AnnotationSet tokens = inputAS.get("Token");
 
         String content = doc.getContent().toString();
         for(Map.Entry<Pattern, List<KeywordAnnotatorCfgRecord>> e : this.patternDict.entrySet()) {
@@ -159,7 +160,7 @@ public class KeywordAnnotator extends AbstractLanguageAnalyser {
                 for(KeywordAnnotatorCfgRecord r : rec) {
                     FeatureMap featureMap = Factory.newFeatureMap();
                     featureMap.put("code", r.getCode());
-                    // TODO: rule or source feature
+                    featureMap.put("rule", "KeywordAnnotator");
                     Integer id = null;
                     try {
                        id = outputAS.add((long) keywordMatcher.start(), (long) keywordMatcher.end(), "Diagnosis", featureMap);
@@ -169,6 +170,14 @@ public class KeywordAnnotator extends AbstractLanguageAnalyser {
 
                     if(id != null) {
                         Annotation a = outputAS.get(id);
+
+                        // needs to be a full token
+                        List<Annotation> as = gate.Utils.getOverlappingAnnotations(tokens , a).stream().filter(o -> o.withinSpanOf(a)).collect(Collectors.toList());
+
+                        if(as.isEmpty()) {
+                            outputAS.remove(a);
+                            continue;
+                        }
 
                         if(r.getBlacklistPath().stream().anyMatch(p ->
                                 PathConstraint.parentConstraintsValid(doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME), a,

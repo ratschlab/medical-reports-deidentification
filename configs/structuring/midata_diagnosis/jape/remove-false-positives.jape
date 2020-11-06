@@ -1,0 +1,18 @@
+Phase: RemoveFalsePositives
+Input: Token Diagnosis
+Options: control=appelt
+
+Rule: RemoveFalsePositiveDiagnosis
+(
+    ({Diagnosis}):diag
+    (
+        ({ Token.string == "\"" } | ( { Token.string == "\\" } { Token.string == "\"" } ))?
+        ({ Token.string == "-" })?
+        (
+            { Token.string ==~ "Abklärung|Sprechstunde" }
+        )
+    )
+) --> {
+    Annotation an = bindings.get("diag").iterator().next();
+    gate.Utils.getOverlappingAnnotations(inputAS, an).get("Diagnosis").forEach(a -> outputAS.remove(a));
+}

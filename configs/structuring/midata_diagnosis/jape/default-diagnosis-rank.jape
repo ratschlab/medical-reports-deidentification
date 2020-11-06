@@ -1,8 +1,0 @@
-Phase: DiagnosisCertainty
-Input: Diagnosis
-Options: control=appelt
-
-Rule: DefaultReliability
-(
-    ({Diagnosis.reliability == ""}):diag
-) --> :diag.Diagnosis = { rule = "DefaultReliability", reliability = "confirmed", :diag.Diagnosis}

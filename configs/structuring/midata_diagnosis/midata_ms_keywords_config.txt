@@ -1,2 +1,2 @@
 #icd10-code;keywords;blacklist_paths
-G35;Multiple Sklerose,Multipler Sklerose,Multipler Sklerosis,Multiple Sklerosis,MS,Encephalomyelitis disseminata,McDonald,EDSS;Header,Fragestellung,Adresse,Sprechstunde,FORMNAME
+G35;Multiple Sklerose,Multipler Sklerose,Multipler Sklerosis,Multiple Sklerosis,multiplen Sklerose,MS,Encephalomyelitis disseminata,Encephalitis disseminata,Enzephalitis disseminata,McDonald,EDSS;Header,Fragestellung,Adresse,Sprechstunde,FORMNAME
