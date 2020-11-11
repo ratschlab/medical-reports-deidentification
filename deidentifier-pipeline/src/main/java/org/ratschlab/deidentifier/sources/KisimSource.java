@@ -28,6 +28,10 @@ public class KisimSource {
     private String reportIdFieldName;
     private String reportTypeIdName;
 
+    private Optional<String> annotationTextFieldName;
+    private Optional<String> reliabilityFieldName;
+    private Optional<String> codeFieldName;
+
     private String destTable;
     private Set<String> destColumns;
 
@@ -35,6 +39,11 @@ public class KisimSource {
     private static final String JSON_FIELD_NAME_KEY = "json_field_name";
     public static final String REPORT_TYPE_ID_NAME_KEY = "report_type_id_name";
     public static final String REPORTID_FIELD_NAME_KEY = "reportid_field_name";
+
+    public static final String ANNOTATIONTEXT_FIELD_NAME_KEY = "annotationtext_field_name";
+    public static final String RELIABILITY_FIELD_NAME_KEY = "reliability_field_name";
+    public static final String CODE_FIELD_NAME_KEY = "code_field_name";
+
     public static final String QUERY_KEY = "query";
 
     private static final Set<String> mandatoryFields = new HashSet<>(Arrays.asList(JDBC_URL_KEY, JSON_FIELD_NAME_KEY,
@@ -57,6 +66,10 @@ public class KisimSource {
         contentFieldName = props.getProperty(JSON_FIELD_NAME_KEY).toUpperCase();
         reportIdFieldName = props.getProperty(REPORTID_FIELD_NAME_KEY).toUpperCase();
         reportTypeIdName = props.getProperty(REPORT_TYPE_ID_NAME_KEY).toUpperCase();
+
+        annotationTextFieldName = Optional.ofNullable(props.getProperty(ANNOTATIONTEXT_FIELD_NAME_KEY)).map(String::toUpperCase);
+        reliabilityFieldName = Optional.ofNullable(props.getProperty(RELIABILITY_FIELD_NAME_KEY)).map(String::toUpperCase);
+        codeFieldName = Optional.ofNullable(props.getProperty(CODE_FIELD_NAME_KEY)).map(String::toUpperCase);
 
         destTable = props.getProperty("dest_table", "");
 
@@ -97,6 +110,18 @@ public class KisimSource {
         return reportTypeIdName;
     }
 
+    public Optional<String> getAnnotationTextFieldName() {
+        return annotationTextFieldName;
+    }
+
+    public Optional<String> getReliabilityFieldName() {
+        return reliabilityFieldName;
+    }
+
+    public Optional<String> getCodeFieldName() {
+        return codeFieldName;
+    }
+
     public void writeData(Collection<Pair<String, Map<Object, Object>>> data) throws SQLException {
         if(data.isEmpty()) {
             return;
@@ -105,14 +130,16 @@ public class KisimSource {
         Statement st = conn.createStatement();
 
         for(Pair<String, Map<Object, Object>> d : data){
-            String content = d.getLeft();
             Map<Object, Object> additionalCols = d.getRight();
 
             List<String> colNameList = new ArrayList<>();
-            colNameList.add(contentFieldName);
-
             List<String> colVals = new ArrayList<>();
-            colVals.add(String.format("'%s'", content.replace("'", "''")));
+
+            if(destColumns.contains(this.getContentFieldName().toUpperCase())) {
+                String content = d.getLeft();
+                colVals.add(String.format("'%s'", content.replace("'", "''")));
+                colNameList.add(contentFieldName);
+            }
 
             additionalCols.forEach((k, v) -> {
                 if (destColumns.contains(k.toString().toUpperCase()) && !colNameList.contains(k.toString().toUpperCase())) {

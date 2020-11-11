@@ -18,15 +18,12 @@ import java.util.stream.Collectors;
 public class WriteAnnotationsToTxt extends WorkflowConcernWithQueue<String> {
     private Function<Document, String> getDocId;
 
-    private String annotationSetName;
-
     private String colSep = ";";
 
     private PrintStream outStream;
 
-    public WriteAnnotationsToTxt(File outputFile, Function<Document, String> getDocId, String annotationSetName) throws IOException {
+    public WriteAnnotationsToTxt(File outputFile, Function<Document, String> getDocId) throws IOException {
         this.getDocId = getDocId;
-        this.annotationSetName = annotationSetName;
 
         this.outStream = new PrintStream(new FileOutputStream(outputFile));
     }

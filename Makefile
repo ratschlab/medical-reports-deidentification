@@ -158,6 +158,7 @@ zip-distribution:
 #	mkdir -p "$(STAGING)/configs/kisim-usz"
 	mkdir -p "$(STAGING)/lib"
 	cp -r configs/kisim-usz $(STAGING)/
+	cp -r configs/structuring ${STAGING)/
 	cp -r deployment/* $(STAGING)
 
 	unix2dos -n scripts/example_pipeline.ps1 $(STAGING)/example_pipeline.ps1
