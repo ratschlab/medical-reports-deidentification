@@ -53,6 +53,7 @@ public class AnnotationConsolidation extends AbstractLanguageAnalyser {
 
         AnnotationSet inputAS = doc.getAnnotations(inputASName);
 
+        // remove overlappt
         Set<Annotation> toRemove = inputAS.stream().
             filter(a -> shouldBeRemoved(a, inputAS)).
             collect(Collectors.toSet());

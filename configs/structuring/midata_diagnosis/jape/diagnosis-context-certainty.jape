@@ -1,0 +1,13 @@
+Phase: DiagnosisCertainty
+Input: Diagnosis ExclusionContext SuspectionContext
+Options: control=appelt
+
+Rule: DiagnosisInSuspectionContext
+(
+    (({Diagnosis within SuspectionContext})+):diag
+) --> :diag.Diagnosis = { rule = "DiagnosisInSuspectionContext", reliability = "suspected", code = :diag.Diagnosis.code }
+
+Rule: DiagnosisInExclusionContext
+(
+    (({Diagnosis within ExclusionContext})+):diag
+) --> :diag.Diagnosis = { rule = "DiagnosisInExclusionContext", reliability = "excluded", code = :diag.Diagnosis.code }

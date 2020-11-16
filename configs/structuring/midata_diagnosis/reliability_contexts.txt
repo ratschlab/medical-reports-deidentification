@@ -1,0 +1,5 @@
+ausgeschlossen;ExclusionContext;15;0
+unwahrscheinlich;ExclusionContext;15;0
+Hinweis;SuspectionContext;0;20
+Möglichkeit;SuspectionContext;0;20
+Verdacht;SuspectionContext;0;20

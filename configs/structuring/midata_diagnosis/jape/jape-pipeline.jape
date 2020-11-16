@@ -1,4 +1,4 @@
 Multiphase: DiagnosisAnnotations
 
-Phases: diagnosis-certainty remove-false-positives
+Phases: diagnosis-context-certainty diagnosis-certainty remove-false-positives
 

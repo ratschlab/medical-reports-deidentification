@@ -42,12 +42,13 @@ public class KeywordBasedDiagnosisExtraction {
     // TODO: rename?
     public static SerialAnalyserController getExtractionPipeline(Config conf) throws GateException {
         return getExtractionPipeline(
-            conf.getString(StructuringConfigKeys.TOKENIZER_RULES),
-            conf.getString(StructuringConfigKeys.KEYWORDS_CONFIG),
-            conf.getString(StructuringConfigKeys.JAPE_RULES));
+                conf.getString(StructuringConfigKeys.TOKENIZER_RULES),
+                conf.getString(StructuringConfigKeys.KEYWORDS_CONFIG),
+                conf.getString(StructuringConfigKeys.RELIABILITY_CONTEXT_CONFIG),
+                conf.getString(StructuringConfigKeys.JAPE_RULES));
     }
 
-    public static SerialAnalyserController getExtractionPipeline(String tokenizerRulesUrl, String keywordsUrl, String japeRulesUrl)
+    public static SerialAnalyserController getExtractionPipeline(String tokenizerRulesUrl, String keywordsUrl, String reliabilityContextsUrl, String japeRulesUrl)
         throws GateException {
 
         String tmpAsName = "tmpAnnotations";
@@ -63,6 +64,11 @@ public class KeywordBasedDiagnosisExtraction {
             ImmutableMap.of("configPath", keywordsUrl,
                     "inputASName", tmpAsName,
                 "outputASName", tmpAsName)));
+
+        controller.add(PipelineUtils.getPr("org.ratschlab.deidentifier.annotation.TriggerBasedContextAnnotator",
+                ImmutableMap.of("configPath", reliabilityContextsUrl,
+                        "inputASName", tmpAsName,
+                        "outputASName", tmpAsName)));
 
         //        controller.add(PipelineUtils.getAnnotationCopier(normalizingTmp, tmpAsName, Optional.empty()));
 //        controller.add(PipelineUtils.getAnnotationCopier("", tmpAsName, Optional.empty()));

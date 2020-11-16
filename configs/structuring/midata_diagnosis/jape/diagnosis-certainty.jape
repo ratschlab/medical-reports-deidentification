@@ -11,6 +11,6 @@ Rule: AllDiag
 
 Rule: SuspectedDiagnosis
 (
-    { Token.string == "Verdacht" } { Token.string == "auf"}
+    { Token.string == "Verdacht" } { Token.string == "auf"} ({ Token.string ==~ "ein[e]"})?
     (({Diagnosis})+):diag
 ) --> :diag.Diagnosis = { rule = "SuspectedDiagnosis", reliability = "suspected", code = :diag.Diagnosis.code }

@@ -119,9 +119,9 @@ public class DiagnosisExtractionCmd extends DbCommands implements Callable<Integ
                 concerns.add(new WriteAnnotationsToTxt(outputFile, getDocId));
             }
 
-            final KisimSource ks = databaseConfigPath != null ? new KisimSource(new File(databaseConfigPath)) : null;
+            final KisimSource ks = (databaseConfigPath != null && databaseConfigPath != "") ? new KisimSource(new File(databaseConfigPath)) : null;
 
-            if (databaseConfigPath != null) {
+            if (databaseConfigPath != null && databaseConfigPath != "") {
                 concerns.add(new WriteAnnotationsToDB(ks, d -> new KisimFormat().documentToJson(d)));
             }
 
