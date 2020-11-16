@@ -15,7 +15,8 @@ test:
 	cd deidentifier-pipeline; mvn test
 	echo "Test specific parts"
 	cd deidentifier-pipeline; mvn -e exec:java -Dexec.mainClass="org.ratschlab.deidentifier.pipelines.testing.PipelineTesterCmd" -Dexec.args="../configs/kisim-usz/kisim_usz.conf ../configs/kisim-usz/testcases"
-
+	echo "Testing structuring pipeline"
+	cd deidentifier-pipeline; mvn -e exec:java -Dexec.mainClass="org.ratschlab.deidentifier.pipelines.testing.PipelineTesterCmd" -Dexec.args="../configs/structuring/midata_diagnosis/midata_diagnosis_extraction.conf ../configs/structuring/midata_diagnosis/testcases --pipeline DiagnosisExtraction"
 jar:
 	cd deidentifier-pipeline; mvn package	
 
