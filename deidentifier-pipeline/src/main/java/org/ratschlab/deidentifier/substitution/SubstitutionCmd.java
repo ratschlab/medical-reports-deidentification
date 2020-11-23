@@ -69,6 +69,9 @@ public class SubstitutionCmd implements Callable<Integer> {
     @CommandLine.Option(names = "--keep-case-ids", description = "don't substitute case IDs")
     boolean keepCaseIds = false;
 
+    @CommandLine.Option(names = "--keep-dates", description = "don't substitute dates (Scrubber substitution method only)")
+    boolean keepDates = false;
+
     @CommandLine.Option(names = {"--fields-blacklist"}, description = "Path to files giving field blacklist")
     private File fieldsBlacklistPath = null;
 
@@ -218,17 +221,23 @@ public class SubstitutionCmd implements Callable<Integer> {
                     System.exit(1);
                 }
 
+                if(keepDates) {
+                    System.err.println("--keep-dates is not supported by DateShift substitution!");
+                    System.exit(1);
+                }
+
                 return this.dateShiftSubstFactory();
             }
             case ReplacementTags: {
-                if (keepPatientIds || keepCaseIds) {
-                    System.err.println("Warning: --keep-patient-ids and keep-case-ids are not supported by ReplacementTags substitution!");
+                if (keepPatientIds || keepCaseIds || keepDates) {
+                    System.err.println("--keep-patient-ids, --keep-case-ids and --keep-dates are not supported by ReplacementTags substitution!");
+                    System.exit(1);
                 }
 
                 return this.replacementTagsSubstFactory();
             }
             case Scrubber: {
-                return d -> new ScrubberSubstitution();
+                return d -> new ScrubberSubstitution(keepPatientIds, keepCaseIds, keepDates);
             }
             case Identity: {
                 return d -> new IdentitySubstitution();

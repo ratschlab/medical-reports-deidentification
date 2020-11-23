@@ -5,19 +5,25 @@ import gate.FeatureMap;
 public class ScrubberSubstitution extends DeidentificationSubstituter {
     private boolean keepPatientIDs = false;
     private boolean keepCaseIDs = false;
+    private boolean keepDates = false;
 
-    public ScrubberSubstitution(boolean keepPatientIDs, boolean keepCaseIDs) {
+    public ScrubberSubstitution(boolean keepPatientIDs, boolean keepCaseIDs, boolean keepDates) {
         this.keepPatientIDs = keepPatientIDs;
         this.keepCaseIDs = keepCaseIDs;
+        this.keepDates = keepDates;
     }
 
     public ScrubberSubstitution() {
-        this(false, false);
+        this(false, false, false);
     }
 
     @Override
     protected String substituteDate(String origStr, FeatureMap features) {
-        return "DATE";
+        if(!keepDates) {
+            return "DATE";
+        } else {
+            return origStr;
+        }
     }
 
     @Override
