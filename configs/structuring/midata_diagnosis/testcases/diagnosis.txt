@@ -1,6 +1,7 @@
 Diagnosis; Fragestellung Addressor Header
 
 Verdacht auf <Diagnosis code="G35" reliability="suspected">Multiple Sklerosis</Diagnosis>
+Vd. a. <Diagnosis code="G35" reliability="suspected">Multiple Sklerosis</Diagnosis>
 Hinweis auf <Diagnosis code="G35" reliability="suspected">Multiple Sklerosis</Diagnosis>
 Patientin leidet an <Diagnosis code="G35" reliability="confirmed">MS</Diagnosis>
 <Fragestellung>Abklaerung auf Verdacht auf Multiple Sklerose</Fragestellung>
@@ -11,3 +12,6 @@ ein NOTMS Wort
 in der MS-Sprechstunde
 in der \"MS\"-Sprechstunde
 in der "MS"-Sprechstunde
+in der MS-SS
+Keine <Diagnosis code="G35" reliability="excluded">Encephalomyelitis disseminata</Diagnosis>
+#TODO Diagnose einer <Diagnosis code="G35" reliability="excluded">Encephalomyelitis disseminata</Diagnosis> nicht gestellt werden kann

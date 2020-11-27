@@ -9,7 +9,7 @@ Rule: RemoveFalsePositiveDiagnosis
         ({ Token.string == "\"" } | ( { Token.string == "\\" } { Token.string == "\"" } ))?
         ({ Token.string == "-" })?
         (
-            { Token.string ==~ "Abklärung|Sprechstunde" }
+            { Token.string ==~ "Abklärung|Sprechstunde|SS" }
         )
     )
 ) --> {
