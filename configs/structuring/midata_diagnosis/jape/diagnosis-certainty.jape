@@ -2,13 +2,6 @@ Phase: DiagnosisCertainty
 Input: Token Diagnosis
 Options: control=appelt
 
-/*
-Rule: AllDiag
-(
-    ({ Dia }) :tok
-) --> :tok.Diagnosis2 = { rule = "SuspectedDiagnosis", reliability = "all" }
-*/
-
 Rule: SuspectedDiagnosis
 (
     (

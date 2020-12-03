@@ -109,7 +109,7 @@ public class DiagnosisExtractionCmd extends DbCommands implements Callable<Integ
             Gate.init();
 
             Config conf = ConfigUtils.loadConfig(pipelineConfigFile);
-            SerialAnalyserController controller = KeywordBasedDiagnosisExtraction.getExtractionPipeline(conf);
+            SerialAnalyserController controller = KeywordBasedDiagnosisExtraction.getDiagnosisExtractionPipeline(conf);
 
             List<WorkflowConcern> concerns = new ArrayList<>();
 

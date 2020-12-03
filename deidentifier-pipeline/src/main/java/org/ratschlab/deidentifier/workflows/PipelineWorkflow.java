@@ -92,7 +92,7 @@ public class PipelineWorkflow<I> {
                 log.info(String.format("Processed %d Documents. %s", cnt, usage));
             }
 
-            //Factory.deleteResource(doc);
+            Factory.deleteResource(doc);
         }, materializer);
 
         log.info(String.format("Executing using %d pipeline runners", nrParallelGatePipelines));

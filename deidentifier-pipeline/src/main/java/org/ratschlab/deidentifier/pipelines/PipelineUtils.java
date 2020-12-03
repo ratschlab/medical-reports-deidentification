@@ -80,8 +80,6 @@ public class PipelineUtils {
         tokenizerFeature.put("encoding", encoding);
         tokenizerFeature.put("rulesURL", rulesUrl);
 
-        gate.creole.tokeniser.SimpleTokeniser bla = new gate.creole.tokeniser.SimpleTokeniser();
-
         return (ProcessingResource) Factory.createResource("gate.creole.tokeniser.SimpleTokeniser", tokenizerFeature);
     }
 

@@ -47,7 +47,7 @@ public class PipelineTester {
                 break;
             }
             case DiagnosisExtraction:
-                this.pipeline = KeywordBasedDiagnosisExtraction.getExtractionPipeline(conf);
+                this.pipeline = KeywordBasedDiagnosisExtraction.getDiagnosisExtractionPipeline(conf);
                 break;
         }
 
