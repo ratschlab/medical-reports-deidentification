@@ -3,6 +3,7 @@ package org.ratschlab.deidentifier.workflows;
 import gate.Corpus;
 import gate.Document;
 import gate.Factory;
+import gate.corpora.SerialCorpusImpl;
 import gate.persist.PersistenceException;
 import gate.util.GateException;
 import org.apache.commons.io.FileUtils;
@@ -30,7 +31,7 @@ public class WriteToSerializedCorpus extends DefaultWorkflowConcern {
 
         workerTmpDir = new File(corpusOutputDir.getParentFile() + File.separator +  corpusOutputDir.getName() + "_tmp");
 
-        // every parallel instance of the GATE pipeline has its own output corpus
+        // every parallel instance of the GATE pipeline has its own output corpus (for performance reasons)
         corpusDirs = IntStream.range(0, threads).
                 mapToObj(i -> new File(workerTmpDir,"worker-" + i)).
                 collect(Collectors.toList());
@@ -40,7 +41,12 @@ public class WriteToSerializedCorpus extends DefaultWorkflowConcern {
         workerCorpora = corpusDirs.stream().map(f -> {
             try {
                 // TODO: better way with try/catch?
-                return GateTools.getOutputCorpus(f);
+                Corpus c =  GateTools.getOutputCorpus(f);
+                // remove listener, as otherwise we run into concurrency issues, where at the call of Factory.deleteResource
+                // documents are attempted to be removed from corpora they are not in.
+                // In the code below in postProcessDoc, we make sure, only one thread is accessing the corpus the document is actually in.
+                gate.Gate.getCreoleRegister().removeCreoleListener((SerialCorpusImpl) c);
+                return c;
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (GateException e) {
@@ -67,11 +73,16 @@ public class WriteToSerializedCorpus extends DefaultWorkflowConcern {
 
         doc.getFeatures().remove(PipelineWorkflow.WORKFLOW_INDEX);
 
-        corpus.add(doc);
-        corpus.unloadDocument(doc); // also writes document to disk
+        // make copy of document and write it into the corpus
+        // this is done to avoid concurrency issues when later calling Factory.deleteResource(doc) and doc is still associated with some corpus
+        Document toCorpus = GateTools.copyDocument(doc);
 
-        Factory.deleteResource(doc);
-        //return null;
+        synchronized (corpus.getDataStore()) {
+            corpus.add(toCorpus);
+            corpus.unloadDocument(toCorpus); // also writes document to disk
+            Factory.deleteResource(toCorpus);
+        }
+
         return doc;
     }
 

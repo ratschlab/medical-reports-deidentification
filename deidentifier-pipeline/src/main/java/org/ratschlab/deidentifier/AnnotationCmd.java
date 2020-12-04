@@ -129,15 +129,9 @@ public class AnnotationCmd extends DbCommands implements Callable<Integer> {
             }
 
             if(corpusInputDirPath != null && !xmlInput) {
-                Corpus inputCorpus = GateTools.openCorpus(new File(corpusInputDirPath));
-
-                PipelineWorkflow<Document> workflow = new PipelineWorkflow<>(
-                        inputCorpus.stream(),
-                        d -> {
-                            Document copy = GateTools.copyDocument(d);
-                            Factory.deleteResource(d);
-                            return Optional.of(copy);
-                        },
+                PipelineWorkflow<Optional<Document>> workflow = new PipelineWorkflow<>(
+                        GateTools.readDocsInCorpus(new File(corpusInputDirPath)),
+                        d -> d,
                         myController,
                         threads,
                         concerns);

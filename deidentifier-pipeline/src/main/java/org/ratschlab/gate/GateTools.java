@@ -118,9 +118,17 @@ public class GateTools {
 
         return ds.getLrIds(rsName).stream().map(s -> {
             try {
-                return Optional.of((Document) Factory.createResource("gate.corpora.DocumentImpl",
-                        Utils.featureMap(DataStore.DATASTORE_FEATURE_NAME, ds,
-                                DataStore.LR_ID_FEATURE_NAME, s)));
+                Document fromCorpus = (Document) Factory.createResource("gate.corpora.DocumentImpl",
+                            Utils.featureMap(DataStore.DATASTORE_FEATURE_NAME, ds,
+                                DataStore.LR_ID_FEATURE_NAME, s));
+
+                // copy document to remove association to datastore, which can lead to concurrency issues later on
+                Document doc = copyDocument(fromCorpus);
+                synchronized (ds) {
+                    Factory.deleteResource(fromCorpus);
+                }
+
+                return Optional.of(doc);
             } catch (ResourceInstantiationException e) {
                 e.printStackTrace();
             }

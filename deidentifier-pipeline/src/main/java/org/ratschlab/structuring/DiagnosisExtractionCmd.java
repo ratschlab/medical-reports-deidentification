@@ -54,15 +54,9 @@ public class DiagnosisExtractionCmd extends DbCommands implements Callable<Integ
 
     private PipelineWorkflow<?> readFromFiles(List<WorkflowConcern> concerns, SerialAnalyserController controller) throws Exception {
         if (!xmlInput && !jsonInput) {
-            Corpus inputCorpus = GateTools.openCorpus(corpusInputDir);
-
             return new PipelineWorkflow<>(
-                    inputCorpus.stream(),
-                    d -> {
-                        Document copy = GateTools.copyDocument(d);
-                        Factory.deleteResource(d);
-                        return Optional.of(copy);
-                    },
+                    GateTools.readDocsInCorpus(corpusInputDir),
+                    d -> d,
                     controller,
                     threads,
                     concerns);

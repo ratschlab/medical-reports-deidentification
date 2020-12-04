@@ -92,7 +92,16 @@ public class PipelineWorkflow<I> {
                 log.info(String.format("Processed %d Documents. %s", cnt, usage));
             }
 
-            Factory.deleteResource(doc);
+            // free up document at the end.
+            // if a datastore is still associated, we need to be careful
+            if(doc.getDataStore() != null) {
+                synchronized (doc.getDataStore()) {
+                    Factory.deleteResource(doc);
+                }
+            } else {
+                Factory.deleteResource(doc);
+            }
+
         }, materializer);
 
         log.info(String.format("Executing using %d pipeline runners", nrParallelGatePipelines));
@@ -171,7 +180,7 @@ public class PipelineWorkflow<I> {
         }));
 
         Source<Document, NotUsed> processedDocs = fileSource.async().via(parallelGateProcessing).
-                async().buffer(1000, OverflowStrategy.backpressure()); // don't overload postprocessing thread
+                async().buffer(1000, OverflowStrategy.backpressure());
 
         for (Function<Document, Document> f : postprocessingMergedDocs) {
             processedDocs = processedDocs.map(d -> f.apply(d));
