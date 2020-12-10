@@ -3,6 +3,7 @@ package org.ratschlab.deidentifier.sources;
 import com.google.common.collect.ImmutableList;
 import gate.Corpus;
 import gate.Document;
+import gate.Factory;
 import gate.Gate;
 import gate.persist.PersistenceException;
 import gate.util.GateException;
@@ -65,7 +66,15 @@ public class ImportCmd extends DbCommands implements Callable<Integer> {
             docs.forEach(d -> {
                 corpus.add(d);
                 corpus.unloadDocument(d);
-                docCnt.incrementAndGet();
+                Factory.deleteResource(d);
+                int cnt = docCnt.incrementAndGet();
+
+                if (cnt % 100 == 0) {
+                    double megaBytes = java.lang.Math.pow(1024, 2);
+                    Runtime r = Runtime.getRuntime();
+                    String usage = String.format("Memory usage: %dMB/%dMB", (int) ((r.maxMemory() - r.freeMemory())/megaBytes), (int) (r.maxMemory()/megaBytes));
+                    log.info(String.format("Processed %d Documents. %s", cnt, usage));
+                }
             });
 
             log.info("Loaded {} documents.", docCnt.get());
