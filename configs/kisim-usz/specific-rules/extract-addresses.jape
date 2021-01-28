@@ -1,5 +1,5 @@
 Phase: ExtractAddresses
-Input: Token Newline PossibleZipCode Style AddressField
+Input: Token Newline PossibleZipCode Salutation AddressField
 Options: control=appelt
 
 Macro: SEP
@@ -50,7 +50,7 @@ Rule: ExtractAddressPartsName
 Priority:100
 (
     (
-        ({Style within AddressField } (ADDR_TOKEN)+: fullName)
+        ({Salutation within AddressField } (ADDR_TOKEN)+: fullName)
     )
     SEP
     (ADDR_BODY)

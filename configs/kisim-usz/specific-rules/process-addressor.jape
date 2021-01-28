@@ -1,5 +1,5 @@
 Phase: ProcessAddressor
-Input: Token Location Addressor Newline Style
+Input: Token Location Addressor Newline Salutation
 Options: control=appelt
 
 /*
@@ -29,7 +29,7 @@ Macro: RoleTrigger
 Rule: AnnotateNamesInAddressor
 (
     ({Newline})?
-    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+", Token within Addressor, !Token within Style})+):name
+    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+", Token within Addressor, !Token within Salutation})+):name
     {Newline}
     ({Token within Addressor})* (RoleTrigger) ({Token within Addressor})*
     ({Newline})?

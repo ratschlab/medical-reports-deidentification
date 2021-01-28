@@ -55,7 +55,7 @@ und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
 
 # addressor field
 <Addressor><Name>Hans Muster</Name>\nLeitung Pflege\n<Name>Johanna Outofvoc</Name>\nInstitutsmanagerin</Addressor> # name annotation without trigger
-<Addressor>Dr. <Name>Hans Muster</Name>\nLeitung Pflege</Addressor> # name annotation trigger (should exclude style)
+<Addressor>Dr. <Name>Hans Muster</Name>\nLeitung Pflege</Addressor> # name annotation trigger (should exclude salutation)
 
 
 # DisplayName field

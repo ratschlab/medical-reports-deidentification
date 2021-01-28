@@ -98,7 +98,7 @@ Macro: SHORT_NAME
     ):lastname_SHORT_NAME
 )
 
-Macro: CIVIL_STYLE
+Macro: CIVIL_SALUTATION
 (
     ({Token.string == "Herr"} |
     {Token.string == "Herrn"} |
@@ -110,9 +110,9 @@ Macro: CIVIL_STYLE
     )
 )
 
-Macro: STYLE
+Macro: SALUTATION
 (
-    (CIVIL_STYLE)?
+    (CIVIL_SALUTATION)?
     (
         ({Token.string == "Prof"} ({Token.string == "."})? ) |
         ({Token.string == "PD"}) |
@@ -140,12 +140,12 @@ Rule: DoctorsLeftContext
 Priority: 100 //overruling SimpleDetectPatient
 (
     (
-        (STYLE | ABBREV_ROLES): style
+        (SALUTATION | ABBREV_ROLES): salutation
     )
     (SHORT_NAME | NAME_SURNAME | (DOUBLE_NAME):lastname_DoctorsLeftContext | ({Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"})+): name
 )
 --> { Utils.addNameAnnotation("DoctorsLeftContext", "doctor", "", bindings, doc, outputAS); },
-:style.Style = { rule = "DoctorsLeftContext"}
+:salutation.Salutation = { rule = "DoctorsLeftContext"}
 
 
 Rule: DoctorsRightContext
@@ -350,18 +350,18 @@ Rule: UniqueDoubleName
 Rule: SimpleDetectPatient
 Priority: 0
 (
-    (CIVIL_STYLE): style
+    (CIVIL_SALUTATION): salutation
     (
         ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende"})+ |
         ({Token.string ==~ "[A-Z]"} {Token.string == "."}):lastname_SimpleDetectPatient |
         (SHORT_NAME)
     ):name
 ) --> { Utils.addNameAnnotation("SimpleDetectPatient", "patient", "l", bindings, doc, outputAS); },
-      :style.Style = { rule = "SimpleDetectPatient"}
+      :salutation.Salutation = { rule = "SimpleDetectPatient"}
 
 Rule: DoubleNameLeftTriggered
 (
-    ({Token.string ==~ "Herr|Frau|Hr|Fr"}):style
+    ({Token.string ==~ "Herr|Frau|Hr|Fr"}):salutation
     (
         (
             {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"}
@@ -374,7 +374,7 @@ Rule: DoubleNameLeftTriggered
         )
     ):name
 ) --> { Utils.addNameAnnotation("DoubleNameLeftTriggered", "patient", "l", bindings, doc, outputAS); },
-       :style.Style = { rule = "DoubleNameLeftTriggered"}
+       :salutation.Salutation = { rule = "DoubleNameLeftTriggered"}
 
 // example: Liebe Maria
 Rule: FirstNameInSalutation
