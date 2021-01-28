@@ -127,7 +127,7 @@ Rule: RegularDotDates
     (DATE_PRE)?
     (REGULAR_DOT_DATE) :date
 )
---> { Utils.addDateAnnotation("RegularDotDates", "other", "dd.MM.yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("RegularDotDates", "other", bindings, doc, outputAS); }
 
 Rule: RegularDotDatesNegativeSlash
 (
@@ -149,7 +149,7 @@ Rule: IsoDates
     (DAY_MONTH_NUM):month DASH
     (DAY_IN_MONTH):day
 ):date
---> { Utils.addDateAnnotation("IsoDates", "other", "yyyy-MM-dd", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("IsoDates", "other", bindings, doc, outputAS); }
 
 /*
 examples:
@@ -162,7 +162,7 @@ Rule: DotDatesNoYear
         DATE_NO_YEAR DOT
     ) :date
 )
---> { Utils.addDateAnnotation("DotDatesNoYear", "other", "dd.MM.", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("DotDatesNoYear", "other", bindings, doc, outputAS); }
 
 // 28.11. 13.45 Uhr
 // would be parsed as RegularDotDates
@@ -175,7 +175,7 @@ Priority: 1000
     DOT
     {Token.string ==~ "[0-9]{2}"}
     {Token.string == "Uhr"}
-) -->  { Utils.addDateAnnotation("DotDatesNoYearWithTime", "other", "dd.MM.", "", bindings, doc, outputAS); }
+) -->  { Utils.addDateAnnotation("DotDatesNoYearWithTime", "other", bindings, doc, outputAS); }
 
 /*
 examples:
@@ -186,7 +186,7 @@ Rule: DotDatesNoYearTrigger
     (DATE_PRE)
     (DATE_NO_YEAR) :date
 )
---> { Utils.addDateAnnotation("DotDatesNoYearTrigger", "other", "dd.MM.", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("DotDatesNoYearTrigger", "other", bindings, doc, outputAS); }
 
 Rule: DotDatesNoYearTriggerNegative
 Priority: 100
@@ -205,7 +205,7 @@ Rule: DotDatesNoYearRightTrigger
     (DATE_NO_YEAR) :date
     {Token.string ==~ "um|[:)]"}
 )
---> { Utils.addDateAnnotation("DotDatesNoYearRightTrigger", "other", "dd.MM.", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("DotDatesNoYearRightTrigger", "other", bindings, doc, outputAS); }
 
 /*
 examples:
@@ -221,7 +221,7 @@ Rule: MonthNameDate
         ((YEAR):year)?
     ) :date
 )
---> { Utils.addDateAnnotation("MonthNameDate", "other",  "dd. M yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("MonthNameDate", "other", bindings, doc, outputAS); }
 
 
 /*
@@ -237,7 +237,7 @@ Priority: 100
         (DAY_MONTH_NUM):month (SLASH | DOT) (FOUR_DIGIT_YEAR):year
     ) :date
 )
---> { Utils.addDateAnnotation("MonthSlashDate", "other",  "MM/yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("MonthSlashDate", "other", bindings, doc, outputAS); }
 
 /*
  12/09
@@ -260,7 +260,7 @@ Rule: MonthSlashDateTrigger
 )
 --> {
     if(Utils.possibleSlashDate(bindings, doc)) {
-        Utils.addDateAnnotation("MonthSlashDateTrigger", "other",  "MM/yy", "", bindings, doc, outputAS);
+        Utils.addDateAnnotation("MonthSlashDateTrigger", "other", bindings, doc, outputAS);
     }
 }
 
@@ -278,7 +278,7 @@ Priority: 200
     )
     MONTH_SLASH_DATE_TWO_DIGIT_YEAR
 )
---> { Utils.addDateAnnotation("MonthSlashDateLeftTrigger", "other",  "MM/yy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("MonthSlashDateLeftTrigger", "other", bindings, doc, outputAS); }
 
 Rule: MonthSlashDateNegativeUnit
 Priority: 100
@@ -322,7 +322,7 @@ Rule: MonthYear
     (SLASH)?
     (YEAR):year
 ):date
---> { Utils.addDateAnnotation("MonthYear", "other",  "M yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("MonthYear", "other", bindings, doc, outputAS); }
 
 
 Rule: MonthYearUnspecificDate
@@ -336,7 +336,7 @@ Rule: MonthYearUnspecificDate
         ((YEAR):year)?
     ):date
 )
---> { Utils.addDateAnnotation("MonthYearUnspecificDate", "other",  "M yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("MonthYearUnspecificDate", "other", bindings, doc, outputAS); }
 
 // May 4, 2019
 Rule: EnglishDates
@@ -346,7 +346,7 @@ Rule: EnglishDates
     (COMMA)?
     (FOUR_DIGIT_YEAR):year
 ):date
--->  { Utils.addDateAnnotation("EnglishDates", "other",  "M d yyyy", "", bindings, doc, outputAS); }
+-->  { Utils.addDateAnnotation("EnglishDates", "other", bindings, doc, outputAS); }
 
 
 /*
@@ -362,7 +362,7 @@ Rule: MonthNameOnly
     (DOT)?
     {Token.string !=~ "[/0-9.]+"}  // don't interfer with MonthYear and ApproximateMonthYear
 )
---> { Utils.addDateAnnotation("MonthNameOnly", "other",  "M", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("MonthNameOnly", "other", bindings, doc, outputAS); }
 
 /*
 examples:
@@ -374,7 +374,7 @@ Rule: MonthYearNumerical
         (DAY_MONTH_NUM):month DOT (FOUR_DIGIT_YEAR):year
     ) :date
 )
---> { Utils.addDateAnnotation("MonthYearNumerical", "other",  "MM.yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("MonthYearNumerical", "other", bindings, doc, outputAS); }
 
 /*
 examples:
@@ -386,7 +386,7 @@ Rule: SingleYear
     (DATE_PRE)?
     ((FOUR_DIGIT_YEAR):year):date // if no negative context, annotate.
 )
---> { Utils.addDateAnnotation("SingleYear", "other",  "yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("SingleYear", "other", bindings, doc, outputAS); }
 
 Rule: SingleYearNegative
 Priority: 1000
@@ -408,7 +408,7 @@ Rule: SingleYearTwoDigits
     DATE_PRE
     ((TWO_DIGIT_YEAR):year) :date
 )
---> { Utils.addDateAnnotation("SingleYearTwoDigits", "other",  "yy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("SingleYearTwoDigits", "other", bindings, doc, outputAS); }
 
 /*
 examples:
@@ -429,7 +429,7 @@ Rule: BirthYear
     (
         ({Token.string ==~ "[0-9]{2}"} | {Token.string ==~ "[1,2][0-9]{3}"}):year
     ):date
-) --> { Utils.addDateAnnotation("BirthYear", "DOB",  "yyyy", "", bindings, doc, outputAS); }
+) --> { Utils.addDateAnnotation("BirthYear", "DOB", bindings, doc, outputAS); }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,7 +445,7 @@ Rule: ApproximateMonthYear
   )
 
   (FOUR_DIGIT_YEAR | TWO_DIGIT_YEAR):year2
-): date --> {Utils.addDateAnnotation("ApproximateMonthYear", "other",  "MM", "MM/yyyy", bindings, doc, outputAS); }
+): date --> {Utils.addDateAnnotation("ApproximateMonthYear", "other", bindings, doc, outputAS); }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -467,7 +467,7 @@ Rule: DayRange
     (RANGE_SEPARATOR | SLASH)
     (REGULAR_DOT_DATE):date
 )
---> { Utils.addDateAnnotation("DayRange", "other",  "dd.MM.yyyy", "", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("DayRange", "other", bindings, doc, outputAS); }
 
 // 01.10 - 10.10
 Rule: DayRangeNoYears
@@ -479,7 +479,7 @@ Rule: DayRangeNoYears
         ( (DAY_IN_MONTH):day2 DOT (DAY_MONTH_NUM):month2 (DOT)?):date2
     )
 
-) --> { Utils.addDateAnnotation("DayRangeNoYears", "other",  "dd.MM.", "dd.MM.", bindings, doc, outputAS); }
+) --> { Utils.addDateAnnotation("DayRangeNoYears", "other", bindings, doc, outputAS); }
 
 
 Rule: DayRangeNoYearsNegative
@@ -502,7 +502,7 @@ Rule: DayRangeNoYearsPartialMonths
         ( (DAY_IN_MONTH):day2 DOT (DAY_MONTH_NUM):month2 (DOT)?):date2
     )
 
-) --> { Utils.addDateAnnotation("DayRangeNoYearsPartialMonths", "other",  "dd.", "dd.MM.", bindings, doc, outputAS); }
+) --> { Utils.addDateAnnotation("DayRangeNoYearsPartialMonths", "other", bindings, doc, outputAS); }
 
 
 /*
@@ -515,7 +515,7 @@ Rule: YearMonthRange
     RANGE_SEPARATOR
     ((DAY_MONTH_NUM):month2 SLASH (YEAR):year2): date2
 )
---> { Utils.addDateAnnotation("YearMonthRange", "other",  "MM", "MM/yyyy", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("YearMonthRange", "other", bindings, doc, outputAS); }
 
 Rule: YearMonthRangeNegative
 (
@@ -537,7 +537,7 @@ Rule: YearRange
     (RANGE_SEPARATOR | SLASH)
     ((YEAR): year2): date2
 )
---> { Utils.addDateAnnotation("YearRange", "other",  "yyyy", "yyyy", bindings, doc, outputAS); }
+--> { Utils.addDateAnnotation("YearRange", "other", bindings, doc, outputAS); }
 
 Rule: YearRangeNegative
 Priority: 100

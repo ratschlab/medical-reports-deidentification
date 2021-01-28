@@ -2,16 +2,20 @@ package org.ratschlab.deidentifier.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import gate.*;
 import gate.util.Files;
 import gate.util.InvalidOffsetException;
 import gate.util.OffsetComparator;
+import org.apache.commons.lang3.tuple.Pair;
+import org.ratschlab.deidentifier.utils.DateUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Utils {
     public static List<String> sortAnnotations(AnnotationSet overlapping) {
@@ -187,16 +191,14 @@ public class Utils {
         outputAs.add(bindings.get(nameBinding).firstNode(), bindings.get(nameBinding).lastNode(), "Name", feat);
     }
 
-    public static void addDateAnnotation(String rule, String type, String dateFormat, String dateFormat2, Map<String,AnnotationSet> bindings, Document doc, AnnotationSet outputAs) {
+    public static void addDateAnnotation(String rule, String type, Map<String,AnnotationSet> bindings, Document doc, AnnotationSet outputAs) {
         if(!bindings.containsKey("date")) {
             return;
         }
 
         List<FeatureMap> featuresLst =  ImmutableList.of(
-                processFeatures(rule, type, doc, ImmutableList.of("year", "month", "day"), bindings),
-                processFeatures(rule, type, doc, ImmutableList.of("year2", "month2", "day2"), bindings));
-
-        List<String> formats = new ArrayList(ImmutableList.of(dateFormat, dateFormat2));
+                processFeatures(rule, type, doc, "", bindings),
+                processFeatures(rule, type, doc, "2", bindings));
 
         // fill in year, month if available in other date
         for(int i = 0; i < 2; i++) {
@@ -204,23 +206,7 @@ public class Utils {
                 int otherIndex = 1 - i;
                 if(!featuresLst.get(i).containsKey(k) && featuresLst.get(otherIndex).containsKey(k)) {
                     featuresLst.get(i).put(k, featuresLst.get(otherIndex).get(k));
-
-                    if(formats.get(i).isEmpty() && k.equals("month")) {
-                        // month is missing, so is year, hence format dd.
-                        formats.set(i, "dd.");
-                    }
-                    if(formats.get(i).isEmpty() && k.equals("year")) {
-                        // month not missing, but year, hence format dd.MM.
-                        formats.set(i, "dd.MM.");
-                    }
                 }
-            }
-        }
-
-        for(int i = 0; i < 2; i++) {
-            String fmt = formats.get(i);
-            if(!fmt.isEmpty()) {
-                featuresLst.get(i).put("format", fmt);
             }
         }
 
@@ -231,36 +217,80 @@ public class Utils {
         }
     }
 
-    private static FeatureMap processFeatures(String rule, String type, Document doc, List<String> possibleBindingKeys, Map<String,AnnotationSet> bindings) {
+    private static Set<String> DATE_COMPONENTS_SEPARATORS = ImmutableSet.of(" ", ".", "/", "-");
+
+    private static String separatorAfterAnnot(Document doc, Annotation a) {
+        try {
+            String mayBeSep = doc.getContent().getContent(a.getEndNode().getOffset(), a.getEndNode().getOffset() + 1).toString();
+            String afterSep = doc.getContent().getContent(a.getEndNode().getOffset() + 1, a.getEndNode().getOffset() + 2).toString();
+
+            if(DATE_COMPONENTS_SEPARATORS.contains(mayBeSep)) {
+                if(afterSep.equals(" ")) {
+                    return mayBeSep + afterSep;
+                }
+                return mayBeSep;
+            }
+        } catch(InvalidOffsetException e) {}
+
+        return "";
+    }
+
+    private static String removeLeadingZeroFromDateComponent(String annotStr) {
+        return org.ratschlab.util.Utils.maybeParseInt(annotStr).map(i -> i.toString()).orElse(annotStr);
+    }
+
+    private static FeatureMap processFeatures(String rule, String type, Document doc, String datePostfix, Map<String,AnnotationSet> bindings) {
         FeatureMap feat = Factory.newFeatureMap();
 
         feat.put("rule", rule);
         feat.put("type", type);
 
-        possibleBindingKeys.forEach(k -> {
-            if(bindings.containsKey(k)) {
-                String annotStr = gate.Utils.stringFor(doc, bindings.get(k).iterator().next());
+        List<Pair<String, Annotation>> dateComponents = new ArrayList<>();
 
-                String featureName = k;
-                if(k.endsWith("2")) {
-                    featureName = featureName.substring(0, k.length() - 1);
-                }
+        // extract day
+        String dayKey = "day" + datePostfix;
+        if(bindings.containsKey(dayKey)) {
+            Annotation day = bindings.get(dayKey).iterator().next();
+            String dayStr = gate.Utils.stringFor(doc, day);
+            String dayFormat = "dd" + separatorAfterAnnot(doc, day);
 
-                if(!featureName.equals("year")) {
-                    // e.g month: 01 -> 1
-                    annotStr = org.ratschlab.util.Utils.maybeParseInt(annotStr).map(i -> i.toString()).orElse(annotStr);
-                } else {
-                    if(annotStr.length() == 2) {
-                        // 03 --> 2003
-                        // TODO: 30 is very arbitrary, expose as config
-                        annotStr = org.ratschlab.util.Utils.maybeParseInt(annotStr).map(x -> (x < 30 ? 2000 + x : 1900 + x)).
-                                map(Object::toString).orElse(annotStr);
-                    }
-                }
+            dateComponents.add(Pair.of(dayFormat, day));
+            feat.put("day", removeLeadingZeroFromDateComponent(dayStr));
+        }
 
-                feat.put(featureName, annotStr);
+        // extract month
+        String monthKey = "month" + datePostfix;
+        if(bindings.containsKey(monthKey)) {
+            Annotation month = bindings.get(monthKey).iterator().next();
+            String monthStr = gate.Utils.stringFor(doc, month);
+            String monthFormat = DateUtils.determineMonthFormat(monthStr).map(df -> df.toPattern()).orElse("MM") + separatorAfterAnnot(doc, month);
+
+            dateComponents.add(Pair.of(monthFormat, month));
+            feat.put("month", removeLeadingZeroFromDateComponent(monthStr));
+        }
+
+        // extract year
+        String yearKey = "year" + datePostfix;
+        if(bindings.containsKey(yearKey)) {
+            Annotation year = bindings.get(yearKey).iterator().next();
+            String yearStr = gate.Utils.stringFor(doc, year);
+            String yearFormat = DateUtils.determineYearFormat(yearStr).map(df -> df.toPattern()).orElse("yyyy") + separatorAfterAnnot(doc, year);
+
+            String yearStrFixed = yearStr;
+            if(yearStr.length() == 2) {
+                // 03 --> 2003
+                yearStrFixed = org.ratschlab.util.Utils.maybeParseInt(yearStr).map(x -> (x < 50 ? 2000 + x : 1900 + x)).
+                    map(Object::toString).orElse(yearStr);
             }
-        });
+
+            dateComponents.add(Pair.of(yearFormat, year));
+            feat.put("year", yearStrFixed);
+        }
+
+        String dateFormat = dateComponents.stream().sorted((p1, p2) -> p1.getValue().compareTo(p2.getValue())).
+               map(p -> p.getKey()).collect(Collectors.joining()).trim();
+
+        feat.put("format", dateFormat);
 
         return feat;
     }

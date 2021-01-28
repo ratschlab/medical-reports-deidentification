@@ -1,16 +1,18 @@
 Date
 
+am <Date month="Dez" year="2016" format="MMM. yyyy">Dez. 2016</Date>
+am <Date month="Dez" year="2016" format="MMM.yyyy">Dez.2016</Date>
 am <Date day="11" month="1" year="2016" format="dd.MM.yyyy">11.01.2016</Date> zur klinischen Kontrolle in unserer
 #Am <Date>26.03</Date>
 seit <Date>22.01.10</Date>:
 seit <Date>5.1.2009</Date>
 seit <Date>5.1.2029</Date>
 <Date day="1" month="10" year="2015">01.10.15</Date>
-Sturz am <Date day="20" month="Oktober" year="2012" format="dd. M yyyy">20. Oktober 2012</Date>
+Sturz am <Date day="20" month="Oktober" year="2012" format="dd. MMMM yyyy">20. Oktober 2012</Date>
 BV-gesteuerte Infiltration ISG bds. mit je 40mg Kenacort und Lidocain 1% <Date month="12" year="2009" format="MM/yyyy">12/2009</Date>
-Lidocain 1% <Date>01/09</Date>
-Lidocain 1% <Date>1/09</Date>
-Lidocain 1% <Date month="Januar" year="2009" format="M yyyy">Januar 09</Date>
+Lidocain 1% <Date month="1">01/09</Date>
+Lidocain 1% <Date month="1" format="MM/yy">1/09</Date>
+Lidocain 1% <Date month="Januar" year="2009" format="MMMM yy">Januar 09</Date>
 Lidocain 1% 13/12 # not a date...
 seit <Date>November 2011</Date> unter Fumarsauere
 <Date>10.2018</Date>
@@ -58,7 +60,7 @@ mit 2000 IE
 reactivate schwerer Tagesschläfrigkeit (ESS 13/24 Pt; <Date>09/06</Date>: 11/24 Pkt.) # TODO: hard to distinguish in a more general case
 Name wird nicht erinnert, seit <Date>Jan.06</Date> "schwächeres Präparat"
 
-ein Datum <Date>2018-12-01</Date>
+ein Datum <Date format="yyyy-MM-dd">2018-12-01</Date>
 Untersuchung des Muskelbiopsates von <Date>1994</Date> erbrachte leider keine Diagnosesicherung
 - Erstdiagnose <Date>2001</Date> - Embolisation <Date>12/2001</Date> # enumeration (new line)
 Dosiserhöhung auf 50-75mg je nach Wirkung
@@ -115,7 +117,7 @@ Kontrolle am <Date>28.</Date> und <Date>29.04.2018</Date> durch den Hausarzt
 <Date year="1995" format="yyyy">1995</Date> - <Date year="1997" format="yyyy">1997</Date> Betaferon s.c. darunter ein Schwerer Schub
 <Date>1995</Date>-<Date>1997</Date>
 <Date month="10" year="2015" format="MM">10</Date>-<Date month="11" year="2015" format="MM/yyyy">11/2015</Date> # (how to handle this?)
-vom <Date day="16" month="3" format="dd.MM.">16.3.</Date>-<Date day="20" month="3" format="dd.MM.">20.03</Date>
+vom <Date day="16" month="3" format="dd.MM.">16.3.</Date>-<Date day="20" month="3" format="dd.MM">20.03</Date>
 <Date>05</Date>/<Date>06.10.18</Date>
 Aufenthalt <Date>03.</Date>-<Date>15.09.</Date>
 <Date>05</Date>+<Date>06/18</Date> Zytoskopie
