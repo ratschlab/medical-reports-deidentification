@@ -31,7 +31,7 @@ Macro: OrtDatToken
 Rule: VisDatProcessing
 (
     (({Token within VisDat, Token.kind == "word"}):signature):name
-) --> { Utils.addNameAnnotation("VisDatProcessing", "medical staff", "s", bindings, doc, outputAS); }
+) --> { Utils.addNameAnnotation("VisDatProcessing", "medical staff", "S", bindings, doc, outputAS); }
 
 // zurich, 20.01.2018 / AMUSTER / xyz /MER
 Rule: ProcessOrtDat
@@ -54,7 +54,7 @@ Rule: ProcessOrtDat
                 }
             }
 
-            Utils.addNameAnnotation("DoctorsLeftContextRole", "medical staff", "s", "name" + i, filteredBindings, doc, outputAS);
+            Utils.addNameAnnotation("DoctorsLeftContextRole", "medical staff", "S", "name" + i, filteredBindings, doc, outputAS);
         }
       }
 
@@ -112,13 +112,13 @@ Rule: NamesInDisplayName
 (
     (FIRST_NAME_INITIALS):firstname_NamesInDisplayName
     (({Token.orth == "upperInitial", Token within DisplayName}|{Token.string == "-"})+):lastname_NamesInDisplayName
-):name --> { Utils.addNameAnnotation("NamesInDisplayName", "medical staff", "fs l", bindings, doc, outputAS); }
+):name --> { Utils.addNameAnnotation("NamesInDisplayName", "medical staff", "F ll", bindings, doc, outputAS); }
 
 
 Rule: DetectSignatures
 (
     (({Token.string ==~ "[A-Z]{3,8}", Token within {FieldWithSignature} }):signature):name
-) -->  { Utils.addNameAnnotation("DetectSignatures", "medical staff", "s", bindings, doc, outputAS); },
+) -->  { Utils.addNameAnnotation("DetectSignatures", "medical staff", "S", bindings, doc, outputAS); },
 :name.Name = { type = "other" }
 
 Rule: DetectSignaturesInTags
@@ -126,7 +126,7 @@ Rule: DetectSignaturesInTags
     {Token.string == "<"}
     (({Token.string =~ "[A-Z]{3,8}"}):signature):name
     {Token.string == ">"}
-)-->  { Utils.addNameAnnotation("DetectSignaturesInTags", "medical staff", "s", bindings, doc, outputAS); }
+)-->  { Utils.addNameAnnotation("DetectSignaturesInTags", "medical staff", "S", bindings, doc, outputAS); }
 
 Rule: LocationFpZug
 (

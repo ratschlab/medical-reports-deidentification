@@ -8,5 +8,7 @@ Options:control=appelt
 
 Rule: SingleNameOrSurnameInNameContext
 (
-    ({Token within {Lookup.minorType ==~ "firstname"}, Token within NameContext, !Token within {Lookup.majorType ==~ "stop"}, Token.string != "Enkel"})+:name
+    (
+        (({Token within {Lookup.minorType ==~ "firstname"}, Token within NameContext, !Token within {Lookup.majorType ==~ "stop"}, Token.string != "Enkel"}):format_ff):firstname
+    )+:name
 ) --> { Utils.addNameAnnotation("SingleNameOrSurnameInNameContext", "other", "", bindings, doc, outputAS); }

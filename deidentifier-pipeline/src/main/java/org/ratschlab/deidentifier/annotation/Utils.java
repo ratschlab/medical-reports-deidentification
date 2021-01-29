@@ -3,6 +3,7 @@ package org.ratschlab.deidentifier.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import gate.*;
 import gate.util.Files;
 import gate.util.InvalidOffsetException;
@@ -144,7 +145,7 @@ public class Utils {
                     gate.FeatureMap features = Factory.newFeatureMap();
                     features.put("type", "medical staff");
                     features.put("rule", rule);
-                    features.put("format", "l");
+                    features.put("format", "ll");
                     features.put(FeatureKeys.LASTNAME, gate.Utils.stringFor(doc, ans.get(i)));
 
                     outputAS.add(lastStartOffset, ans.get(i).getEndNode().getOffset(), "Name", features);
@@ -162,6 +163,35 @@ public class Utils {
         addNameAnnotation(rule, type, format, "name", bindings, doc, outputAs);
     }
 
+    private static String adjustFormatForCase(String f, Annotation a, Document doc) {
+        String text = gate.Utils.stringFor(doc, a);
+
+        if(text.toUpperCase().equals(text)) {
+            return f.toUpperCase();
+        }
+        return f;
+    }
+
+    private static String determineNameFormatFromBindings(Map<String,AnnotationSet> bindings, Document doc) {
+        List<String> formats = bindings.keySet().stream().filter(s -> s.startsWith("format")).
+            map(s -> Pair.of(s, bindings.get(s).iterator().next())).
+            sorted((p1, p2) -> p1.getValue().compareTo(p2.getValue())). // order by annotation
+            map(p -> adjustFormatForCase(p.getKey(), p.getValue(), doc)).
+            collect(Collectors.toList());
+
+        if(formats.isEmpty()) {
+            return "";
+        }
+        if(formats.size() > 1) {
+            //System.out.println("WARNING: more than one: " + formats.stream().collect(Collectors.joining(";")));
+        }
+        
+        return formats.stream().map(s -> s.split("_")).filter(a -> a.length > 1).map(a -> a[1].replaceAll("-", "").
+            replaceAll("DASH", "-").
+            replaceAll("SPACE", " ").
+            replaceAll("SLASH", "/")).collect(Collectors.joining(" "));
+    }
+
     public static void addNameAnnotation(String rule, String type, String format, String nameBinding, Map<String,AnnotationSet> bindings, Document doc, AnnotationSet outputAs) {
         if(!bindings.containsKey(nameBinding)) {
             return;
@@ -169,23 +199,40 @@ public class Utils {
 
         FeatureMap feat = Factory.newFeatureMap();
 
-        feat.put("rule", rule);
-        feat.put("type", type);
-        feat.put("format", format);
+        feat.put(FeatureKeys.RULE, rule);
+        feat.put(FeatureKeys.TYPE, type);
+
+        if(format.isEmpty()) {
+            format = determineNameFormatFromBindings(bindings, doc);
+        }
+        feat.put(FeatureKeys.NAME_FORMAT, format);
+
+        if(format.isEmpty()) {
+            System.out.println("WARNING: didn't find format " + rule + " " + gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
+        }
 
         Map<String, String> fieldMappings = ImmutableMap.of("firstname", FeatureKeys.FIRSTNAME,
-                "lastname", FeatureKeys.LASTNAME,
-                "signature", FeatureKeys.NAME_SIGNATURE,
-                "format", FeatureKeys.NAME_FORMAT,
-                "rule", FeatureKeys.RULE);
+            "lastname", FeatureKeys.LASTNAME,
+            "signature", FeatureKeys.NAME_SIGNATURE,
+            "salutation", FeatureKeys.NAME_SALUTATION
+        );
 
         for(Map.Entry<String, String> e: fieldMappings.entrySet()) {
-            Optional<Annotation> anOpt = bindings.keySet().stream().filter(s -> s.startsWith(e.getKey())).sorted().map(s -> bindings.get(s).iterator().next()).findFirst();
+            Stream<AnnotationSet> annotationsWithTag = bindings.keySet().stream().filter(s -> s.startsWith(e.getKey())).map(s -> bindings.get(s));
 
-            anOpt.ifPresent(an -> {
-                String text = gate.Utils.stringFor(doc, an);
-                feat.put(e.getValue(), text);
-            });
+            Stream<String> annotatedTexts = annotationsWithTag.map(as -> as.stream().sorted().map(a -> gate.Utils.stringFor(doc, a)).collect(Collectors.joining(" ")));
+
+            // TODO: document reasoning!
+            String annotatedText = annotatedTexts.collect(Collectors.joining(" ")).
+                replace(" .", "."); // remove preceding "."
+
+            if(!annotatedText.isEmpty()) {
+                feat.put(e.getValue(), annotatedText);
+            }
+        }
+
+        if(format.equals("S") && !feat.containsKey(FeatureKeys.NAME_SIGNATURE)) {
+            feat.put(FeatureKeys.NAME_SIGNATURE, gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
         }
 
         outputAs.add(bindings.get(nameBinding).firstNode(), bindings.get(nameBinding).lastNode(), "Name", feat);

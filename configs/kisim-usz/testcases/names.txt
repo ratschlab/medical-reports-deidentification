@@ -11,9 +11,9 @@ Dr. <Name>Meier-Outofvoc</Name> ...
 Liebe <Name>Yvonne</Name>
 
 # testing metadata extraction
-<Patienteninformation><Name>OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
-<Patienteninformation><Name>OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstr. 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
-<Patienteninformation><Name>OUTOFVOC MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name format="LL ff" firstname="Jean" lastname="OUTOFVOC">OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name format="LL ff" firstname="Jean" lastname="OUTOFVOC">OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstr. 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name firstname="Jeanne" lastname="OUTOFVOC MEIER">OUTOFVOC MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
 <Patienteninformation><Name>OUTOFVOC-MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21a, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
 <Patienteninformation><Name>OUTOFVOC-MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21a, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
 <Patienteninformation><Name>OUTOFVOC-D'XYZ Jeanne Marie</Name>, geb. 01.01.1900\r\n am Musterstrasse 21a, CH-1234 Musterwilen</Patienteninformation>
@@ -23,16 +23,16 @@ Liebe <Name>Yvonne</Name>
 und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
 
 # signature field
-<FieldWithSignature><Name>AMUSTER</Name> sig. Dr. <Name>A. Muster</Name>, Oberarzt</FieldWithSignature>
+<FieldWithSignature><Name format="S">AMUSTER</Name> sig. Dr. <Name format="F ll">A. Muster</Name>, Oberarzt</FieldWithSignature>
 <FieldWithSignature><Name>AMUSTER</Name> sig.\npract. med. <Name>A. Muster</Name>, Assistenzarzt</FieldWithSignature>
 <FieldWithSignature><Name>AMASTER</Name></FieldWithSignature>
-<Visum><Name signature="ABCD">ABCD</Name></Visum>
+<Visum><Name format="S" signature="ABCD">ABCD</Name></Visum>
 <Visum><Name>ABCD</Name> / 01.03.2003</Visum>
 <Visum>01.13.2003 <Name>ABCD</Name></Visum>
 <Visum>01.03.2003 (<Name>ABCD</Name>)</Visum>
 
 # OrtDat field
-<OrtDat>Zürich, 20.01.2018 / <Name>AMUSTER</Name> </OrtDat>
+<OrtDat>Zürich, 20.01.2018 / <Name format="S" signature="AMUSTER">AMUSTER</Name> </OrtDat>
 <OrtDat>Zürich, 20.01.2018 / <Name>AMUSTER</Name> / <Name>amaster</Name></OrtDat>
 <OrtDat>Zürich, 20.01.2018 <Name>AMUSTER</Name> / <Name>amaster</Name></OrtDat>
 
@@ -59,10 +59,10 @@ und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
 
 
 # DisplayName field
-<DisplayName><Name>D. Veryseldom</Name></DisplayName>
+<DisplayName><Name firstname="D." lastname="Veryseldom" format="F ll">D. Veryseldom</Name></DisplayName>
 <DisplayName><Name>D. Veryseldom-Seldom</Name></DisplayName>
 
-<Name>Yvonne</Name> darf heute nach Hause gehen. # Yvonne exclusively appears as name in Gazetteer
+<Name format="ff" firstname="Yvonne">Yvonne</Name> darf heute nach Hause gehen. # Yvonne exclusively appears as name in Gazetteer
 Iris darf heute nach Hause gehen. # POS Tag based, but don't annotate since it is also a medical term
 stammen die Töchter <Name>Beatrice</Name> und <Name>Kathrin</Name>. Die Diagnose...
 <Name>Marius Veryseldmopoulos</Name> oder <Name>Anna Macovic</Name>

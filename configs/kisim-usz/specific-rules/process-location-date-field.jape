@@ -15,4 +15,4 @@ Rule: AnnotateLocationDateField
     {Date} {Token.string == "/"}
     (({Token.orth == "allCaps"}):signature_AnnotateLocationDateField):name
 ) --> :loc.Location = { rule = "AnnotateLocationDateField", type = "city" },
-      { { Utils.addNameAnnotation("AnnotateLocationDateField", "medical staff", "s", bindings, doc, outputAS); } }
+      { { Utils.addNameAnnotation("AnnotateLocationDateField", "medical staff", "S", bindings, doc, outputAS); } }

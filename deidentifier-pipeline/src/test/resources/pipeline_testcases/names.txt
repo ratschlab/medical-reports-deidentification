@@ -1,28 +1,29 @@
 Name
 
-Dr. <Name type="doctor">Muster</Name>
-Prof. Dr. <Name>Muster</Name>
+Dr. <Name type="doctor" lastname="Muster" format="ll">Muster</Name>
+Prof. Dr. <Name lastname="Muster" format="ll">Muster</Name>
 Professor <Name>Muster</Name>
 Herr Prof. <Name>Müster</Name>
-untersucht durch Frau Prof <Name>Muster</Name>
+untersucht durch Frau Dr <Name salutation="Frau Dr" lastname="Muster">Muster</Name>
+untersucht durch Frau Prof <Name salutation="Frau Prof" lastname="Muster">Muster</Name>
 untersucht durch Prof <Name>Muster</Name>
-Herr Prof. Dr. med. <Name>Peter Muster</Name>
+Herr Prof. Dr. med. <Name firstname="Peter" lastname="Muster" salutation="Herr Prof. Dr. med." format="ff ll">Peter Muster</Name>
 Herr Dr. <Name>Öetker</Name>
-Herr Dr. <Name>Max Öetker</Name>
-Herr Dr. <Name firstname="A" lastname="Öetker">A. Öetker</Name>
-Herr Dr. med. <Name firstname="A" lastname="Öetker">A. Öetker</Name>
+Herr Dr. <Name firstname="Max" lastname="Öetker" salutation="Herr Dr.">Max Öetker</Name>
+Herr Dr. <Name firstname="A." lastname="Öetker">A. Öetker</Name>
+Herr Dr. med. <Name firstname="A." lastname="Öetker">A. Öetker</Name>
 Dr. med <Name>Muster</Name>
 <Name>A. Muster</Name>, Assistenzarzt
 <Name>Ä. Muster</Name> Oberärztin
 pract. med. <Name>A. Muster</Name>, Assistenzarzt
 pract. med. <Name>A. Muster</Name>
 Prof. Dr. med. <Name>H.P. Muster</Name>
-Dr. med. univ. <Name firstname="A" lastname="Muster">A. Muster</Name>, Assistenzarzt
-Dr. med. <Name firstname="A" lastname="Meier">A. Meier Huber</Name>, Assistenzarzt # TODO: proper last name extraction (Meier Huber)
+Dr. med. univ. <Name firstname="A." lastname="Muster" format="F ll">A. Muster</Name>, Assistenzarzt
+Dr. med. <Name firstname="A." lastname="Meier Huber">A. Meier Huber</Name>, Assistenzarzt
 Dr. med. <Name>Andrea Meier Huber</Name>, Assistenzarzt
 Dr. med. <Name>Andrea Meier-Huber</Name>, Assistenzarzt
-<Name>Andrea Meier</Name>, Unterassistentin
-<Name>Y. Muster Master</Name>, Oberärztin # Visum field
+<Name firstname="Andrea" lastname="Meier" format="ff ll">Andrea Meier</Name>, Unterassistentin
+<Name firstname="Y." lastname="Muster Master" format="F ll ll">Y. Muster Master</Name>, Oberärztin # Visum field
 Dr. sc. nat. <Name>A. Muster</Name>, Oberassistentin
 Dr. med. <Name>Ch. Muster</Name>
 Dr. <Name>Hans-Matthias Muster</Name>
@@ -34,7 +35,7 @@ Dr. <Name>Meier-Outofvoc</Name>
 Prof. Dr. <Name>H. von Wattenwil</Name>
 z.Hd. Dr. <Name>Muster</Name>
 Sehr geehrte Frau Kollegin, sehr geehrter Herr Kollege
-Sehr geehrte Frau <Name format="l">Muster</Name>
+Sehr geehrte Frau <Name format="ll">Muster</Name>
 Hr. <Name>Muster</Name> hat...
 Fr. <Name>Muster</Name> hat...
 Neuroimmunologie-Studienvisite <Name>A. Muster</Name>, Assistenzarzt
@@ -79,8 +80,8 @@ Die Patientin  <Name>Vreni Huber-Meier</Name> hat
 <Name>HUBER-MEIER MUSTER Anna Maria</Name>
 <Name>HU Maria</Name> hat...
 <Name>Maria HUBER-MUSTER</Name>
-Fall <Name>Huber-Meier</Name>
-Frau <Name>Huber-Outofvoc</Name>
+Fall <Name format="ll-ll">Huber-Meier</Name>
+Frau <Name format="ll-ll" salutation="Frau">Huber-Outofvoc</Name>
 Frau <Name>Anna Meier</Name>
 Herr <Name>M. Meier</Name>
 Herr <Name>S.</Name> berichtet...

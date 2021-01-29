@@ -17,4 +17,5 @@ public class FeatureKeys {
     public static final String FIRSTNAME = "firstname";
     public static final String NAME_SIGNATURE = "signature";
     public static final String NAME_FORMAT = "format";
+    public static final String NAME_SALUTATION = "salutation";
 }

@@ -68,7 +68,7 @@ Macro: FIRSTNAME_LOOKUP
 
 Macro: DOUBLE_NAME
 (
-    (UPPER_INITIAL_TOKEN) (DASH|{Token.string=="/"}) (UPPER_INITIAL_TOKEN)
+    ((UPPER_INITIAL_TOKEN) (DASH|{Token.string=="/"}) (UPPER_INITIAL_TOKEN))
 )
 
 // example: Andrea Muster, Andrea-Maria Muster, Andrea M. Muster, Andrea Muster-Meier
@@ -85,16 +85,17 @@ Macro: NAME_SURNAME
             (UPPER_INITIAL_TOKEN) | (DOUBLE_NAME)
         )
     ):lastname_NAME_SURNAME
-)
+
+):format_ff-SPACE-ll_NAME_SURNAME
 
 // example: A. Muster, H.P. Muster, Ch. Muster, Z. Muster Master
 Macro: SHORT_NAME
 (
-    (FIRST_NAME_INITIALS):firstname_SHORT_NAME
+    ((FIRST_NAME_INITIALS):format_f_SHORT_NAME):firstname_SHORT_NAME
     (
         (NAME_PREPOSITIONS)? // de Meuron, von Wattenwil
-        {Token.orth == "upperInitial", !Token.string ==~ "Anfang|Mitte|Ende"} // surname
-        ((DASH)? (NAME_PREPOSITIONS)? {Token.orth == "upperInitial"})? // second surname
+        (({Token.orth == "upperInitial", !Token.string ==~ "Anfang|Mitte|Ende"}):format_ll_SHORT_NAME1) // surname
+        (((DASH)? (NAME_PREPOSITIONS)? {Token.orth == "upperInitial"}):format_ll_SHORT_NAME2)? // second surname
     ):lastname_SHORT_NAME
 )
 
@@ -142,17 +143,27 @@ Priority: 100 //overruling SimpleDetectPatient
     (
         (SALUTATION | ABBREV_ROLES): salutation
     )
-    (SHORT_NAME | NAME_SURNAME | (DOUBLE_NAME):lastname_DoctorsLeftContext | ({Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"})+): name
+    (
+        SHORT_NAME |
+        NAME_SURNAME |
+        ((DOUBLE_NAME):lastname_DoctorsLeftContext):format_ll-SPACE-ll_DoctorsLeftContext |
+        (
+            // separating the rules to add in some distinct format binding
+            ({Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"}):format_ll_DoctorsLeftContext |
+            ({Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"})[3,6]:format_ff-SPACE-ll-SPACE-ll_DoctorsLeftContext
+        ):lastname_DoctorsLeftContext2
+     ): name
 )
 --> { Utils.addNameAnnotation("DoctorsLeftContext", "doctor", "", bindings, doc, outputAS); },
 :salutation.Salutation = { rule = "DoctorsLeftContext"}
-
 
 Rule: DoctorsRightContext
 (
     (
         (SHORT_NAME) |
-        ((UPPER_INITIAL_TOKEN)+)
+        (((UPPER_INITIAL_TOKEN)[1]):lastname_DoctorsRightContext):format_ll_DoctorsRightContext |
+        ((UPPER_INITIAL_TOKEN):firstname_DoctorsRightContext2 (UPPER_INITIAL_TOKEN):lastname_DoctorsRightContext2):format_ff-SPACE-ll_DoctorsRightContext |
+        ((UPPER_INITIAL_TOKEN):firstname_DoctorsRightContext3 ((UPPER_INITIAL_TOKEN)[2]):lastname_DoctorsRightContext3 ((UPPER_INITIAL_TOKEN)[0,2])):format_ff-SPACE-ll-ll
     ):name
     ({Token.string == ","})
     (
@@ -169,9 +180,9 @@ Rule: DoctorsRightContext
 Rule: DoctorsLeftContextRole
 (
     (ABBREV_ROLES)
-    (({Token.orth == "upperInitial"}):lastname_DoctorsLeftContextRole): name
+    ((({Token.orth == "upperInitial"}):lastname_DoctorsLeftContextRole):format_ll): name
 )
---> { Utils.addNameAnnotation("DoctorsLeftContextRole", "doctor", "l", bindings, doc, outputAS); }
+--> { Utils.addNameAnnotation("DoctorsLeftContextRole", "doctor", "", bindings, doc, outputAS); }
 
 
 // MEDICAL STAFF
@@ -247,7 +258,7 @@ Rule: FirstNameLastNameFromGazetteers
         ):lastname_FirstNameLastNameFromGazetteers
     ):name
     ({Newline})?
-) --> { Utils.addNameAnnotation("FirstNameLastNameFromGazetteers", "other", "f l", bindings, doc, outputAS); }
+) --> { Utils.addNameAnnotation("FirstNameLastNameFromGazetteers", "other", "ff ll", bindings, doc, outputAS); }
 
 
 // matching names from Gazetteers
@@ -263,7 +274,7 @@ Rule: FirstNameLastNameUpper
         (SURNAME_TOKEN_UPPER_SEQ):lastname_FirstNameLastNameUpper
     ):name
     ({Newline})?
-) --> { Utils.addNameAnnotation("FirstNameLastNameUpper", "other", "f L", bindings, doc, outputAS); }
+) --> { Utils.addNameAnnotation("FirstNameLastNameUpper", "other", "ff LL", bindings, doc, outputAS); }
 
 
 // matching names from Gazetteers
@@ -281,7 +292,7 @@ Rule: LastNameFirstNameFromGazetteers
         ((FIRSTNAME_LOOKUP)+):firstname_LastNameFirstNameFromGazetteers
 
     ):name
-) --> { Utils.addNameAnnotation("FirstNameLastNameUpper", "other", "l f", bindings, doc, outputAS); }
+) --> { Utils.addNameAnnotation("FirstNameLastNameUpper", "other", "ll ff", bindings, doc, outputAS); }
 
 
 // matching names from Gazetteers
@@ -299,7 +310,7 @@ Priority: 100
         ((FIRSTNAME_LOOKUP)+):firstname_UpperLastNameFirstNameFromGazetteers
 
     ):name
-) -->  { Utils.addNameAnnotation("UpperLastNameFirstNameFromGazetteers", "other", "L f", bindings, doc, outputAS); }
+) -->  { Utils.addNameAnnotation("UpperLastNameFirstNameFromGazetteers", "other", "LL ff", bindings, doc, outputAS); }
 
 // A. Meier (Meier in Gazetteer)
 Rule: ShortNameWithGazetteer
@@ -307,7 +318,7 @@ Priority: 200
 (
     (FIRST_NAME_INITIALS):firstname_ShortNameWithGazetteer
     (SURNAME_TOKEN_SEQ):lastname_ShortNameWithGazetteer
-):name --> { Utils.addNameAnnotation("ShortNameWithGazetteer", "other", "fs l", bindings, doc, outputAS); }
+):name --> { Utils.addNameAnnotation("ShortNameWithGazetteer", "other", "f ll", bindings, doc, outputAS); }
 
 
 // firstname followed by an out of voc term (assuming fairly complete list of first names)
@@ -318,7 +329,7 @@ Rule: NameOutOfVoc
         (({Lookup.majorType =~ "name", Lookup.minorType =~ "firstname", !Lookup.minorType =~ "stop|medical", Lookup.language == "frequent"})+):firstname_NameOutOfVoc
         (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+", !Token within Lookup, !Token contains Lookup})+):lastname_NameOutOfVoc
     ):name
-) --> { Utils.addNameAnnotation("NameOutOfVoc", "other", "f l", bindings, doc, outputAS); }
+) --> { Utils.addNameAnnotation("NameOutOfVoc", "other", "ff ll", bindings, doc, outputAS); }
 
 /*
 Rule: FirstNamesPos
@@ -333,7 +344,10 @@ Rule: FirstNamesPos
 Rule: UniqueNameOrSurname
 Priority: 0
 (
-    ({Token within {Lookup.majorType ==~ "name"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop"}})+:name
+    (
+        (({Token within {Lookup.minorType ==~ "firstname"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop"}}):format_ff):firstname |
+        (({Token within {Lookup.minorType ==~ "surname"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop"}}):format_ll):lastname
+    )+:name
 ) --> { Utils.addNameAnnotation("UniqueNameOrSurname", "other", "", bindings, doc, outputAS); }
 
 
@@ -343,7 +357,7 @@ Rule: UniqueDoubleName
         ({Token within {Lookup.majorType ==~ "name"}})
         DASH
         ({Token within {Lookup.majorType ==~ "name"}, !Token.string ==~ "Spiegel"})
-    )
+    ):format_ll-DASH-ll
 ):name --> { Utils.addNameAnnotation("UniqueDoubleName", "other", "", bindings, doc, outputAS); }
 
 // example: Herr Muster, but not "Herr Kollege"
@@ -352,28 +366,28 @@ Priority: 0
 (
     (CIVIL_SALUTATION): salutation
     (
-        ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende"})+ |
+        ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"})+ |
         ({Token.string ==~ "[A-Z]"} {Token.string == "."}):lastname_SimpleDetectPatient |
         (SHORT_NAME)
     ):name
-) --> { Utils.addNameAnnotation("SimpleDetectPatient", "patient", "l", bindings, doc, outputAS); },
+) --> { Utils.addNameAnnotation("SimpleDetectPatient", "patient", "ll", bindings, doc, outputAS); },
       :salutation.Salutation = { rule = "SimpleDetectPatient"}
 
 Rule: DoubleNameLeftTriggered
 (
-    ({Token.string ==~ "Herr|Frau|Hr|Fr"}):salutation
+    ({Token.string ==~ "Herr|Frau|Hr|Fr|Dr"}):salutation
     (
         (
-            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"}
+            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
             DASH
-            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"}
-        ) |
+            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
+        ):format_ll-DASH-ll |
         (
-            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"}
+            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
             {Token within {Lookup.majorType ==~ "name"}}
-        )
+        ):format_ll-SPACE-ll
     ):name
-) --> { Utils.addNameAnnotation("DoubleNameLeftTriggered", "patient", "l", bindings, doc, outputAS); },
+) --> { Utils.addNameAnnotation("DoubleNameLeftTriggered", "patient", "", bindings, doc, outputAS); },
        :salutation.Salutation = { rule = "DoubleNameLeftTriggered"}
 
 // example: Liebe Maria
@@ -384,7 +398,7 @@ Priority: 100
     (
       (({Lookup.minorType =~ "firstname"} | (DASH)?)+):firstname_FirstNameInSalutation
     ) :name
-) --> { Utils.addNameAnnotation("FirstNameInSalutation", "other", "f", bindings, doc, outputAS); }
+) --> { Utils.addNameAnnotation("FirstNameInSalutation", "other", "ff", bindings, doc, outputAS); }
 
 
 // negative contexts
