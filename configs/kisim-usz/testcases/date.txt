@@ -1,5 +1,7 @@
-Date; Id, Patienteninformation
+Date; Id, Patienteninformation, DateSmallCapsSignField
 <Date>01.01.2019</Date>
 <Id>some id 01.01.2019</Id> # don't annotate dates within Ids
-geb. <Date>01.01.2019</Date>
-<Patienteninformation>OUTOFVOC Hans, geb. <Date>01.01.1900</Date>, Musterweg 12, 8050 Zürich</Patienteninformation>
+geb. <Date type="DOB">01.01.2019</Date>
+<Patienteninformation>OUTOFVOC Hans, geb. <Date type="DOB" year="1900" format="dd.MM.yyyy">01.01.1900</Date>, Musterweg 12, 8050 Zürich</Patienteninformation>
+<DateSmallCapsSignField> abcde <Date>20.11</Date>  </DateSmallCapsSignField>
+<DateSmallCapsSignField> abcde <Date day="12" month="12" format="dd.MM">12.12</Date>  </DateSmallCapsSignField>

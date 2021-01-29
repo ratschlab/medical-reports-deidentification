@@ -15,7 +15,7 @@ Macro: SIGNATURE_TOKEN
 Rule: ProcessDateSmallCapsSignField
 (
      // already regonized date or some date like '20.11' without a dot
-     ({Date} | ( {Token.kind == "number"} {Token.string == "."} {Token.kind == "number"})):d
+     ({Date} | ( ({Token.kind == "number"}):day {Token.string == "."} ({Token.kind == "number"}):month)):date
     (SIGNATURE_TOKEN):first_tok
     (
                 {Token.string ==~ "[,/]"}
@@ -25,17 +25,18 @@ Rule: ProcessDateSmallCapsSignField
 --> {
     // filtering tokens in general or medical, annotate remaining_toks
     Utils.addDoctorEnumeration(inputAS, outputAS, bindings, "ProcessDateSmallCapsSignField", false, doc);
-},
-:d.Date = { rule = "ProcessDateSmallCapsSignField", type = "other" }
+    Utils.addDateAnnotation("ProcessDateSmallCapsSignField", "other", bindings, doc, outputAS);
+}
 
 Rule: ProcessDateSmallCapsSignFieldInv
 (
      (SIGNATURE_TOKEN):sig
      // already regonized date or some date like '20.11' without a dot
-     ({Date} | ( {Token.kind == "number"} {Token.string == "."} {Token.kind == "number"})):d
+     ({Date} | ( ({Token.kind == "number"}):day {Token.string == "."} ({Token.kind == "number"}):month)):date
 
-) -->
-:d.Date = { rule = "ProcessDateSmallCapsSignFieldInv", type = "other" },
+) --> {
+    Utils.addDateAnnotation("ProcessDateSmallCapsSignFieldInv", "other", bindings, doc, outputAS);
+},
 :sig.Name = {rule = "ProcessDateSmallCapsSignFieldInv", type = "medical staff" }
 
 // RKGDECKB01, SFALINFO01
