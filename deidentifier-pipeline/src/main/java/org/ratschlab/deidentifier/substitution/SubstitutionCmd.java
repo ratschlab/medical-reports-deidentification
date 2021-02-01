@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import gate.*;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
-import org.ratschlab.deidentifier.annotation.FeatureKeys;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysDate;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.sources.KisimFormat;
 import org.ratschlab.deidentifier.sources.KisimSource;
@@ -170,7 +170,7 @@ public class SubstitutionCmd implements Callable<Integer> {
             new SimpleDateFormat("yyyy"), new SimpleDateFormat("M yyyy"));
     public static void attemptExtractDate(Annotation an, Document doc) {
         FeatureMap feat = an.getFeatures();
-        if(feat.containsKey(FeatureKeys.DATE_FORMAT)) {
+        if(feat.containsKey(FeatureKeysDate.DATE_FORMAT)) {
             return;
         }
 
@@ -203,14 +203,14 @@ public class SubstitutionCmd implements Callable<Integer> {
         Calendar cal = Calendar.getInstance();
         cal.setTime(bestDate);
 
-        feat.put(FeatureKeys.DATE_FORMAT, bestFormat);
+        feat.put(FeatureKeysDate.DATE_FORMAT, bestFormat);
 
         if(bestFormat.contains("yy")) {
-            feat.put(FeatureKeys.YEAR_FORMAT, String.valueOf(cal.get(Calendar.YEAR)));
+            feat.put(FeatureKeysDate.YEAR_FORMAT, String.valueOf(cal.get(Calendar.YEAR)));
         }
 
-        feat.put(FeatureKeys.MONTH_FORMAT, String.valueOf(cal.get(Calendar.MONTH) + 1));
-        feat.put(FeatureKeys.DAY_FORMAT, String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
+        feat.put(FeatureKeysDate.MONTH_FORMAT, String.valueOf(cal.get(Calendar.MONTH) + 1));
+        feat.put(FeatureKeysDate.DAY_FORMAT, String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
     }
 
     private Function<Document, DeidentificationSubstituter> getSubstFactory() {
@@ -259,7 +259,7 @@ public class SubstitutionCmd implements Callable<Integer> {
 
             // take the largest year as default year
             int defaultYear = dates.stream().
-                    map(an -> org.ratschlab.util.Utils.maybeParseInt(an.getFeatures().getOrDefault(FeatureKeys.YEAR_FORMAT,"").toString())).
+                    map(an -> org.ratschlab.util.Utils.maybeParseInt(an.getFeatures().getOrDefault(FeatureKeysDate.YEAR_FORMAT,"").toString())).
                     filter(o -> o.isPresent()).map(x -> x.get()).max((a,b) -> a - b).orElse(0);
 
             DateShiftSubstitution subst = new DateShiftSubstitution(docSeed, defaultYear, this.minDaysShift, this.maxDaysShift);

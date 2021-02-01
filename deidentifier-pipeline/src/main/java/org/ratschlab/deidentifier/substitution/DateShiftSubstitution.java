@@ -1,7 +1,7 @@
 package org.ratschlab.deidentifier.substitution;
 
 import gate.FeatureMap;
-import org.ratschlab.deidentifier.annotation.FeatureKeys;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class DateShiftSubstitution extends ScrubberSubstitution {
     public String substituteDate(String origStr, FeatureMap features) {
         String ret = "DATE";
 
-        if(features.containsKey(FeatureKeys.DATE_FORMAT)) {
+        if(features.containsKey(FeatureKeysDate.DATE_FORMAT)) {
             try {
                 DateAnnotation da = DateAnnotation.fromAnnotation(features, defaultYear);
                 ret = da.shift(shiftLength).format();

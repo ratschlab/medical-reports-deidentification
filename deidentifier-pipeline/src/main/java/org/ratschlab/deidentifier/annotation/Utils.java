@@ -3,12 +3,13 @@ package org.ratschlab.deidentifier.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 import gate.*;
 import gate.util.Files;
 import gate.util.InvalidOffsetException;
 import gate.util.OffsetComparator;
 import org.apache.commons.lang3.tuple.Pair;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 import org.ratschlab.deidentifier.utils.DateUtils;
 
 import java.io.File;
@@ -146,7 +147,7 @@ public class Utils {
                     features.put("type", "medical staff");
                     features.put("rule", rule);
                     features.put("format", "ll");
-                    features.put(FeatureKeys.LASTNAME, gate.Utils.stringFor(doc, ans.get(i)));
+                    features.put(FeatureKeysName.LASTNAME, gate.Utils.stringFor(doc, ans.get(i)));
 
                     outputAS.add(lastStartOffset, ans.get(i).getEndNode().getOffset(), "Name", features);
                     lastStartOffset = -1;
@@ -185,7 +186,7 @@ public class Utils {
         if(formats.size() > 1) {
             //System.out.println("WARNING: more than one: " + formats.stream().collect(Collectors.joining(";")));
         }
-        
+
         return formats.stream().map(s -> s.split("_")).filter(a -> a.length > 1).map(a -> a[1].replaceAll("-", "").
             replaceAll("DASH", "-").
             replaceAll("SPACE", " ").
@@ -199,22 +200,22 @@ public class Utils {
 
         FeatureMap feat = Factory.newFeatureMap();
 
-        feat.put(FeatureKeys.RULE, rule);
-        feat.put(FeatureKeys.TYPE, type);
+        feat.put(FeatureKeysGeneral.RULE, rule);
+        feat.put(FeatureKeysGeneral.TYPE, type);
 
         if(format.isEmpty()) {
             format = determineNameFormatFromBindings(bindings, doc);
         }
-        feat.put(FeatureKeys.NAME_FORMAT, format);
+        feat.put(FeatureKeysName.NAME_FORMAT, format);
 
         if(format.isEmpty()) {
             System.out.println("WARNING: didn't find format " + rule + " " + gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
         }
 
-        Map<String, String> fieldMappings = ImmutableMap.of("firstname", FeatureKeys.FIRSTNAME,
-            "lastname", FeatureKeys.LASTNAME,
-            "signature", FeatureKeys.NAME_SIGNATURE,
-            "salutation", FeatureKeys.NAME_SALUTATION
+        Map<String, String> fieldMappings = ImmutableMap.of("firstname", FeatureKeysName.FIRSTNAME,
+            "lastname", FeatureKeysName.LASTNAME,
+            "signature", FeatureKeysName.NAME_SIGNATURE,
+            "salutation", FeatureKeysName.NAME_SALUTATION
         );
 
         for(Map.Entry<String, String> e: fieldMappings.entrySet()) {
@@ -231,8 +232,8 @@ public class Utils {
             }
         }
 
-        if(format.equals("S") && !feat.containsKey(FeatureKeys.NAME_SIGNATURE)) {
-            feat.put(FeatureKeys.NAME_SIGNATURE, gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
+        if(format.equals("S") && !feat.containsKey(FeatureKeysName.NAME_SIGNATURE)) {
+            feat.put(FeatureKeysName.NAME_SIGNATURE, gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
         }
 
         outputAs.add(bindings.get(nameBinding).firstNode(), bindings.get(nameBinding).lastNode(), "Name", feat);
