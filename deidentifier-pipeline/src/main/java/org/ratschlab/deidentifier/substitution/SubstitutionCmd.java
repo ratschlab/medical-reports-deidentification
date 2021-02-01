@@ -72,6 +72,9 @@ public class SubstitutionCmd implements Callable<Integer> {
     @CommandLine.Option(names = "--keep-dates", description = "don't substitute dates (Scrubber substitution method only)")
     boolean keepDates = false;
 
+    @CommandLine.Option(names = " --substitute-whole-address", description = "substitute whole address, regardless if parts of it have different annotation")
+    boolean substituteWholeAddress = true;
+
     @CommandLine.Option(names = {"--fields-blacklist"}, description = "Path to files giving field blacklist")
     private File fieldsBlacklistPath = null;
 
@@ -131,7 +134,7 @@ public class SubstitutionCmd implements Callable<Integer> {
                 throw new IllegalArgumentException("-o and --db-config cannot be both undefined!");
             }
 
-            concerns.add(new SubstituteAndWrite(new DeidentificationSubstitution(finalAnnotationName, substFactory, true, fieldBlacklist),
+            concerns.add(new SubstituteAndWrite(new DeidentificationSubstitution(finalAnnotationName, substFactory, this.substituteWholeAddress, fieldBlacklist),
                     sinks));
 
             Set<String> docIds = loadDocTypeSet(docTypeFilterPath);
