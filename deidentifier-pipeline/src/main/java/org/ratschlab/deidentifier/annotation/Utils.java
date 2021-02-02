@@ -187,15 +187,12 @@ public class Utils {
     private static String determineNameFormatFromBindings(Map<String,AnnotationSet> bindings, Document doc) {
         List<String> formats = bindings.keySet().stream().filter(s -> s.startsWith("format")).
             map(s -> Pair.of(s, bindings.get(s).iterator().next())).
-            sorted((p1, p2) -> p1.getValue().compareTo(p2.getValue())). // order by annotation
+            sorted(Comparator.comparing(Pair::getValue)). // order by annotation
             map(p -> adjustFormatForCase(p.getKey(), p.getValue(), doc)).
             collect(Collectors.toList());
 
         if(formats.isEmpty()) {
             return "";
-        }
-        if(formats.size() > 1) {
-            //System.out.println("WARNING: more than one: " + formats.stream().collect(Collectors.joining(";")));
         }
 
         return formats.stream().map(s -> s.split(FORMAT_SEP)).filter(a -> a.length > 1).map(a -> a[1].replaceAll(FORMAT_COMPONENT_SEP, "").
@@ -234,7 +231,6 @@ public class Utils {
 
             Stream<String> annotatedTexts = annotationsWithTag.map(as -> as.stream().sorted().map(a -> gate.Utils.stringFor(doc, a)).collect(Collectors.joining(" ")));
 
-            // TODO: document reasoning!
             String annotatedText = annotatedTexts.collect(Collectors.joining(" ")).
                 replace(" .", "."); // remove preceding "."
 
@@ -346,7 +342,7 @@ public class Utils {
             feat.put("year", yearStrFixed);
         }
 
-        String dateFormat = dateComponents.stream().sorted((p1, p2) -> p1.getValue().compareTo(p2.getValue())).
+        String dateFormat = dateComponents.stream().sorted(Map.Entry.comparingByValue()).
                map(p -> p.getKey()).collect(Collectors.joining()).replaceAll(",?\\s*$", "");
 
         feat.put("format", dateFormat);
