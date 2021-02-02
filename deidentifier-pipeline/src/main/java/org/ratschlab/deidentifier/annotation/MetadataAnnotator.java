@@ -99,7 +99,7 @@ public class MetadataAnnotator extends AbstractLanguageAnalyser {
         for (Annotation a : inputAS.get("Token")) {
             String t = gate.Utils.stringFor(doc, a);
 
-            if (annotationMap.containsKey(t)) {
+            if (annotationMap.containsKey(t) && !t.equals("-")) {
                 FeatureMap m = Factory.newFeatureMap();
                 m.put("rule", "meta_annotator");
 
