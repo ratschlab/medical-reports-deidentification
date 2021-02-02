@@ -1,6 +1,11 @@
 ## Installation
 
-### Get Software and Lexica 
+### Prerequisites
+
+* at least Java 8
+* appropriate JDBC driver, if reports are loaded from database (PostgreSQL drivers are already included)
+
+### Get Software and Lexica
 
 Download the release zip from some appropriate place.
 

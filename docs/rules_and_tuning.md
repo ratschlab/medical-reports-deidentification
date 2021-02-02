@@ -37,6 +37,17 @@ Remaining issues are mainly due to misspellings of dates such as `16.11.2918` or
 is actually meant, it is not straightforward to capture these in patterns. This
 could be addressed in future extensions.
 
+#### Information Extraction for Dates
+
+Additionally to recognizing dates in text, the annotation pipeline also attempts
+to infer the structure of dates. This includes determining the date format, e.g. "dd.MM.yyyy"
+as well as to extract day, month and year components. This is helpful later on, when
+substitution is done with the `ReplacementTags` strategy.
+
+The formats extracted are compatible with the [SimpleDataFormat](https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html)
+in Java. Note, that the information extraction is not guaranteed to succeed, i.e. fields may be missing/empty.
+
+
 ### Name Annotation
 
 Name annotations are driven by triggers such as titles like `Dr.` or names from
@@ -51,7 +62,7 @@ name. This includes:
  * token is followed/preceded by another token appearing in a name lexicon
  * token is a frequent name and the token doesn't appear in any medical or general
    lexica
-   
+
 This approach requires lexica of good quality, i.e. they should be reasonably
 complete and not contain tokens which are not actually names (may be problematic
 if lexica directly compiled from a hospital database system)
@@ -71,6 +82,39 @@ acronym, the annotation of such strings is only triggered in certain fields.
 Some report specific rules were needed for some report types where the
 shorthands are spelled in small case.
 
+#### Information Extraction for Names
+
+Similar to the `Date` annotation, the structure of a `Name` annotation is also extracted by
+the pipeline, e.g. the firstname and lastname. If a salutation could be recognized, it is also included
+(this can be used during a substitution procedure to determine the gender of the involved name).
+
+The following fields are extracted:
+
+| Field        | Example           | Description  |
+| ------------- |:-------------:| -----:|
+| firstname      | Hans |  |
+| lastname     | Meier-Müller      |    |
+| signature | ABCDE | internal abbreviation/shorthand
+| salutation | Frau Dr. | complete salutation (usually preceding an annotation)
+| format | ff ll      | structure of name |
+
+The format field is composed of following tokens:
+
+| Letters        | Meaning           |
+| ------------- |:-------------:|
+| f | firstname short (typically 1 letter) |
+| ff | full firstname |
+| ll | lastname |
+| LL | lastname all upper case: `MEIER` |
+| s | signature |
+| S | signature all upper case |
+
+Note, that fields may be empty. Furthermore, if an annotation can be called by various rules, the
+extracted information can be contradictory (contradictory information is separated by `,`).
+For instance, the text `Peter Simon` may be called by 2 rules,
+one for double lastnames and one for double first names leading to contradictory values for `format`
+(and also `firstname` and `lastname`).
+These conflicts are currently not resolved and need to be handled by the downstream pipeline.
 
 ### Location Annotation
 
@@ -111,7 +155,7 @@ following steps could be taken:
 
 The same procedure can roughly be followed if a token was wrongly annotated.
 In this case, perhaps entries need to be removed from a lexicon. Or in some
-added to a "false positive" or "ambiguous" dictionary. 
+added to a "false positive" or "ambiguous" dictionary.
 Refer to the `lexica.md` to pick an appropriate lexicon to edit.
 
 When editing lexica try to limit the editing to lexica marked as "manual" in
