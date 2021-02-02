@@ -164,12 +164,23 @@ public class Utils {
         addNameAnnotation(rule, type, format, "name", bindings, doc, outputAs);
     }
 
+    private static final String FORMAT_SEP = "_";
+    private static final String FORMAT_COMPONENT_SEP = "-";
     private static String adjustFormatForCase(String f, Annotation a, Document doc) {
+        if(f.contains(FORMAT_COMPONENT_SEP)) {
+            // don't adjust case for formats consisting of multiple parts
+            return f;
+        }
+
         String text = gate.Utils.stringFor(doc, a);
 
         if(text.toUpperCase().equals(text)) {
             return f.toUpperCase();
         }
+        else if(text.toLowerCase().equals(text)) {
+            return f.toLowerCase();
+        }
+
         return f;
     }
 
@@ -187,7 +198,7 @@ public class Utils {
             //System.out.println("WARNING: more than one: " + formats.stream().collect(Collectors.joining(";")));
         }
 
-        return formats.stream().map(s -> s.split("_")).filter(a -> a.length > 1).map(a -> a[1].replaceAll("-", "").
+        return formats.stream().map(s -> s.split(FORMAT_SEP)).filter(a -> a.length > 1).map(a -> a[1].replaceAll(FORMAT_COMPONENT_SEP, "").
             replaceAll("DASH", "-").
             replaceAll("SPACE", " ").
             replaceAll("SLASH", "/")).collect(Collectors.joining(" "));
@@ -265,7 +276,7 @@ public class Utils {
         }
     }
 
-    private static Set<String> DATE_COMPONENTS_SEPARATORS = ImmutableSet.of(" ", ".", "/", "-");
+    private static Set<String> DATE_COMPONENTS_SEPARATORS = ImmutableSet.of(" ", ".", "/", "-", ",");
 
     private static String separatorAfterAnnot(Document doc, Annotation a) {
         try {
@@ -336,7 +347,7 @@ public class Utils {
         }
 
         String dateFormat = dateComponents.stream().sorted((p1, p2) -> p1.getValue().compareTo(p2.getValue())).
-               map(p -> p.getKey()).collect(Collectors.joining()).trim();
+               map(p -> p.getKey()).collect(Collectors.joining()).replaceAll(",?\\s*$", "");
 
         feat.put("format", dateFormat);
 

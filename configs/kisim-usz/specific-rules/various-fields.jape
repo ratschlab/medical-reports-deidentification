@@ -46,15 +46,24 @@ Rule: ProcessOrtDat
 ) --> :loc.Location = { rule = "ProcessOrtDat",  type = "city" },
       {
         for(int i = 1; i<=5; i++) {
+            String signatureKey = "signature" + i;
             // make sure there is only one signature
             Map<String, AnnotationSet> filteredBindings = new HashMap<>();
             for(String s : bindings.keySet()) {
-                if(!s.startsWith("signature") || s.equals("signature" + i)) {
+                if(!s.startsWith("signature") || s.equals(signatureKey)) {
                     filteredBindings.put(s, bindings.get(s));
                 }
             }
 
-            Utils.addNameAnnotation("DoctorsLeftContextRole", "medical staff", "S", "name" + i, filteredBindings, doc, outputAS);
+            String format = "S";
+            if(bindings.containsKey(signatureKey)) {
+                String sign = gate.Utils.stringFor(doc, bindings.get(signatureKey).iterator().next());
+                if(sign.toLowerCase().equals(sign)) {
+                    // if lowercase, adjust formatting setting
+                    format = "s";
+                }
+            }
+            Utils.addNameAnnotation("DoctorsLeftContextRole", "medical staff", format, "name" + i, filteredBindings, doc, outputAS);
         }
       }
 

@@ -318,7 +318,7 @@ Priority: 200
 (
     (FIRST_NAME_INITIALS):firstname_ShortNameWithGazetteer
     (SURNAME_TOKEN_SEQ):lastname_ShortNameWithGazetteer
-):name --> { Utils.addNameAnnotation("ShortNameWithGazetteer", "other", "f ll", bindings, doc, outputAS); }
+):name --> { Utils.addNameAnnotation("ShortNameWithGazetteer", "other", "F ll", bindings, doc, outputAS); }
 
 
 // firstname followed by an out of voc term (assuming fairly complete list of first names)

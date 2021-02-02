@@ -439,13 +439,15 @@ Rule: BirthYear
 // Oktober/November 2019
 Rule: ApproximateMonthYear
 (
-  (
-    (MONTH_NAME):month1 {Token.string == "/"}
-    (MONTH_NAME):month2
-  )
+  ((MONTH_NAME):month):date
 
-  (FOUR_DIGIT_YEAR | TWO_DIGIT_YEAR):year2
-): date --> {Utils.addDateAnnotation("ApproximateMonthYear", "other", bindings, doc, outputAS); }
+  {Token.string == "/"}
+
+  (
+    (MONTH_NAME):month2
+    (FOUR_DIGIT_YEAR | TWO_DIGIT_YEAR):year2
+  ):date2
+) --> {Utils.addDateAnnotation("ApproximateMonthYear", "other", bindings, doc, outputAS); }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

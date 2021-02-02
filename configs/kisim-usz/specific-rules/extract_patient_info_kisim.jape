@@ -21,19 +21,19 @@ Macro: COMMA
 Rule: PatienteninformationExtraction
 (
     (
-        (
+        ((
             (
                ({ Token within Patienteninformation, Token.orth == "allCaps" } |
                 { Token within Patienteninformation, Token.string ==~ "[-']" })+
             ):lastname
             (({ Token within Patienteninformation, Token.string != ",", Token.kind != "number"})+):firstname
-        ):fullname |
+        ):fullname):format_ll-SPACE-ff_fullname1 |
         (
-            {Token.string ==~ "Herr|Frau"}
-            (
+            ({Token.string ==~ "Herr|Frau"}):salutation
+            ((
                 ({ Token within Patienteninformation, Token.string != ",", Token.kind != "number"}):firstname2
                 (({ Token within Patienteninformation, Token.string != ",", Token.kind != "number"})+):lastname2
-            ):fullname2
+            ):fullname2):format_ff-SPACE-ll_fullname2
         )
     )
     (

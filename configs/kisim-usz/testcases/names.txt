@@ -11,8 +11,8 @@ Dr. <Name>Meier-Outofvoc</Name> ...
 Liebe <Name>Yvonne</Name>
 
 # testing metadata extraction
-<Patienteninformation><Name format="LL ff" firstname="Jean" lastname="OUTOFVOC">OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
-<Patienteninformation><Name format="LL ff" firstname="Jean" lastname="OUTOFVOC">OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstr. 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name firstname="Jean" lastname="OUTOFVOC">OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name firstname="Jean" lastname="OUTOFVOC">OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstr. 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
 <Patienteninformation><Name firstname="Jeanne" lastname="OUTOFVOC MEIER">OUTOFVOC MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
 <Patienteninformation><Name>OUTOFVOC-MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21a, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
 <Patienteninformation><Name>OUTOFVOC-MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21a, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
@@ -34,7 +34,7 @@ und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
 # OrtDat field
 <OrtDat>Zürich, 20.01.2018 / <Name format="S" signature="AMUSTER">AMUSTER</Name> </OrtDat>
 <OrtDat>Zürich, 20.01.2018 / <Name>AMUSTER</Name> / <Name>amaster</Name></OrtDat>
-<OrtDat>Zürich, 20.01.2018 <Name>AMUSTER</Name> / <Name>amaster</Name></OrtDat>
+<OrtDat>Zürich, 20.01.2018 <Name format="S">AMUSTER</Name> / <Name format="s">amaster</Name> / <Name format="s">bmaster</Name></OrtDat>
 
 # VisDat field
 <VisDat><Name>AMASTER</Name> / 02.04.2017 14:23:12</VisDat>
