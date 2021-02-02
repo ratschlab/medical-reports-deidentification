@@ -45,6 +45,11 @@
                     <restriction base="string"/>
                 </simpleType>
             </attribute>
+            <attribute name="salutation" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
         </complexType>
     </element>
 </schema>
