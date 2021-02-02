@@ -73,6 +73,11 @@ public class WriteToSerializedCorpus extends DefaultWorkflowConcern {
 
         doc.getFeatures().remove(PipelineWorkflow.WORKFLOW_INDEX);
 
+        if(doc.getFeatures().containsKey("content")) {
+            // remove unnecessary original content field.
+            doc.getFeatures().remove("content");
+        }
+
         // make copy of document and write it into the corpus
         // this is done to avoid concurrency issues when later calling Factory.deleteResource(doc) and doc is still associated with some corpus
         Document toCorpus = GateTools.copyDocument(doc);
