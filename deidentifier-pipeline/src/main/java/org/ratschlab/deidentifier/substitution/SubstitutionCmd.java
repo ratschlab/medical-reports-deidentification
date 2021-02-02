@@ -72,7 +72,7 @@ public class SubstitutionCmd implements Callable<Integer> {
     @CommandLine.Option(names = "--keep-dates", description = "don't substitute dates (Scrubber substitution method only)")
     boolean keepDates = false;
 
-    @CommandLine.Option(names = " --substitute-whole-address", description = "substitute whole address, regardless if parts of it have different annotation")
+    @CommandLine.Option(names = "--no-substitute-whole-address", description = "don't substitute whole address, substitute parts annotated within addresses independently")
     boolean substituteWholeAddress = true;
 
     @CommandLine.Option(names = {"--fields-blacklist"}, description = "Path to files giving field blacklist")
