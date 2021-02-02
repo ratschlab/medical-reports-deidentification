@@ -104,13 +104,13 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
 
     private Map<String, String> extractRelevantProperties(FeatureMap features) {
         Map<String, String> ret = new HashMap<>();
-        List<String> propName = ImmutableList.of(FeatureKeysGeneral.TYPE, FeatureKeysGeneral.RULE,
-                FeatureKeysDate.DATE_FORMAT, FeatureKeysDate.DAY_FORMAT, FeatureKeysDate.MONTH_FORMAT, FeatureKeysDate.YEAR_FORMAT,
-                FeatureKeysName.FIRSTNAME, FeatureKeysName.LASTNAME, FeatureKeysName.NAME_SIGNATURE, FeatureKeysName.NAME_FORMAT);
+
+        List<String> propName = ImmutableList.of(FeatureKeys.getFieldNames(FeatureKeysGeneral.class),
+                FeatureKeys.getFieldNames(FeatureKeysName.class),
+                FeatureKeys.getFieldNames(FeatureKeysDate.class)).stream().flatMap(Collection::stream).collect(Collectors.toList());
 
         propName.stream().filter(n -> features.containsKey(n)).forEach(n -> ret.put(n, features.get(n).toString()));
 
-        //FeatureKeys.class.getFields()
         return ret;
     }
 }
