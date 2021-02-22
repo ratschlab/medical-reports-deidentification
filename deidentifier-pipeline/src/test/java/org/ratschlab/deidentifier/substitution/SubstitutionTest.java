@@ -112,6 +112,34 @@ public class SubstitutionTest {
     }
 
     @Test
+    public void testOverlapSubstitutionComplex() {
+        try {
+            String location = "Xwil";
+            String content = "Klinik Xwil 20.01.2010";
+            String xmlDoc = String.format("<%s>%s</%s>", DUMMY_TAG, content, DUMMY_TAG);
+
+            Document doc = GateTools.documentFromXmlString(xmlDoc);
+
+            long locationStart = (long) content.indexOf(location);
+            long dateStart = (long) content.indexOf("20.");
+
+            // Adding rogue annotations on the existing ones which are a bit shorter
+            AnnotationSet annotated = doc.getAnnotations(phiAnnotationName);
+            annotated.add(0L, locationStart, "Location", Factory.newFeatureMap());
+            annotated.add(locationStart, dateStart + 2, "Location", Factory.newFeatureMap());
+            annotated.add(dateStart, dateStart + 10, "Date", Factory.newFeatureMap());
+
+            DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ReplacementTagsSubstitution(), false, Collections.emptyList());
+            Document substDoc = subst.substitute(doc);
+
+            Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substDoc.getContent().toString()));
+            // TODO Assert.assertEquals(content, substDoc.getContent().toString());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
     public void testCrossingOrigMarkupSubstitution() {
         try {
             String xmlDoc = String.format("<%s>%s</%s>", DUMMY_TAG, "<Markup1>some text</Markup1><Markup2>some_text</Markup2>", DUMMY_TAG);

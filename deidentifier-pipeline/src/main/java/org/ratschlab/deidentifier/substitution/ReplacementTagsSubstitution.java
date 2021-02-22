@@ -113,4 +113,31 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
 
         return ret;
     }
+
+    public static boolean documentValid(String content) {
+        int pos = content.indexOf(START_TAG);
+
+        boolean insideAnnoation = true;
+
+        while(0 <= pos && pos < content.length()) {
+            int posNextStartTag = content.indexOf(START_TAG, pos + 1);
+            int posNextEndTag = content.indexOf(END_TAG, pos + 1);
+
+            boolean nextIsClosing = (posNextEndTag < posNextStartTag) || (posNextEndTag >= 0 && posNextStartTag < 0);
+
+            if(insideAnnoation && nextIsClosing) {
+                pos = posNextEndTag;
+                insideAnnoation = false;
+            }
+            else if(!insideAnnoation && !nextIsClosing) {
+                pos = posNextStartTag;
+                insideAnnoation = true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
