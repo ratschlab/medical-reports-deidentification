@@ -1,6 +1,7 @@
 package org.ratschlab.deidentifier.substitution;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.typesafe.config.Config;
 import gate.*;
 import gate.creole.ResourceInstantiationException;
@@ -10,6 +11,10 @@ import gate.util.InvalidOffsetException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.ratschlab.deidentifier.ConfigUtils;
 import org.ratschlab.deidentifier.pipelines.PipelineConfigKeys;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
@@ -20,7 +25,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class SubstitutionTest {
@@ -125,15 +132,15 @@ public class SubstitutionTest {
 
             // Adding rogue annotations on the existing ones which are a bit shorter
             AnnotationSet annotated = doc.getAnnotations(phiAnnotationName);
-            annotated.add(0L, locationStart, "Location", Factory.newFeatureMap());
+            annotated.add(0L, dateStart, "Location", Factory.newFeatureMap());
             annotated.add(locationStart, dateStart + 2, "Location", Factory.newFeatureMap());
             annotated.add(dateStart, dateStart + 10, "Date", Factory.newFeatureMap());
 
-            DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ReplacementTagsSubstitution(), false, Collections.emptyList());
+            DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new IdentitySubstitution(), false, Collections.emptyList());
             Document substDoc = subst.substitute(doc);
 
-            Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substDoc.getContent().toString()));
-            // TODO Assert.assertEquals(content, substDoc.getContent().toString());
+            //Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substDoc.getContent().toString()));
+            Assert.assertEquals(content, substDoc.getContent().toString());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -256,4 +263,74 @@ public class SubstitutionTest {
             e.printStackTrace();
         }
     }
+
+    private static Document prepareAnnotationDoc(String content) throws GateException {
+        String docStr = String.format("<%s>%s</%s>", DUMMY_TAG, content, DUMMY_TAG);
+
+        Document doc = GateTools.documentFromXmlString(docStr);
+        AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
+
+        Set<String> pipelineAnnotationTags = ImmutableSet.of("Name", "Location", "Date");
+
+        List<Annotation> phiAnnotationAnnots = markups.stream().filter(a -> pipelineAnnotationTags.contains(a.getType())).collect(Collectors.toList());
+
+        markups.removeAll(phiAnnotationAnnots);
+        doc.getAnnotations(phiAnnotationName).addAll(phiAnnotationAnnots);
+
+        return doc;
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "This is some ovelrap <Location><Name myfeautre='bla'>text</Name></Location>",
+            "This is some ovelrap <Name><Location><Name myfeautre='bla'>text</Name></Location></Name> ab",
+            "hello <Name> world <Location>sth</Location> <Name><Location> hello </Location></Name></Name>"
+    })
+    public void testNested(String content) {
+        try {
+            Document doc = prepareAnnotationDoc(content);
+
+            AnnotationSet as = doc.getAnnotations(phiAnnotationName);
+
+            Assert.assertTrue(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
+            DeidentificationSubstitution.removeOverlappingAnnotations(as);
+            Assert.assertFalse(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
+
+        } catch(Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("testSplitAnnotationsAcrossMarkupBoundariesTestCases")
+    public void testSplitAnnotationsAcrossMarkupBoundaries(Document doc) {
+        try {
+            AnnotationSet as = doc.getAnnotations(phiAnnotationName);
+            AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
+
+            DeidentificationSubstitution.splitAnnotationsAcrossMarkupBoundaries(as, markups);
+
+            Assert.assertFalse(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
+
+        } catch(Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
+    private static Stream<Arguments> testSplitAnnotationsAcrossMarkupBoundariesTestCases() {
+        try {
+            Stream<Arguments> args = Stream.of(
+                    prepareAnnotationDoc("<doc>  <Name><Firstname>Peter</Firstname><Lastname>Meier</Lastname></Name></doc>")
+            ).map(f -> Arguments.of(f));
+
+
+            return args;
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+            return Stream.empty();
+        }
+    }
 }
+

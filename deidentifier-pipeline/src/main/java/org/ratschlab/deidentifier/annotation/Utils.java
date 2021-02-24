@@ -37,6 +37,19 @@ public class Utils {
         return parents;
     }
 
+    public static boolean hasOverlappingAnnotations(AnnotationSet as) {
+        for(Annotation a1 : as) {
+            for(Annotation a2 : as) {
+                if(!a1.equals(a2) && a1.overlaps(a2)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     public static File createFileFromUrlOrPath(String urlOrPath) {
         String url = urlOrPath;
         if(!url.startsWith("file")) {

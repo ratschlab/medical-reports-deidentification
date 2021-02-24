@@ -40,6 +40,7 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
             String phiAnnotationsCopyName = "phiAnnotationsCopy";
             AnnotationSet phiAnnotationsCopy = origDoc.getAnnotations(phiAnnotationsCopyName);
 
+            // TODO: how are addresses handlend!!?
             cleanAnnotations(origDoc.getAnnotations(phiAnnotationSetName), phiAnnotationsCopy, markups, origDoc);
 
             List<Annotation> ls = new ArrayList(markups);
@@ -119,27 +120,27 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
         }
     }
 
-    private void cleanAnnotations(AnnotationSet phiAnnots, AnnotationSet copy, AnnotationSet markups, Document doc) {
-        phiAnnots.forEach(a -> copy.add(a));
-
+    public static void removeOverlappingAnnotations(AnnotationSet as) {
         List<Annotation> toRemove = new ArrayList<>();
-        for(Annotation a1 : phiAnnots) {
-            for(Annotation a2: phiAnnots) {
-                // TODO: verify conditions
-                if(!a1.equals(a2) && (a1.withinSpanOf(a2) || a1.coextensive(a2)) && a2.getId() < a1.getId()) {
+        for(Annotation a1 : as) {
+            for(Annotation a2: as) {
+                if(!a1.equals(a2) && (a1.coextensive(a2) && a1.getId() < a2.getId() || a1.withinSpanOf(a2))) {
                     toRemove.add(a1);
                 }
             }
         }
 
-        toRemove.forEach(a -> copy.remove(a));
+        toRemove.forEach(a -> as.remove(a));
+    }
 
+    public static void splitAnnotationsAcrossMarkupBoundaries(AnnotationSet as, AnnotationSet markups) {
         List<Annotation> toRemoveOverlaps = new ArrayList<>();
 
         String overlapTmps = "overlapsTmp";
-        AnnotationSet newOverlaps = doc.getAnnotations(overlapTmps);
 
-        for(Annotation a : copy) {
+        AnnotationSet newOverlaps = as.getDocument().getAnnotations(overlapTmps);
+
+        for(Annotation a : as) {
             AnnotationSet overlaps = gate.Utils.getOverlappingAnnotations(markups, a);
 
             if(overlaps.size() > 1) {
@@ -160,10 +161,21 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
             }
         }
 
-        toRemoveOverlaps.forEach(a -> copy.remove(a));
+        toRemoveOverlaps.forEach(a -> as.remove(a));
+        
+        newOverlaps.forEach(a -> as.add(a));
+        as.getDocument().removeAnnotationSet(overlapTmps);
+    }
 
-        newOverlaps.forEach(a -> copy.add(a));
-        doc.removeAnnotationSet(overlapTmps);
+
+    private void cleanAnnotations(AnnotationSet phiAnnots, AnnotationSet copy, AnnotationSet markups, Document doc) {
+        phiAnnots.forEach(a -> copy.add(a));
+
+        removeOverlappingAnnotations(copy);
+
+        splitAnnotationsAcrossMarkupBoundaries(copy, markups);
+
+        removeOverlappingAnnotations(copy);
     }
 
     private int emit(Document doc, AnnotationSet phiAnnots, int pos, List<Annotation> markupAn, StringBuffer buf, DeidentificationSubstituter substituter) {
