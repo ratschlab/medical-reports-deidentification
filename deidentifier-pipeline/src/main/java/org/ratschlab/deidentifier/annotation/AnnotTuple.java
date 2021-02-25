@@ -7,17 +7,17 @@ import gate.util.InvalidOffsetException;
 
 import java.util.Objects;
 
-public class SimpleAnnotation {
+public class AnnotTuple {
     private final int start;
     private final int end;
     private final String tag;
     private final FeatureMap features;
 
-    public SimpleAnnotation(int start, int end, String tag) {
+    public AnnotTuple(int start, int end, String tag) {
         this(start, end, tag, Factory.newFeatureMap());
     }
 
-    public SimpleAnnotation(int start, int end, String tag, FeatureMap features) {
+    public AnnotTuple(int start, int end, String tag, FeatureMap features) {
         this.start = start;
         this.end = end;
         this.tag = tag;
@@ -46,7 +46,7 @@ public class SimpleAnnotation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SimpleAnnotation that = (SimpleAnnotation) o;
+        AnnotTuple that = (AnnotTuple) o;
         return start == that.start &&
                 end == that.end &&
                 tag.equals(that.tag) &&
@@ -57,4 +57,10 @@ public class SimpleAnnotation {
     public int hashCode() {
         return Objects.hash(start, end, tag, features);
     }
+
+    // syntatic sugar
+    public static AnnotTuple of(int start, int end, String tag) {
+        return new AnnotTuple(start, end, tag);
+    }
+
 }

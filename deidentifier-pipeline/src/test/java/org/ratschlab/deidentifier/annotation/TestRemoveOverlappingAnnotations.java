@@ -37,7 +37,7 @@ public class TestRemoveOverlappingAnnotations extends AnalyserTestBase {
 
     @ParameterizedTest()
     @MethodSource("testMergingParameters")
-    public void testMerging(List<SimpleAnnotation> annots, SimpleAnnotation expected) {
+    public void testMerging(List<AnnotTuple> annots, AnnotTuple expected) {
         AnnotationSet as = doc.getAnnotations();
         annots.forEach(a -> {
             try {
@@ -61,9 +61,9 @@ public class TestRemoveOverlappingAnnotations extends AnalyserTestBase {
         highConfidence.put("confidence", 100);
 
         return Stream.of(
-                Arguments.of(ImmutableList.of(new SimpleAnnotation(0, 5, "Name"), new SimpleAnnotation(0, 5, "Age")), new SimpleAnnotation(0, 5, "Name")),
-                Arguments.of(ImmutableList.of(new SimpleAnnotation(0, 5, "Name"), new SimpleAnnotation(3, 4, "Location")), new SimpleAnnotation(0, 5, "Name")),
-                Arguments.of(ImmutableList.of(new SimpleAnnotation(0, 5, "Name"), new SimpleAnnotation(0, 5, "Location", highConfidence)), new SimpleAnnotation(0, 5, "Location"))
+                Arguments.of(ImmutableList.of(new AnnotTuple(0, 5, "Name"), new AnnotTuple(0, 5, "Age")), new AnnotTuple(0, 5, "Name")),
+                Arguments.of(ImmutableList.of(new AnnotTuple(0, 5, "Name"), new AnnotTuple(3, 4, "Location")), new AnnotTuple(0, 5, "Name")),
+                Arguments.of(ImmutableList.of(new AnnotTuple(0, 5, "Name"), new AnnotTuple(0, 5, "Location", highConfidence)), new AnnotTuple(0, 5, "Location"))
         );
     }
 
