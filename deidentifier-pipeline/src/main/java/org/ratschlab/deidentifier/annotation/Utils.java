@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import gate.*;
-import gate.util.Files;
 import gate.util.InvalidOffsetException;
 import gate.util.OffsetComparator;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,60 +11,14 @@ import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 import org.ratschlab.deidentifier.utils.DateUtils;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Utils functions is in JAPE rules
+ */
 public class Utils {
-    public static List<String> sortAnnotations(AnnotationSet overlapping) {
-        List<String> parents = overlapping.stream().
-                sorted((a1, a2) -> {
-                    // descending order in size (from larger to smaller)
-                    int diff = (int) (a2.getEndNode().getOffset() - a2.getStartNode().getOffset()) - (int) (a1.getEndNode().getOffset() - a1.getStartNode().getOffset());
-                    if (diff == 0) {
-                        return a1.getId() - a2.getId(); // breaking ties with ID (in ascending order)
-                    } else {
-                        return diff;
-                    }
-                }).
-                map(an -> an.getType()).
-                collect(Collectors.toList());
-
-        return parents;
-    }
-
-    public static boolean hasOverlappingAnnotations(AnnotationSet as) {
-        for(Annotation a1 : as) {
-            for(Annotation a2 : as) {
-                if(!a1.equals(a2) && a1.overlaps(a2)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    public static File createFileFromUrlOrPath(String urlOrPath) {
-        String url = urlOrPath;
-        if(!url.startsWith("file")) {
-            url = "file:///" + urlOrPath;
-        }
-
-        try {
-            return Files.fileFromURL(new URL(url));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return new File(urlOrPath); //fallback
-    }
-
-
     public List<Annotation> tokensInWindow(AnnotationSet as, Annotation an, int windowSize) {
         List<Annotation> tokenList = as.get("Token").inDocumentOrder();
 
@@ -80,11 +33,6 @@ public class Utils {
         }
 
         return Collections.emptyList();
-    }
-
-    public static void removeEmptyAnnotations(AnnotationSet as) {
-        List<Annotation> toRemove = as.stream().filter(a -> a.getEndNode().getOffset() - a.getStartNode().getOffset() == 0).collect(Collectors.toList());
-        toRemove.forEach(a -> as.remove(a));
     }
 
     public static void addAnnotationSequence(AnnotationSet as, String annotType, String rule, AnnotationSet outputAS) {

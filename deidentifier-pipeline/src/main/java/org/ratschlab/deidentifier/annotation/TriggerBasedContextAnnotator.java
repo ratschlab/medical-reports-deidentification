@@ -91,7 +91,7 @@ public class TriggerBasedContextAnnotator extends AbstractLanguageAnalyser {
     private void initEntries() {
         if (configPath != null) {
             try {
-                setTriggerEntries(parseConfigFile(org.ratschlab.deidentifier.annotation.Utils.createFileFromUrlOrPath(configPath)));
+                setTriggerEntries(parseConfigFile(org.ratschlab.util.Utils.createFileFromUrlOrPath(configPath)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -4,6 +4,7 @@ import gate.*;
 import gate.creole.ResourceInstantiationException;
 import gate.persist.PersistenceException;
 import gate.persist.SerialDataStore;
+import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.gate.FilterDocuments;
 
@@ -81,7 +82,7 @@ public class JoinMarkedCorpus extends DefaultWorkflowConcern {
                 AnnotationSet markedAnnotations = markedDoc.getAnnotations(markedAnnotationName);
 
                 // early annotated corprora contained empty annotations due to a bug in the annotation pipeline.
-                org.ratschlab.deidentifier.annotation.Utils.removeEmptyAnnotations(markedAnnotations);
+                AnnotationUtils.removeEmptyAnnotations(markedAnnotations);
 
                 doc.getAnnotations(String.format("%s-%s", markedAnnotationName, "manual")).addAll(markedAnnotations);
             });

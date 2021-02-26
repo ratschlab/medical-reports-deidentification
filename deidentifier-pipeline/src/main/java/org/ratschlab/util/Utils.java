@@ -1,9 +1,13 @@
 package org.ratschlab.util;
 
+import gate.util.Files;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.io.IoBuilder;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Optional;
 
 public class Utils {
@@ -28,5 +32,20 @@ public class Utils {
         PrintStream errorLogger = IoBuilder.forLogger("System.err").setLevel(Level.ERROR).buildPrintStream();
         System.setOut(logger);
         System.setErr(errorLogger);
+    }
+
+    public static File createFileFromUrlOrPath(String urlOrPath) {
+        String url = urlOrPath;
+        if(!url.startsWith("file")) {
+            url = "file:///" + urlOrPath;
+        }
+
+        try {
+            return Files.fileFromURL(new URL(url));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return new File(urlOrPath); //fallback
     }
 }

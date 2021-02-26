@@ -88,7 +88,7 @@ public class KeywordAnnotator extends AbstractLanguageAnalyser {
     @Override
     public Resource init() throws ResourceInstantiationException {
         if(configPath != null) {
-            File f = org.ratschlab.deidentifier.annotation.Utils.createFileFromUrlOrPath(configPath);
+            File f = org.ratschlab.util.Utils.createFileFromUrlOrPath(configPath);
             try {
                 setPatternDict(this.parseConfigFile(f));
             } catch (IOException e) {

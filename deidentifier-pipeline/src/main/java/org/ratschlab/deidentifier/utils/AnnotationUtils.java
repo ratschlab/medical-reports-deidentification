@@ -44,4 +44,68 @@ public class AnnotationUtils {
 
         return ranges;
     }
+
+    public static List<String> sortOverlappingAnnotations(AnnotationSet overlapping) {
+        List<String> parents = overlapping.stream().
+                sorted((a1, a2) -> {
+                    // descending order in size (from larger to smaller)
+                    int diff = (int) (a2.getEndNode().getOffset() - a2.getStartNode().getOffset()) - (int) (a1.getEndNode().getOffset() - a1.getStartNode().getOffset());
+                    if (diff == 0) {
+                        return a1.getId() - a2.getId(); // breaking ties with ID (in ascending order)
+                    } else {
+                        return diff;
+                    }
+                }).
+                map(an -> an.getType()).
+                collect(Collectors.toList());
+
+        return parents;
+    }
+
+    public static void sortAnnotations(List<Annotation> annotations) {
+        // proper sorting
+        annotations.sort((a1, a2) -> {
+            int result = a1.getStartNode().getOffset().compareTo(a2.getStartNode().getOffset());
+            if (result == 0) {
+                result = -a1.getEndNode().getOffset().compareTo(a2.getEndNode().getOffset());
+
+                if (result == 0) {
+                    result = a1.getId().compareTo(a2.getId());
+                }
+            }
+
+            return result;
+        });
+    }
+
+    public static boolean hasOverlappingAnnotations(AnnotationSet as) {
+        for(Annotation a1 : as) {
+            for(Annotation a2 : as) {
+                if(!a1.equals(a2) && a1.overlaps(a2)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static void removeEmptyAnnotations(AnnotationSet as) {
+        List<Annotation> toRemove = as.stream().filter(a -> a.getEndNode().getOffset() - a.getStartNode().getOffset() == 0).collect(Collectors.toList());
+        toRemove.forEach(a -> as.remove(a));
+    }
+
+    public static void removeRedundantAnnotations(AnnotationSet as) {
+        // remove annotations either contained in another annotation, or arbitrarily one coextensive annotation
+        List<Annotation> toRemove = new ArrayList<>();
+        for(Annotation a1 : as) {
+            for(Annotation a2: as) {
+                if(!a1.equals(a2) && (a1.coextensive(a2) && a1.getId() < a2.getId() || a1.withinSpanOf(a2))) {
+                    toRemove.add(a1);
+                }
+            }
+        }
+
+        toRemove.forEach(a -> as.remove(a));
+    }
 }

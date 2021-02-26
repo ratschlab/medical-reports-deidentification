@@ -5,6 +5,7 @@ import gate.AnnotationSet;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.ratschlab.deidentifier.utils.AnnotationUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class PathConstraint {
     public static boolean parentConstraintsValid(AnnotationSet inputAS, Annotation a, List<String> expectedParents, Set<String> blacklistedParents) {
         AnnotationSet overlapping = gate.Utils.getOverlappingAnnotations(inputAS, a);
 
-        List<String> completePath = org.ratschlab.deidentifier.annotation.Utils.sortAnnotations(overlapping);
+        List<String> completePath = AnnotationUtils.sortOverlappingAnnotations(overlapping);
         if(completePath.size() > 0) {
             completePath.remove(0); // remove root
         }

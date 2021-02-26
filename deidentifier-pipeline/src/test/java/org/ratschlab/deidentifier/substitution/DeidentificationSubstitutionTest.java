@@ -204,9 +204,9 @@ public class DeidentificationSubstitutionTest {
 
             AnnotationSet as = doc.getAnnotations(phiAnnotationName);
 
-            Assert.assertTrue(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
-            DeidentificationSubstitution.removeRedundantAnnotations(as);
-            Assert.assertFalse(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
+            Assert.assertTrue(AnnotationUtils.hasOverlappingAnnotations(as));
+            AnnotationUtils.removeRedundantAnnotations(as);
+            Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
 
         } catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -223,7 +223,7 @@ public class DeidentificationSubstitutionTest {
 
             DeidentificationSubstitution.splitAnnotationsAcrossMarkupBoundaries(as, markups);
 
-            Assert.assertFalse(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
+            Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
 
         } catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -254,7 +254,7 @@ public class DeidentificationSubstitutionTest {
 
         DeidentificationSubstitution.splitOverlappingAnnotations(as);
 
-        Assert.assertFalse(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
+        Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
 
         // checking, that we don't lose coverage
         Set<Range<Long>> covered = AnnotationUtils.annotationRanges(as);

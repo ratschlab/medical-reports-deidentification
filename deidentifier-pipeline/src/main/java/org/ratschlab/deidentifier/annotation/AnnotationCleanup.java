@@ -6,6 +6,7 @@ import gate.creole.ExecutionException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.RunTime;
+import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,7 @@ public class AnnotationCleanup extends AbstractLanguageAnalyser {
         AnnotationSet inputAS = doc.getAnnotations(inputASName);
         AnnotationSet outputAS = doc.getAnnotations(outputASName);
 
-        org.ratschlab.deidentifier.annotation.Utils.removeEmptyAnnotations(inputAS);
+        AnnotationUtils.removeEmptyAnnotations(inputAS);
 
         // TODO: enforce distinct annotations!
 

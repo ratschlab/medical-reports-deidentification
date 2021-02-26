@@ -9,6 +9,7 @@ import gate.creole.metadata.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.ratschlab.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

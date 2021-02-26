@@ -10,6 +10,7 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import org.ratschlab.deidentifier.utils.AnnotationUtils;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class AddStructuredFieldInfo extends AbstractLanguageAnalyser {
         for(Annotation token : tokens) {
             AnnotationSet overlapping = gate.Utils.getOverlappingAnnotations(structuredFields, token);
 
-            List<String> parents = Utils.sortAnnotations(overlapping);
+            List<String> parents = AnnotationUtils.sortOverlappingAnnotations(overlapping);
 
             // TODO: how to deal with empty lists?
             token.getFeatures().put("fieldName", parents.get(parents.size() - 1));

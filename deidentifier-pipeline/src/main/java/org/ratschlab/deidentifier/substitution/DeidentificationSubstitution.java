@@ -1,14 +1,13 @@
 package org.ratschlab.deidentifier.substitution;
 
 import gate.*;
-import gate.annotation.AnnotationImpl;
 import gate.util.InvalidOffsetException;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.XML;
+import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.gate.FilterDocuments;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.util.*;
 import java.util.function.Function;
@@ -95,19 +94,7 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
     private String generateNewDocumentStr(Document origDoc, AnnotationSet phiAnnotations, DeidentificationSubstituter substituter) {
         List<Annotation> markupList = new ArrayList(origDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME));
 
-        // proper sorting
-        markupList.sort((a1, a2) -> {
-            int result = a1.getStartNode().getOffset().compareTo(a2.getStartNode().getOffset());
-            if (result == 0) {
-                result = -a1.getEndNode().getOffset().compareTo(a2.getEndNode().getOffset());
-
-                if (result == 0) {
-                    result = a1.getId().compareTo(a2.getId());
-                }
-            }
-
-            return result;
-        });
+        AnnotationUtils.sortAnnotations(markupList);
 
         StringBuffer buf = new StringBuffer();
         buf.append("<?xml version='1.0' encoding='UTF-8'?>");
@@ -119,20 +106,6 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
         }
 
         return buf.toString();
-    }
-
-    public static void removeRedundantAnnotations(AnnotationSet as) {
-        // remove annotations either contained in another annotation, or arbitrarily one coextensive annotation
-        List<Annotation> toRemove = new ArrayList<>();
-        for(Annotation a1 : as) {
-            for(Annotation a2: as) {
-                if(!a1.equals(a2) && (a1.coextensive(a2) && a1.getId() < a2.getId() || a1.withinSpanOf(a2))) {
-                    toRemove.add(a1);
-                }
-            }
-        }
-
-        toRemove.forEach(a -> as.remove(a));
     }
 
     public static void splitAnnotationsAcrossMarkupBoundaries(AnnotationSet as, AnnotationSet markups) {
@@ -231,15 +204,15 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
             toRemove.forEach(a -> copy.remove(a));
         }
 
-        removeRedundantAnnotations(copy);
+        AnnotationUtils.removeRedundantAnnotations(copy);
 
         splitAnnotationsAcrossMarkupBoundaries(copy, markups);
 
-        removeRedundantAnnotations(copy);
+        AnnotationUtils.removeRedundantAnnotations(copy);
 
         splitOverlappingAnnotations(copy);
 
-        removeRedundantAnnotations(copy);
+        AnnotationUtils.removeRedundantAnnotations(copy);
     }
 
     private int emit(Document doc, AnnotationSet phiAnnots, int pos, List<Annotation> markupAn, StringBuffer buf, DeidentificationSubstituter substituter) {
