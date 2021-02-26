@@ -40,9 +40,9 @@ public class DeidentificationSubstitutionTest {
         }
     }
 
-    @Test
-    public void testSimpleSubstitution() throws GateException {
-        Document doc = prepareAnnotationDoc("This is a date <Date><TheDate>21.10.2017</TheDate></Date> and <TheDate><Date>24.10.2017</Date></TheDate> should be replaced");
+    @ParameterizedTest
+    @MethodSource("substitutionTestCases")
+    public void testWithScrubberSubstitution(Document doc) {
 
         DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ScrubberSubstitution(), false, Collections.emptyList());
         Document substDoc = subst.substitute(doc);
@@ -56,50 +56,51 @@ public class DeidentificationSubstitutionTest {
         }
     }
 
-    @Test
-    public void testContainedSubstitution() throws GateException {
-        Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
-            AnnotTuple.of(2, 5, "TheDate"),
-            AnnotTuple.of(2, 5, "Date"),
-            AnnotTuple.of(3, 4, "Name"), // shorter than previous annotation, should be removed
-            // second block
-            AnnotTuple.of(10, 15, "TheDate"),
-            AnnotTuple.of(10, 15, "Date"),
-            AnnotTuple.of(11, 15, "Name")
-        ));
+    @ParameterizedTest
+    @MethodSource("substitutionTestCases")
+    public void testWithReplacementTagSubstitution(Document doc) {
 
-
-        DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ScrubberSubstitution(), false, Collections.emptyList());
+        DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ReplacementTagsSubstitution(), false, Collections.emptyList());
         Document substDoc = subst.substitute(doc);
 
-        AnnotationSet dateAnnots = substDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME).get("TheDate");
+        Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substDoc.getContent().toString()));
+    }
 
-        Assert.assertEquals(2, dateAnnots.size());
+    private static Stream<Arguments> substitutionTestCases() {
+        Stream<Arguments> args = Stream.of(
+            prepareAnnotationDoc("This is a date <Date><TheDate>21.10.2017</TheDate></Date> and <TheDate><Date>24.10.2017</Date></TheDate> should be replaced"),
+            dummyDocumentWithAnnotation(ImmutableList.of(
+                AnnotTuple.of(2, 5, "TheDate"),
+                AnnotTuple.of(2, 5, "Date"),
+                AnnotTuple.of(3, 4, "Name"), // shorter than previous annotation, should be removed
+                // second block
+                AnnotTuple.of(10, 15, "TheDate"),
+                AnnotTuple.of(10, 15, "Date"),
+                AnnotTuple.of(11, 15, "Name")
+            ))
+        ).map(f -> Arguments.of(f));
 
-        for (Annotation an : dateAnnots) {
-            Assert.assertEquals("DATE", gate.Utils.stringFor(substDoc, an));
-        }
+        return args;
     }
 
     @Test
-    public void testOverlapSubstitutionComplex() throws GateException {
+    public void testOverlapSubstitutionComplex() {
         Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
             AnnotTuple.of(2, 5, "Location"),
             AnnotTuple.of(3, 7, "Location"),
             AnnotTuple.of(6, 10, "Date")
         ));
 
-        DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new IdentitySubstitution(), false, Collections.emptyList());
+        DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ReplacementTagsSubstitution(), false, Collections.emptyList());
         Document substDoc = subst.substitute(doc);
 
         String substCont = substDoc.getContent().toString();
 
-        Assert.assertEquals(doc.getContent().toString(), substCont);
-        //Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substCont));
+        Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substCont));
     }
 
     @Test
-    public void testCrossingOrigMarkupSubstitution() throws GateException {
+    public void testCrossingOrigMarkupSubstitution() {
         Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
             AnnotTuple.of(2, 5, "Markup1"),
             AnnotTuple.of(5, 10, "Markup2"),
@@ -147,7 +148,7 @@ public class DeidentificationSubstitutionTest {
     }
 
     @Test
-    public void testSimpleFilter() throws GateException {
+    public void testSimpleFilter() {
         String tag = "SecretTag";
         Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
             AnnotTuple.of(2, 20, tag),
@@ -168,7 +169,7 @@ public class DeidentificationSubstitutionTest {
     }
 
     @Test
-    public void testNestedFilter() throws GateException {
+    public void testNestedFilter() {
         String tag = "SecretTag";
         Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
             AnnotTuple.of(2, 15, "ParentTag"),
@@ -224,7 +225,6 @@ public class DeidentificationSubstitutionTest {
             DeidentificationSubstitution.splitAnnotationsAcrossMarkupBoundaries(as, markups);
 
             Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
-
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -287,17 +287,22 @@ public class DeidentificationSubstitutionTest {
         return args;
     }
 
-    private static Document prepareAnnotationDoc(String content) throws GateException {
-        Document doc = simpleDocument(content);
+    private static Document prepareAnnotationDoc(String content) {
+        try {
+            Document doc = simpleDocument(content);
 
-        AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
+            AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
-        List<Annotation> phiAnnotationAnnots = markups.stream().filter(a -> pipelineAnnotationTags.contains(a.getType())).collect(Collectors.toList());
+            List<Annotation> phiAnnotationAnnots = markups.stream().filter(a -> pipelineAnnotationTags.contains(a.getType())).collect(Collectors.toList());
 
-        markups.removeAll(phiAnnotationAnnots);
-        doc.getAnnotations(phiAnnotationName).addAll(phiAnnotationAnnots);
+            markups.removeAll(phiAnnotationAnnots);
+            doc.getAnnotations(phiAnnotationName).addAll(phiAnnotationAnnots);
 
-        return doc;
+            return doc;
+        } catch (GateException e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
     private static Document simpleDocument(String content) throws GateException {
@@ -325,7 +330,7 @@ public class DeidentificationSubstitutionTest {
             }
 
             return doc;
-        } catch (GateException e){
+        } catch (GateException e) {
             Assert.fail(e.getMessage());
             return null;
         }
