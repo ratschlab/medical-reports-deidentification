@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AnnotationUtils {
-    public static Set<Range<Long>> annotationRanges(AnnotationSet as) {
+    public static Set<Range<Long>> annotationRanges(List<Annotation> as) {
         if(as.isEmpty()) {
             return Collections.emptySet();
         }
@@ -43,6 +43,10 @@ public class AnnotationUtils {
         ranges.add(last);
 
         return ranges;
+    }
+
+    public static Set<Range<Long>> annotationRanges(AnnotationSet as) {
+        return annotationRanges(as.stream().collect(Collectors.toList()));
     }
 
     public static List<String> sortOverlappingAnnotations(AnnotationSet overlapping) {

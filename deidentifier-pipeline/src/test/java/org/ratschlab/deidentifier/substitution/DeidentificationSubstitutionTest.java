@@ -102,7 +102,7 @@ public class DeidentificationSubstitutionTest {
     public void testCrossingOrigMarkupSubstitution() throws GateException {
         Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
             AnnotTuple.of(2, 5, "Markup1"),
-            AnnotTuple.of(7, 10, "Markup2"),
+            AnnotTuple.of(5, 10, "Markup2"),
             AnnotTuple.of(2, 10, "Location") // adding annotation which spans Markup1 and Markup2 elements
         ));
 
@@ -228,7 +228,6 @@ public class DeidentificationSubstitutionTest {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
-
     }
 
     private static Stream<Arguments> testSplitAnnotationsAcrossMarkupBoundariesTestCases() {

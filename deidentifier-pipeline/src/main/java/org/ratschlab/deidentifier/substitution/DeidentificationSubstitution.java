@@ -197,22 +197,35 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
         }
     }
 
-    private void cleanAnnotations(AnnotationSet copy, AnnotationSet markups) {
+    private void cleanAnnotations(AnnotationSet as, AnnotationSet markups) {
         if(!substituteWholeAddress) {
             // we are ignoring Address annotation, so removing them already here
-            List<Annotation> toRemove = copy.stream().filter(a -> a.getType().equals("Address")).collect(Collectors.toList());
-            toRemove.forEach(a -> copy.remove(a));
+            List<Annotation> toRemove = as.stream().filter(a -> a.getType().equals("Address")).collect(Collectors.toList());
+            toRemove.forEach(a -> as.remove(a));
         }
 
-        AnnotationUtils.removeRedundantAnnotations(copy);
+        // construct to save original annotations to be used to check postconditions at the end only if asserts are enabled
+        // see also https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html
+        class DataCopy {
+            List<Annotation> annotCopy;
+            DataCopy() { annotCopy = as.stream().collect(Collectors.toList()); }
+        }
+        DataCopy originalAs = null;
 
-        splitAnnotationsAcrossMarkupBoundaries(copy, markups);
+        assert ((originalAs = new DataCopy()) != null);
 
-        AnnotationUtils.removeRedundantAnnotations(copy);
+        AnnotationUtils.removeRedundantAnnotations(as);
 
-        splitOverlappingAnnotations(copy);
+        splitAnnotationsAcrossMarkupBoundaries(as, markups);
 
-        AnnotationUtils.removeRedundantAnnotations(copy);
+        AnnotationUtils.removeRedundantAnnotations(as);
+
+        splitOverlappingAnnotations(as);
+
+        AnnotationUtils.removeRedundantAnnotations(as);
+
+        assert AnnotationUtils.annotationRanges(originalAs.annotCopy).equals(AnnotationUtils.annotationRanges(as));
+        assert !AnnotationUtils.hasOverlappingAnnotations(as);
     }
 
     private int emit(Document doc, AnnotationSet phiAnnots, int pos, List<Annotation> markupAn, StringBuffer buf, DeidentificationSubstituter substituter) {
