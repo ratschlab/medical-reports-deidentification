@@ -4,26 +4,30 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import gate.*;
 import gate.util.GateException;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.Range;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.ratschlab.deidentifier.annotation.AnnotTuple;
+import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.gate.GateTools;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
 public class DeidentificationSubstitutionTest {
-    static String phiAnnotationName = "phiannotations";
+    private static String phiAnnotationName = "phiannotations";
+    private static String DUMMY_TAG = "dummy";
 
     private static Set<String> pipelineAnnotationTags = ImmutableSet.of("Name", "Location", "Date", "Address");
 
@@ -36,11 +40,8 @@ public class DeidentificationSubstitutionTest {
         }
     }
 
-    private static String DUMMY_TAG = "dummy";
-
     @Test
     public void testSimpleSubstitution() throws GateException {
-
         Document doc = prepareAnnotationDoc("This is a date <Date><TheDate>21.10.2017</TheDate></Date> and <TheDate><Date>24.10.2017</Date></TheDate> should be replaced");
 
         DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ScrubberSubstitution(), false, Collections.emptyList());
@@ -115,21 +116,34 @@ public class DeidentificationSubstitutionTest {
         Assert.assertEquals("LOCATION", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("Markup2").iterator().next()));
     }
 
-    @Test
-    public void testAddressSubstitution() throws GateException {
-        Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
-            AnnotTuple.of(2, 20, "PostalAddress"),
-            AnnotTuple.of(3, 20, "Location"),
-            AnnotTuple.of(2, 20, "Address")
-        ));
+    private Document addressDoc = dummyDocumentWithAnnotation(ImmutableList.of(
+        AnnotTuple.of(0, 2, "tag1"),
+        AnnotTuple.of(2, 20, "PostalAddress"),
+        AnnotTuple.of(2, 20, "Address"),
+        AnnotTuple.of(3, 20, "Location"),
+        AnnotTuple.of(20, 26, "tag2")
+    ));
 
+    @Test
+    public void testWholeAddressSubstitution() {
         DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ScrubberSubstitution(), true, Collections.emptyList());
-        Document substDoc = subst.substitute(doc);
+        Document substDoc = subst.substitute(addressDoc);
 
         AnnotationSet origMarkupsSubst = substDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
         // the PostalAddress markup tag should be replaced with "ADDRESS" string
         Assert.assertEquals("ADDRESS", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("PostalAddress").iterator().next()));
+    }
+
+    @Test
+    public void testAddressHandlingWithoutWholeAddressSubstitution() {
+        DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ScrubberSubstitution(), false, Collections.emptyList());
+        Document substDoc = subst.substitute(addressDoc);
+
+        // don't substitute Address annotation, just replace Location annotation within Address annotation
+        String substDocContent = substDoc.getContent().toString();
+        Assert.assertTrue(substDocContent.contains("LOCATION"));
+        Assert.assertFalse(substDocContent.contains("ADDRESS"));
     }
 
     @Test
@@ -157,11 +171,11 @@ public class DeidentificationSubstitutionTest {
     public void testNestedFilter() throws GateException {
         String tag = "SecretTag";
         Document doc = dummyDocumentWithAnnotation(ImmutableList.of(
-            AnnotTuple.of(2, 25, "ParentTag"),
-            AnnotTuple.of(3, 22, tag),
-            AnnotTuple.of(5, 10, "Name"),
-            AnnotTuple.of(30, 35, tag),
-            AnnotTuple.of(32, 34, "Location")
+            AnnotTuple.of(2, 15, "ParentTag"),
+            AnnotTuple.of(3, 12, tag),
+            AnnotTuple.of(5, 7, "Name"),
+            AnnotTuple.of(18, 25, tag),
+            AnnotTuple.of(19, 22, "Location")
         ));
 
         // should remove 'SecretTag' fields only if they are somewhere below a 'MyParent' field.
@@ -179,7 +193,7 @@ public class DeidentificationSubstitutionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
+    @ValueSource(strings = {
         "This is some ovelrap <Location><Name myfeautre='bla'>text</Name></Location>",
         "This is some ovelrap <Name><Location><Name myfeautre='bla'>text</Name></Location></Name> ab",
         "hello <Name> world <Location>sth</Location> <Name><Location> hello </Location></Name></Name>"
@@ -236,17 +250,39 @@ public class DeidentificationSubstitutionTest {
     public void testSplitOverlappingAnnotations(Document doc) {
         AnnotationSet as = doc.getAnnotations(phiAnnotationName);
 
+        Set<Range<Long>> origCovered = AnnotationUtils.annotationRanges(as);
+
         DeidentificationSubstitution.splitOverlappingAnnotations(as);
 
         Assert.assertFalse(org.ratschlab.deidentifier.annotation.Utils.hasOverlappingAnnotations(as));
+
+        // checking, that we don't lose coverage
+        Set<Range<Long>> covered = AnnotationUtils.annotationRanges(as);
+        Assert.assertEquals(origCovered, covered);
     }
 
-    private static Stream<Arguments> testSplitOverlappingAnnotationsTestCases() throws GateException {
+    private static Stream<Arguments> testSplitOverlappingAnnotationsTestCases() {
         Stream<Arguments> args = Stream.of(
             dummyDocumentWithAnnotation(ImmutableList.of(
                 AnnotTuple.of(2, 5, "Name"),
+                AnnotTuple.of(4, 9, "Name"),
+                AnnotTuple.of(8, 10, "Name"))),
+            // same but closer interval.
+            dummyDocumentWithAnnotation(ImmutableList.of(
+                AnnotTuple.of(2, 5, "Name"),
                 AnnotTuple.of(4, 7, "Name"),
-                AnnotTuple.of(6, 10, "Name")))
+                AnnotTuple.of(5, 10, "Name"))),
+            // more complicated case
+            dummyDocumentWithAnnotation(ImmutableList.of(
+                AnnotTuple.of(2, 6, "Name"),
+                AnnotTuple.of(3, 7, "Name"),
+                AnnotTuple.of(5, 10, "Name"),
+                AnnotTuple.of(8, 11, "Name"))),
+            // no overlap
+            dummyDocumentWithAnnotation(ImmutableList.of(
+                AnnotTuple.of(2, 5, "Name"),
+                AnnotTuple.of(6, 10, "Name")
+            ))
         ).map(f -> Arguments.of(f));
 
         return args;
@@ -271,18 +307,28 @@ public class DeidentificationSubstitutionTest {
         return GateTools.documentFromXmlString(docStr);
     }
 
-    private static Document dummyDocumentWithAnnotation(Iterable<AnnotTuple> annotRanges) throws GateException {
-        Document doc = simpleDocument(RandomStringUtils.randomAlphanumeric(100)); // TODO: something better
+    private static Document dummyDocumentWithAnnotation(Iterable<AnnotTuple> annotRanges) {
+        try {
+            String dummyString = IntStream.range(0, 26).mapToObj(c -> (char) ((int) 'a' + c)).collect(Collector.of(
+                StringBuilder::new,
+                StringBuilder::append,
+                StringBuilder::append,
+                StringBuilder::toString));
 
-        AnnotationSet phiTags = doc.getAnnotations(phiAnnotationName);
-        AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
+            Document doc = simpleDocument(dummyString);
 
-        for (AnnotTuple r : annotRanges) {
-            AnnotationSet as = pipelineAnnotationTags.contains(r.getTag()) ? phiTags : markups;
-            as.add((long) r.getStart(), (long) r.getEnd(), r.getTag(), Factory.newFeatureMap());
+            AnnotationSet phiTags = doc.getAnnotations(phiAnnotationName);
+            AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
+
+            for (AnnotTuple r : annotRanges) {
+                AnnotationSet as = pipelineAnnotationTags.contains(r.getTag()) ? phiTags : markups;
+                as.add((long) r.getStart(), (long) r.getEnd(), r.getTag(), Factory.newFeatureMap());
+            }
+
+            return doc;
+        } catch (GateException e){
+            Assert.fail(e.getMessage());
+            return null;
         }
-
-        return doc;
     }
-
 }

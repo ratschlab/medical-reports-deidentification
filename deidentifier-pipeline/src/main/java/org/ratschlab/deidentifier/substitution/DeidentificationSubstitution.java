@@ -1,13 +1,16 @@
 package org.ratschlab.deidentifier.substitution;
 
 import gate.*;
+import gate.annotation.AnnotationImpl;
+import gate.util.InvalidOffsetException;
+import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.XML;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.gate.FilterDocuments;
+import sun.java2d.pipe.SpanShapeRenderer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,12 +30,8 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
 
     @Override
     public Document substitute(Document rawDoc) {
-
         try {
-
-            // TODO: factor out to different concern
             Document origDoc = FilterDocuments.filterDocument(rawDoc, filterTags);
-
             Factory.deleteResource(rawDoc);
 
             AnnotationSet markups = origDoc.getAnnotations(Gate.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
@@ -40,37 +39,10 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
             String phiAnnotationsCopyName = "phiAnnotationsCopy";
             AnnotationSet phiAnnotationsCopy = origDoc.getAnnotations(phiAnnotationsCopyName);
 
-            // TODO: how are addresses handlend!!?
-            cleanAnnotations(origDoc.getAnnotations(phiAnnotationSetName), phiAnnotationsCopy, markups, origDoc);
+            origDoc.getAnnotations(phiAnnotationSetName).forEach(a -> phiAnnotationsCopy.add(a));
+            cleanAnnotations(phiAnnotationsCopy, markups);
 
-            List<Annotation> ls = new ArrayList(markups);
-
-            // proper sorting
-            ls.sort((a1, a2) -> {
-                int result = a1.getStartNode().getOffset().compareTo(a2.getStartNode().getOffset());
-                if (result == 0) {
-                    result = -a1.getEndNode().getOffset().compareTo(a2.getEndNode().getOffset());
-
-                    if (result == 0) {
-                        result = a1.getId().compareTo(a2.getId());
-                    }
-                }
-
-                return result;
-            });
-
-            DeidentificationSubstituter substituter = substituterFactory.apply(origDoc);
-
-            StringBuffer buf = new StringBuffer();
-            buf.append("<?xml version='1.0' encoding='UTF-8'?>");
-
-            try {
-                emit(origDoc, phiAnnotationsCopy, 0, ls, buf, substituter);
-            } catch (RuntimeException ex) {
-                ex.printStackTrace();
-            }
-
-            String newContent = buf.toString();
+            String newContent = generateNewDocumentStr(origDoc, phiAnnotationsCopy, substituterFactory.apply(origDoc));
 
             origDoc.removeAnnotationSet(phiAnnotationsCopyName);
 
@@ -120,7 +92,37 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
         }
     }
 
-    public static void removeOverlappingAnnotations(AnnotationSet as) {
+    private String generateNewDocumentStr(Document origDoc, AnnotationSet phiAnnotations, DeidentificationSubstituter substituter) {
+        List<Annotation> markupList = new ArrayList(origDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME));
+
+        // proper sorting
+        markupList.sort((a1, a2) -> {
+            int result = a1.getStartNode().getOffset().compareTo(a2.getStartNode().getOffset());
+            if (result == 0) {
+                result = -a1.getEndNode().getOffset().compareTo(a2.getEndNode().getOffset());
+
+                if (result == 0) {
+                    result = a1.getId().compareTo(a2.getId());
+                }
+            }
+
+            return result;
+        });
+
+        StringBuffer buf = new StringBuffer();
+        buf.append("<?xml version='1.0' encoding='UTF-8'?>");
+
+        try {
+            emit(origDoc, phiAnnotations, 0, markupList, buf, substituter);
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+        }
+
+        return buf.toString();
+    }
+
+    public static void removeRedundantAnnotations(AnnotationSet as) {
+        // remove annotations either contained in another annotation, or arbitrarily one coextensive annotation
         List<Annotation> toRemove = new ArrayList<>();
         for(Annotation a1 : as) {
             for(Annotation a2: as) {
@@ -162,20 +164,82 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
         }
 
         toRemoveOverlaps.forEach(a -> as.remove(a));
-        
+
         newOverlaps.forEach(a -> as.add(a));
         as.getDocument().removeAnnotationSet(overlapTmps);
     }
 
+    protected static Range<Long> determineNewRange(Annotation annot, Set<Annotation> overlaps) {
+        // precondition on overlap: partial only; coextensive and contained annotation removed through prior processing
 
-    private void cleanAnnotations(AnnotationSet phiAnnots, AnnotationSet copy, AnnotationSet markups, Document doc) {
-        phiAnnots.forEach(a -> copy.add(a));
+        Optional<Annotation> left = overlaps.stream().filter(a -> a.getStartNode().getOffset() < annot.getStartNode().getOffset()).
+            max(Comparator.comparingInt(a -> a.getEndNode().getOffset().intValue()));
+        Optional<Annotation> right = overlaps.stream().filter(a -> a.getStartNode().getOffset() > annot.getStartNode().getOffset()).
+            min(Comparator.comparingInt(a -> a.getStartNode().getOffset().intValue()));
 
-        removeOverlappingAnnotations(copy);
+        Range<Long> ret = Range.between(
+            left.map(a -> a.getEndNode().getOffset()).orElse(annot.getStartNode().getOffset()),
+            right.map(a -> a.getStartNode().getOffset()).orElse(annot.getEndNode().getOffset())
+        );
+
+        assert ret.getMinimum() >= annot.getStartNode().getOffset() && ret.getMaximum() <= annot.getEndNode().getOffset();
+
+        return ret;
+    }
+
+    public static void splitOverlappingAnnotations(AnnotationSet as) {
+        // greedy, may not be optimal
+
+        Map<Annotation, Set<Annotation>> neighborMap = as.stream().map(a -> new AbstractMap.SimpleEntry<Annotation, Set<Annotation>>(a,
+                as.stream().filter(a2 -> !a.equals(a2) && a.overlaps(a2)).collect(Collectors.toSet()))).
+            filter(e -> e.getValue().size() > 0).
+            collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        while(!neighborMap.isEmpty()) {
+            Optional<Annotation> annot = neighborMap.entrySet().stream().
+                max(Comparator.comparingInt(e -> e.getValue().size())).
+                map(e -> e.getKey());
+
+            annot.ifPresent(an -> {
+
+                Set<Annotation> neighors = neighborMap.get(an);
+
+                if(!neighors.isEmpty()) {
+                    Range<Long> newRange = determineNewRange(an, neighors);
+
+                    if (newRange.getMaximum() > newRange.getMinimum()) {
+                        try {
+                            as.add(newRange.getMinimum(), newRange.getMaximum(), an.getType(), an.getFeatures());
+                        } catch (InvalidOffsetException e) {
+                            throw new AssertionError(e); // should not happen
+                        }
+                    }
+
+                    neighors.forEach(a -> neighborMap.get(a).remove(an));
+                    as.remove(an);
+                }
+
+                neighborMap.remove(an);
+            });
+        }
+    }
+
+    private void cleanAnnotations(AnnotationSet copy, AnnotationSet markups) {
+        if(!substituteWholeAddress) {
+            // we are ignoring Address annotation, so removing them already here
+            List<Annotation> toRemove = copy.stream().filter(a -> a.getType().equals("Address")).collect(Collectors.toList());
+            toRemove.forEach(a -> copy.remove(a));
+        }
+
+        removeRedundantAnnotations(copy);
 
         splitAnnotationsAcrossMarkupBoundaries(copy, markups);
 
-        removeOverlappingAnnotations(copy);
+        removeRedundantAnnotations(copy);
+
+        splitOverlappingAnnotations(copy);
+
+        removeRedundantAnnotations(copy);
     }
 
     private int emit(Document doc, AnnotationSet phiAnnots, int pos, List<Annotation> markupAn, StringBuffer buf, DeidentificationSubstituter substituter) {
