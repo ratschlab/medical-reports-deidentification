@@ -2,13 +2,11 @@ package org.ratschlab.deidentifier.substitution;
 
 import com.google.common.collect.ImmutableList;
 import gate.FeatureMap;
-import org.apache.tools.ant.taskdefs.PathConvert;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeys;
-import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysDate;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,8 +14,8 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
 
     public static final String TYPE_KEY = "type";
 
-    public static final String START_TAG = "[[[";
-    public static final String END_TAG = "]]]";
+    public static final String START_TAG = "[&[";
+    public static final String END_TAG = "]&]";
 
     String sep = ";"; // TODO parametrize
     String sepName = "SEMICOL";
@@ -114,7 +112,7 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
         return ret;
     }
 
-    public static boolean documentValid(String content) {
+    public static boolean replacementTagsValid(String content) {
         int pos = content.indexOf(START_TAG);
 
         boolean insideAnnoation = true;

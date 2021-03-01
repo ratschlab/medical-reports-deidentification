@@ -1,8 +1,9 @@
 package org.ratschlab.deidentifier.substitution;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Range;
 import gate.*;
 import gate.util.InvalidOffsetException;
-import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.XML;
 import org.ratschlab.deidentifier.utils.AnnotationUtils;
@@ -42,6 +43,9 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
             cleanAnnotations(phiAnnotationsCopy, markups);
 
             String newContent = generateNewDocumentStr(origDoc, phiAnnotationsCopy, substituterFactory.apply(origDoc));
+
+            // even if another strategy than ReplacementTagsSubstitution is used, the assert should still be trivially valid (no tags)
+            assert ReplacementTagsSubstitution.replacementTagsValid(newContent);
 
             origDoc.removeAnnotationSet(phiAnnotationsCopyName);
 
@@ -115,24 +119,25 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
 
         AnnotationSet newOverlaps = as.getDocument().getAnnotations(overlapTmps);
 
+        List<Annotation> allLeaves = AnnotationUtils.computeLeaves(markups);
+
         for(Annotation a : as) {
-            AnnotationSet overlaps = gate.Utils.getOverlappingAnnotations(markups, a);
+            List<Annotation> overlaps = allLeaves.stream().filter(leave -> leave.overlaps(a) && !a.withinSpanOf(leave)).collect(Collectors.toList());
 
-            if(overlaps.size() > 1) {
-                List<Annotation> leaves = overlaps.stream().
-                        filter(an -> gate.Utils.getContainedAnnotations(overlaps, an).size() <= 1).
-                        collect(Collectors.toList());
+            if(!overlaps.isEmpty()) {
+                toRemoveOverlaps.add(a);
 
-                List<Annotation> completelyContained = overlaps.stream().filter(an -> an.withinSpanOf(a)).collect(Collectors.toList());
+                for (Annotation over : overlaps) {
+                    try {
+                        newOverlaps.add(
+                                Math.max(a.getStartNode().getOffset(), over.getStartNode().getOffset()),
+                                Math.min(a.getEndNode().getOffset(), over.getEndNode().getOffset()),
+                                a.getType(), a.getFeatures());
 
-                if(leaves.size() > 1 || completelyContained.size() >= 1) {
-                    toRemoveOverlaps.add(a);
-
-                    for (Annotation over : leaves) {
-                        newOverlaps.add(over.getStartNode(), over.getEndNode(), a.getType(), a.getFeatures());
+                    } catch (InvalidOffsetException e) {
+                        throw new AssertionError(e.getMessage());
                     }
                 }
-
             }
         }
 
@@ -150,59 +155,68 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
         Optional<Annotation> right = overlaps.stream().filter(a -> a.getStartNode().getOffset() > annot.getStartNode().getOffset()).
             min(Comparator.comparingInt(a -> a.getStartNode().getOffset().intValue()));
 
-        Range<Long> ret = Range.between(
+        Range<Long> ret = Range.closedOpen(
             left.map(a -> a.getEndNode().getOffset()).orElse(annot.getStartNode().getOffset()),
             right.map(a -> a.getStartNode().getOffset()).orElse(annot.getEndNode().getOffset())
         );
 
-        assert ret.getMinimum() >= annot.getStartNode().getOffset() && ret.getMaximum() <= annot.getEndNode().getOffset();
+        assert ret.lowerEndpoint() >= annot.getStartNode().getOffset() && ret.upperEndpoint() <= annot.getEndNode().getOffset();
 
         return ret;
     }
 
     public static void splitOverlappingAnnotations(AnnotationSet as) {
-        // greedy, may not be optimal
-
-        Map<Annotation, Set<Annotation>> neighborMap = as.stream().map(a -> new AbstractMap.SimpleEntry<Annotation, Set<Annotation>>(a,
+        Map<Annotation, Set<Annotation>> overlapsMap = as.stream().map(a -> new AbstractMap.SimpleEntry<>(a,
                 as.stream().filter(a2 -> !a.equals(a2) && a.overlaps(a2)).collect(Collectors.toSet()))).
             filter(e -> e.getValue().size() > 0).
             collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        while(!neighborMap.isEmpty()) {
-            Optional<Annotation> annot = neighborMap.entrySet().stream().
+        // greedy, may not be optimal: split the annotation with most overlapping annotations until there are no overlaps anymore
+        while(!overlapsMap.isEmpty()) {
+            Optional<Annotation> annot = overlapsMap.entrySet().stream().
                 max(Comparator.comparingInt(e -> e.getValue().size())).
                 map(e -> e.getKey());
 
             annot.ifPresent(an -> {
+                Set<Annotation> overlaps = overlapsMap.get(an);
 
-                Set<Annotation> neighors = neighborMap.get(an);
+                if(!overlaps.isEmpty()) {
+                    Range<Long> newRange = determineNewRange(an, overlaps);
 
-                if(!neighors.isEmpty()) {
-                    Range<Long> newRange = determineNewRange(an, neighors);
-
-                    if (newRange.getMaximum() > newRange.getMinimum()) {
+                    if (!newRange.isEmpty()) {
                         try {
-                            as.add(newRange.getMinimum(), newRange.getMaximum(), an.getType(), an.getFeatures());
+                            as.add(newRange.lowerEndpoint(), newRange.upperEndpoint(), an.getType(), an.getFeatures());
                         } catch (InvalidOffsetException e) {
                             throw new AssertionError(e); // should not happen
                         }
                     }
 
-                    neighors.forEach(a -> neighborMap.get(a).remove(an));
+                    overlaps.forEach(a -> overlapsMap.get(a).remove(an));
                     as.remove(an);
                 }
 
-                neighborMap.remove(an);
+                overlapsMap.remove(an);
             });
         }
     }
 
+    /**
+     * Cleaning up phi annotations, s.t. they don't overlap and don't go across markup boundaries.
+     *
+     * This is required to properly generate a substituted document.
+     *
+     * @param as phi annotation set
+     * @param markups original markups
+     */
     private void cleanAnnotations(AnnotationSet as, AnnotationSet markups) {
         if(!substituteWholeAddress) {
             // we are ignoring Address annotation, so removing them already here
             List<Annotation> toRemove = as.stream().filter(a -> a.getType().equals("Address")).collect(Collectors.toList());
             toRemove.forEach(a -> as.remove(a));
         }
+
+        AnnotationSet cc = as.getDocument().getAnnotations("annotation_copy");
+        as.forEach(a -> cc.add(a));
 
         // construct to save original annotations to be used to check postconditions at the end only if asserts are enabled
         // see also https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html
@@ -224,7 +238,7 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
 
         AnnotationUtils.removeRedundantAnnotations(as);
 
-        assert AnnotationUtils.annotationRanges(originalAs.annotCopy).equals(AnnotationUtils.annotationRanges(as));
+        assert AnnotationUtils.checkAnnotationCoverage(originalAs.annotCopy, as.stream().collect(Collectors.toList()), markups);
         assert !AnnotationUtils.hasOverlappingAnnotations(as);
     }
 

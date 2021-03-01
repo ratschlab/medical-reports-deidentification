@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import gate.*;
 import gate.util.GateException;
-import org.apache.commons.lang3.Range;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,7 +62,7 @@ public class DeidentificationSubstitutionTest {
         DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ReplacementTagsSubstitution(), false, Collections.emptyList());
         Document substDoc = subst.substitute(doc);
 
-        Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substDoc.getContent().toString()));
+        Assert.assertTrue(ReplacementTagsSubstitution.replacementTagsValid(substDoc.getContent().toString()));
     }
 
     private static Stream<Arguments> substitutionTestCases() {
@@ -75,8 +74,8 @@ public class DeidentificationSubstitutionTest {
                 AnnotTuple.of(3, 4, "Name"), // shorter than previous annotation, should be removed
                 // second block
                 AnnotTuple.of(10, 15, "TheDate"),
-                AnnotTuple.of(10, 15, "Date"),
-                AnnotTuple.of(11, 15, "Name")
+                AnnotTuple.of(10, 15, "Name"),
+                AnnotTuple.of(10, 15, "Date")
             ))
         ).map(f -> Arguments.of(f));
 
@@ -96,7 +95,7 @@ public class DeidentificationSubstitutionTest {
 
         String substCont = substDoc.getContent().toString();
 
-        Assert.assertTrue(ReplacementTagsSubstitution.documentValid(substCont));
+        Assert.assertTrue(ReplacementTagsSubstitution.replacementTagsValid(substCont));
     }
 
     @Test
@@ -200,40 +199,41 @@ public class DeidentificationSubstitutionTest {
         "hello <Name> world <Location>sth</Location> <Name><Location> hello </Location></Name></Name>"
     })
     public void testNested(String content) {
-        try {
-            Document doc = prepareAnnotationDoc(content);
+        Document doc = prepareAnnotationDoc(content);
 
-            AnnotationSet as = doc.getAnnotations(phiAnnotationName);
+        AnnotationSet as = doc.getAnnotations(phiAnnotationName);
 
-            Assert.assertTrue(AnnotationUtils.hasOverlappingAnnotations(as));
-            AnnotationUtils.removeRedundantAnnotations(as);
-            Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
-
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-
+        Assert.assertTrue(AnnotationUtils.hasOverlappingAnnotations(as));
+        AnnotationUtils.removeRedundantAnnotations(as);
+        Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
     }
 
     @ParameterizedTest
     @MethodSource("testSplitAnnotationsAcrossMarkupBoundariesTestCases")
     public void testSplitAnnotationsAcrossMarkupBoundaries(Document doc) {
-        try {
-            AnnotationSet as = doc.getAnnotations(phiAnnotationName);
-            AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
+        AnnotationSet as = doc.getAnnotations(phiAnnotationName);
+        AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
-            DeidentificationSubstitution.splitAnnotationsAcrossMarkupBoundaries(as, markups);
+        List<Annotation> origAnnots = as.stream().collect(Collectors.toList());
 
-            Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
+        DeidentificationSubstitution.splitAnnotationsAcrossMarkupBoundaries(as, markups);
+
+        Assert.assertTrue(AnnotationUtils.checkAnnotationCoverage(origAnnots, as.stream().collect(Collectors.toList()), markups));
     }
 
     private static Stream<Arguments> testSplitAnnotationsAcrossMarkupBoundariesTestCases() {
         try {
             Stream<Arguments> args = Stream.of(
-                prepareAnnotationDoc("<doc>  <Name><Firstname>Peter</Firstname><Lastname>Meier</Lastname></Name></doc>")
+                    prepareAnnotationDoc("<doc><mydoc><Name><Firstname>Peter</Firstname><Lastname>Meier</Lastname></Name></mydoc></doc>"),
+                    prepareAnnotationDoc("<doc><mydoc><Name><Firstname><prefix></prefix><prefix></prefix><el>Peter</el></Firstname></Name></mydoc></doc>"),
+                    prepareAnnotationDoc("<doc><mydoc><Name><prefix></prefix><prefix></prefix><Firstname>Peter</Firstname></Name></mydoc></doc>"),
+                    dummyDocumentWithAnnotation(ImmutableList.of(
+                            AnnotTuple.of(0, 10, "Markup1"),
+                            AnnotTuple.of(10, 11, "Markup2"),
+                            AnnotTuple.of(11, 13, "Markup3"),
+                            AnnotTuple.of(0, 10, "Name"),
+                            AnnotTuple.of(5, 13, "Name")
+                    ))
             ).map(f -> Arguments.of(f));
 
 
@@ -249,39 +249,42 @@ public class DeidentificationSubstitutionTest {
     public void testSplitOverlappingAnnotations(Document doc) {
         AnnotationSet as = doc.getAnnotations(phiAnnotationName);
 
-        Set<Range<Long>> origCovered = AnnotationUtils.annotationRanges(as);
+        List<Annotation> origAnnotations = as.stream().collect(Collectors.toList());
 
         DeidentificationSubstitution.splitOverlappingAnnotations(as);
 
         Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
-
-        // checking, that we don't lose coverage
-        Set<Range<Long>> covered = AnnotationUtils.annotationRanges(as);
-        Assert.assertEquals(origCovered, covered);
+        Assert.assertTrue(AnnotationUtils.checkAnnotationCoverage(origAnnotations,
+                as.stream().collect(Collectors.toList()),
+                doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME)));
     }
 
     private static Stream<Arguments> testSplitOverlappingAnnotationsTestCases() {
         Stream<Arguments> args = Stream.of(
-            dummyDocumentWithAnnotation(ImmutableList.of(
-                AnnotTuple.of(2, 5, "Name"),
-                AnnotTuple.of(4, 9, "Name"),
-                AnnotTuple.of(8, 10, "Name"))),
-            // same but closer interval.
-            dummyDocumentWithAnnotation(ImmutableList.of(
-                AnnotTuple.of(2, 5, "Name"),
-                AnnotTuple.of(4, 7, "Name"),
-                AnnotTuple.of(5, 10, "Name"))),
-            // more complicated case
-            dummyDocumentWithAnnotation(ImmutableList.of(
-                AnnotTuple.of(2, 6, "Name"),
-                AnnotTuple.of(3, 7, "Name"),
-                AnnotTuple.of(5, 10, "Name"),
-                AnnotTuple.of(8, 11, "Name"))),
-            // no overlap
-            dummyDocumentWithAnnotation(ImmutableList.of(
-                AnnotTuple.of(2, 5, "Name"),
-                AnnotTuple.of(6, 10, "Name")
-            ))
+                dummyDocumentWithAnnotation(ImmutableList.of(
+                        AnnotTuple.of(2, 5, "Name"),
+                        AnnotTuple.of(3, 7, "Name")
+                )),
+                dummyDocumentWithAnnotation(ImmutableList.of(
+                        AnnotTuple.of(2, 5, "Name"),
+                        AnnotTuple.of(4, 9, "Name"),
+                        AnnotTuple.of(8, 10, "Name"))),
+                // same but closer interval.
+                dummyDocumentWithAnnotation(ImmutableList.of(
+                        AnnotTuple.of(2, 5, "Name"),
+                        AnnotTuple.of(4, 7, "Name"),
+                        AnnotTuple.of(5, 10, "Name"))),
+                // more complicated case
+                dummyDocumentWithAnnotation(ImmutableList.of(
+                        AnnotTuple.of(2, 6, "Name"),
+                        AnnotTuple.of(3, 7, "Name"),
+                        AnnotTuple.of(5, 10, "Name"),
+                        AnnotTuple.of(8, 11, "Name"))),
+                // no overlap
+                dummyDocumentWithAnnotation(ImmutableList.of(
+                        AnnotTuple.of(2, 5, "Name"),
+                        AnnotTuple.of(6, 10, "Name")
+                ))
         ).map(f -> Arguments.of(f));
 
         return args;
