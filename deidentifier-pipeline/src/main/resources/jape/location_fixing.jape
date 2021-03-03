@@ -27,7 +27,7 @@ Rule: RemoveAmbiguousCityAnnotation
 Rule: StreetNamesFromGazetteer
 (
     {Lookup.majorType =~ "location", Lookup.minorType =~ "street"}
-    (StreetNumber)?
+    (({Token.string ==~ "[1-9][0-9]{0,2}"} ({Token.string ==~ "[A-Za-z]"})?))?
 ):loc --> :loc.Location = { rule = "StreetNamesFromGazetteer", type = "street" }
 
 Rule: AddCantonAbbrev

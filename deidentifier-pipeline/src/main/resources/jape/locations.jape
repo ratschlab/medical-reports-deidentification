@@ -5,7 +5,7 @@ Options:control=appelt
 
 Macro: StreetNumber
 (
-    ({Token.string ==~ "[0-9]+"} ({Token.string ==~ "[A-Za-z]"})?)
+    ({Token.string ==~ "[1-9][0-9]*"} ({Token.string ==~ "[A-Za-z]"})?)
 )
 
 Macro: SwissZipCode

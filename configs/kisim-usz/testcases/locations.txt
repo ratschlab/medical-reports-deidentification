@@ -34,6 +34,9 @@ Bristol-Myers Squibb # fp location Bristol
 <Location>Gottfried-Meier-Strasse 23</Location>
 <Location>Gottfried Meier Strasse 23</Location>
 <Location>Outofvoc-Outofvocstr 12</Location>
+<Location>Outofvoc-Outofvocstr</Location> 044
+<Location>Oberer Graben 12A</Location>
+<Location>Oberer Graben</Location> 1234
 <Location>Outofvoc-Outofvocstrasse 12</Location>
 <Location>In der Fadmatt</Location>
 <Location>Würzburg</Location> <Location>Tel Aviv</Location> # testing gazetteer
