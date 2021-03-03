@@ -197,7 +197,7 @@ Rule: NursingStaffRightContext
 (
     (
         (SHORT_NAME) |
-        (UPPER_INITIAL_TOKEN)[2] // only taken two tokens (e.g. firstname lastname). Longer names should be picked up by other rules
+        ((UPPER_INITIAL_TOKEN)[2]):format_ff-SPACE-ll // only taken two tokens (e.g. firstname lastname). Longer names should be picked up by other rules
     ):name
     ({Token.string == ","})?
     ({Token.string == "Pflegefachfrau"} | {Token.string == "Pflegefachmann"} | {Token.string ==~ "[Dd]ipl"} | {Token.string == "PFF"} | {Token.string == "MPA"} )

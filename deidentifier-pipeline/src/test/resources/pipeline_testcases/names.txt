@@ -46,7 +46,7 @@ Dr. med. Dr. sc. nat. <Name>H. Muster</Name>
 PFF <Name>H. Muster</Name>
 <Name>H. Muster</Name>, PFF
 <Name>H. Muster</Name>, Pflegefachfrau
-Untersuchung <Name>Hans Muster</Name>, Pflegefachmann
+Untersuchung <Name format="ff ll">Hans Muster</Name>, Pflegefachmann
 <Name>Outofvoc Outofvoc</Name>, dipl. Fachmann OT
 OA <Name>Huber</Name>
 AÄ <Name>Meier</Name>, OA <Name>Huber</Name>
