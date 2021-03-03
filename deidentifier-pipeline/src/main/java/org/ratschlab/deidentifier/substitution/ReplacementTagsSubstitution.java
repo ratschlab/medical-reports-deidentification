@@ -20,6 +20,7 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
     String sep = ";"; // TODO parametrize
     String sepName = "SEMICOL";
 
+
     @Override
     protected String substituteAddress(String origStr, FeatureMap features) {
         return genericSubst("Address", origStr, extractRelevantProperties(features));
@@ -77,6 +78,17 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
         b.append(sep);
 
         b.append(origStr.replaceAll(sep, sepName));
+        b.append(sep);
+
+        String origAnnotatedStr = "";
+
+        // if the text originally annotated, i.e. by the annotation pipeline, differs from the text annotated now, add it in
+        // useful to track overlapping annotations which got split during cleaning in substitution.
+        // only add if they differ to not add redundant information/clutter
+        if(!properties.getOrDefault(FeatureKeysGeneral.ORIG_ANNOTATED_STR, origStr).equals(origStr)) {
+            origAnnotatedStr = properties.get(FeatureKeysGeneral.ORIG_ANNOTATED_STR);
+        }
+        b.append(origAnnotatedStr.replaceAll(sep, sepName));
 
         Map<String, String> allEntries = new HashMap<>(properties);
 
@@ -87,7 +99,8 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
 
         // sort entries by key s.t. we always have the same order of fields
         List<Map.Entry<String, String>> entryPairs = allEntries.entrySet().stream().
-            sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey())).collect(Collectors.toList());
+                filter(e -> !e.getKey().equals(FeatureKeysGeneral.ORIG_ANNOTATED_STR)).
+                sorted(Comparator.comparing(e -> e.getKey())).collect(Collectors.toList());
 
         for (Map.Entry<String, String> e : entryPairs) {
             b.append(sep);

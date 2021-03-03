@@ -4,4 +4,6 @@ public class FeatureKeysGeneral extends FeatureKeys {
     // general
     public static final String TYPE = "type";
     public static final String RULE = "rule";
+
+    public static final String ORIG_ANNOTATED_STR = "orig_annotated";
 }

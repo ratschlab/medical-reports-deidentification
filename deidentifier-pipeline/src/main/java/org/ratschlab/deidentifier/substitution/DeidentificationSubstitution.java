@@ -6,6 +6,7 @@ import gate.*;
 import gate.util.InvalidOffsetException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.XML;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.gate.FilterDocuments;
@@ -39,7 +40,16 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
             String phiAnnotationsCopyName = "phiAnnotationsCopy";
             AnnotationSet phiAnnotationsCopy = origDoc.getAnnotations(phiAnnotationsCopyName);
 
-            origDoc.getAnnotations(phiAnnotationSetName).forEach(a -> phiAnnotationsCopy.add(a));
+            // copying phi annotations before they are operated on
+            origDoc.getAnnotations(phiAnnotationSetName).forEach(a -> {
+                // recording original annotated text, as annotations might get split up during the cleaning process
+                FeatureMap newMap = Factory.newFeatureMap();
+                newMap.putAll(a.getFeatures());
+                newMap.put(FeatureKeysGeneral.ORIG_ANNOTATED_STR, gate.Utils.stringFor(origDoc, a));
+
+                phiAnnotationsCopy.add(a.getStartNode(), a.getEndNode(), a.getType(), newMap);
+            });
+
             cleanAnnotations(phiAnnotationsCopy, markups);
 
             String newContent = generateNewDocumentStr(origDoc, phiAnnotationsCopy, substituterFactory.apply(origDoc));
