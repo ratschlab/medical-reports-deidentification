@@ -63,7 +63,7 @@ Rule: ProcessOrtDat
                     format = "s";
                 }
             }
-            Utils.addNameAnnotation("DoctorsLeftContextRole", "medical staff", format, "name" + i, filteredBindings, doc, outputAS);
+            Utils.addNameAnnotation("ProcessOrtDat", "medical staff", format, "name" + i, filteredBindings, doc, outputAS);
         }
       }
 

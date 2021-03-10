@@ -233,7 +233,7 @@ public class Utils {
         }
     }
 
-    private static Set<String> DATE_COMPONENTS_SEPARATORS = ImmutableSet.of(" ", ".", "/", "-", ",");
+    private static Set<String> DATE_COMPONENTS_SEPARATORS = ImmutableSet.of("-", " ", ".", "/", ",");
 
     private static String separatorAfterAnnot(Document doc, Annotation a) {
         try {
@@ -304,7 +304,10 @@ public class Utils {
         }
 
         String dateFormat = dateComponents.stream().sorted(Map.Entry.comparingByValue()).
-               map(p -> p.getKey()).collect(Collectors.joining()).replaceAll(",?\\s*$", "");
+               map(p -> p.getKey()).collect(Collectors.joining()).
+                replaceAll(",?\\s*$", "").
+                // remove dangling date component separators, except the dot
+                replaceAll(String.format("[%s]$", DATE_COMPONENTS_SEPARATORS.stream().filter(s -> !s.equals(".")).collect(Collectors.joining())), "");
 
         feat.put("format", dateFormat);
 
