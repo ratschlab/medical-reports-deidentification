@@ -238,15 +238,43 @@ public class Utils {
 
     private static String separatorAfterAnnot(Document doc, Annotation a) {
         try {
-            String mayBeSep = doc.getContent().getContent(a.getEndNode().getOffset(), a.getEndNode().getOffset() + 1).toString();
-            String afterSep = doc.getContent().getContent(a.getEndNode().getOffset() + 1, a.getEndNode().getOffset() + 2).toString();
+            DocumentContent content = doc.getContent();
 
-            if(DATE_COMPONENTS_SEPARATORS.contains(mayBeSep)) {
-                if(afterSep.equals(" ")) {
-                    return mayBeSep + afterSep;
+            long start = a.getEndNode().getOffset();
+            long pos = start;
+
+            StringBuffer sep = new StringBuffer("");
+            boolean hasWhiteSpace = false;
+            boolean notAllWhiteSpace = false;
+
+            String prev = "";
+            while(pos < content.size()-1L && DATE_COMPONENTS_SEPARATORS.contains(content.getContent(pos, pos+1L).toString())) {
+                String c = content.getContent(pos, pos+1L).toString();
+
+                if(c.equals(" ")) {
+                    hasWhiteSpace = true;
+
+                    if(prev.equals(".") || prev.equals(",")) {
+                        sep.append(c);
+                    }
                 }
-                return mayBeSep;
+
+                if(!c.equals(" ")) {
+                    notAllWhiteSpace = true;
+
+                    sep.append(c);
+                }
+
+                prev = c;
+                pos++;
             }
+
+            if(hasWhiteSpace && !notAllWhiteSpace) {
+                return " ";
+            }
+
+            return sep.toString();
+
         } catch(InvalidOffsetException e) {}
 
         return "";
@@ -311,9 +339,9 @@ public class Utils {
 
         String dateFormat = dateComponents.stream().sorted(Map.Entry.comparingByValue()).
                map(p -> p.getKey()).collect(Collectors.joining()).
-                replaceAll(",?\\s*$", "").
                 // remove dangling date component separators, except the dot
-                replaceAll(String.format("[%s]$", DATE_COMPONENTS_SEPARATORS.stream().filter(s -> !s.equals(".")).collect(Collectors.joining())), "");
+                replaceAll(String.format("[%s]$", DATE_COMPONENTS_SEPARATORS.stream().filter(s -> !s.equals(".")).collect(Collectors.joining())), "").
+                replaceAll(",?\\s*$", "");
 
         feat.put("format", dateFormat);
 

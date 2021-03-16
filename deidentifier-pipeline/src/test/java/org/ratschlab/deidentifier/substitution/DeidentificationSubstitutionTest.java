@@ -11,9 +11,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.ratschlab.deidentifier.annotation.AnnotTuple;
+import org.ratschlab.deidentifier.annotation.TestUtils;
 import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
-import org.ratschlab.gate.GateTools;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 
 public class DeidentificationSubstitutionTest {
     private static String phiAnnotationName = "phiannotations";
-    private static String DUMMY_TAG = "dummy";
 
     private static Set<String> pipelineAnnotationTags = ImmutableSet.of("Name", "Location", "Date", "Address");
 
@@ -292,7 +291,7 @@ public class DeidentificationSubstitutionTest {
 
     private static Document prepareAnnotationDoc(String content) {
         try {
-            Document doc = simpleDocument(content);
+            Document doc = TestUtils.fromString(content);
 
             AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
@@ -308,11 +307,6 @@ public class DeidentificationSubstitutionTest {
         return null;
     }
 
-    private static Document simpleDocument(String content) throws GateException {
-        String docStr = String.format("<%s>%s</%s>", DUMMY_TAG, content, DUMMY_TAG);
-
-        return GateTools.documentFromXmlString(docStr);
-    }
 
     private static Document dummyDocumentWithAnnotation(Iterable<AnnotTuple> annotRanges) {
         try {
@@ -322,7 +316,7 @@ public class DeidentificationSubstitutionTest {
                 StringBuilder::append,
                 StringBuilder::toString));
 
-            Document doc = simpleDocument(dummyString);
+            Document doc = TestUtils.fromString(dummyString);
 
             AnnotationSet phiTags = doc.getAnnotations(phiAnnotationName);
             AnnotationSet markups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);

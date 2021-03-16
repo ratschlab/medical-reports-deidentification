@@ -19,7 +19,11 @@ public class TestUtils {
         return doc;
     }
 
-    // TODO refactor into utility function
+    public static Document fromString(String content) throws ResourceInstantiationException {
+        String DUMMY_TAG = "dummy";
+        return fromXmlString(String.format("<%s>%s</%s>", DUMMY_TAG, content, DUMMY_TAG));
+    }
+
     public static Document fromXmlString(String xmlStr) throws ResourceInstantiationException {
         FeatureMap params = Factory.newFeatureMap();
         params.put(Document.DOCUMENT_STRING_CONTENT_PARAMETER_NAME, xmlStr);

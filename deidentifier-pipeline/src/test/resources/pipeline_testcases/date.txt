@@ -20,6 +20,9 @@ seit <Date>November 2011</Date> unter Fumarsauere
 (ES <Date>1994</Date> ED <Date>1994</Date>)
 seit <Date>2001</Date>
 Schub <Date>10/08</Date> <Date>3/09</Date>
+<Date format="MM/yyyy" month="3" year="2005">3/2005</Date>
+<Date format="MM/yyyy" month="3" year="2005">3 / 2005</Date>
+<Date format="MM/yyyy" month="3" year="2005">3 /2005</Date>
 Sturz am <Date>20. Oktober</Date> # how to know year?? take previous and next years?
 es wurde am <Date>13.08</Date> ein MRI durchgefuehrt
 MRI Halsgefässe <Date>27.11.</Date> konnte
