@@ -39,6 +39,10 @@ voraussichtlich im <Date month="Oktober" year="2016" format="MMMM">Oktober</Date
 ED <Date>5/10</Date>
 <Date>05/10</Date> # more likely a date
 <Date>August/16</Date>
+<Date month="Sep" year="2016" format="MMM yyyy">Sep 2016</Date>
+<Date month="Sept" year="2016" format="MMM yyyy">Sept 2016</Date>
+<Date month="3" format="MM/yyyy">3/2005</Date>
+<Date month="2" year="2000" format="MM/yy">02/00</Date>
 <Date>21/01/15</Date>
 Lungenembolien <Date>02/2014</Date>
 
@@ -107,7 +111,7 @@ Berger et al., 1999
 
 ## English Dates
 
-on <Date day="22" month="March" year="2013" format="MM dd, yyyy">March 22, 2013</Date>
+on <Date day="22" month="March" year="2013" format="MMMM dd, yyyy">March 22, 2013</Date>
 #<Date>Sept 21th, 2013</Date>
 #<Date>Sept. 21th, 2013</Date>
 

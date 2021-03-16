@@ -11,6 +11,7 @@ import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 import org.ratschlab.deidentifier.utils.DateUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -213,8 +214,8 @@ public class Utils {
         }
 
         List<FeatureMap> featuresLst =  ImmutableList.of(
-                processFeatures(rule, type, doc, "", bindings),
-                processFeatures(rule, type, doc, "2", bindings));
+                processDateFeatures(rule, type, doc, "", bindings),
+                processDateFeatures(rule, type, doc, "2", bindings));
 
         // fill in year, month if available in other date
         for(int i = 0; i < 2; i++) {
@@ -255,7 +256,7 @@ public class Utils {
         return org.ratschlab.util.Utils.maybeParseInt(annotStr).map(i -> i.toString()).orElse(annotStr);
     }
 
-    private static FeatureMap processFeatures(String rule, String type, Document doc, String datePostfix, Map<String,AnnotationSet> bindings) {
+    private static FeatureMap processDateFeatures(String rule, String type, Document doc, String datePostfix, Map<String,AnnotationSet> bindings) {
         FeatureMap feat = Factory.newFeatureMap();
 
         feat.put("rule", rule);
@@ -274,12 +275,17 @@ public class Utils {
             feat.put("day", removeLeadingZeroFromDateComponent(dayStr));
         }
 
+        DateUtils dateUtils = new DateUtils();
+        DateUtils dateUtilsEng = new DateUtils(Locale.ENGLISH);
+
         // extract month
         String monthKey = "month" + datePostfix;
         if(bindings.containsKey(monthKey)) {
             Annotation month = bindings.get(monthKey).iterator().next();
             String monthStr = gate.Utils.stringFor(doc, month);
-            String monthFormat = DateUtils.determineMonthFormat(monthStr).map(df -> df.toPattern()).orElse("MM") + separatorAfterAnnot(doc, month);
+            String monthFormat = dateUtils.determineMonthFormat(monthStr).
+                orElse(dateUtilsEng.determineMonthFormat(monthStr).orElse(new SimpleDateFormat("MM"))).
+                toPattern() + separatorAfterAnnot(doc, month);
 
             dateComponents.add(Pair.of(monthFormat, month));
             feat.put("month", removeLeadingZeroFromDateComponent(monthStr));
@@ -290,7 +296,7 @@ public class Utils {
         if(bindings.containsKey(yearKey)) {
             Annotation year = bindings.get(yearKey).iterator().next();
             String yearStr = gate.Utils.stringFor(doc, year);
-            String yearFormat = DateUtils.determineYearFormat(yearStr).map(df -> df.toPattern()).orElse("yyyy") + separatorAfterAnnot(doc, year);
+            String yearFormat = dateUtils.determineYearFormat(yearStr).map(df -> df.toPattern()).orElse("yyyy") + separatorAfterAnnot(doc, year);
 
             String yearStrFixed = yearStr;
             if(yearStr.length() == 2) {
