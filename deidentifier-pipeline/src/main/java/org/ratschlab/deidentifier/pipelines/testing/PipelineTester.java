@@ -118,8 +118,8 @@ public class PipelineTester {
                 String xmlTxt = mydoc.toXml(mydoc.getAnnotations(finalOutputAs), true).replace("%", "%%");
                 Integer linenr = Integer.parseInt(mydoc.getFeatures().get(PipelineTestSuite.LINE_NR_KEY).toString());
 
-                AnnotationSet target = mydoc.getAnnotations(PipelineTestSuite.EXPECTED_AS_NAME);
-                //target.removeIf(a -> a.getType().equals(PipelineTestSuite.DUMMY_TAG) || suite.getContextTags().contains(a.getType()));
+                AnnotationSet target = mydoc.getAnnotations(PipelineTestSuite.EXPECTED_ANNOTATION_SET_NAME);
+                target.removeIf(a -> a.getType().equals(PipelineTestSuite.DUMMY_TAG) || suite.getContextTags().contains(a.getType()));
 
                 AnnotationSet annot = mydoc.getAnnotations(finalOutputAs); //compare sets
                 annot.removeIf(a -> !suite.getTags().contains(a.getType())); // only focus on phi annotations we are interested in

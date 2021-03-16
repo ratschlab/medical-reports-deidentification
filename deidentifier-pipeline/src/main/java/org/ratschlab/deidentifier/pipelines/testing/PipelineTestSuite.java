@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PipelineTestSuite {
@@ -22,7 +19,7 @@ public class PipelineTestSuite {
     public static final String LINE_NR_KEY = "linenr";
     public static final String DUMMY_TAG = "dummy";
 
-    public static final String EXPECTED_AS_NAME = "myexpected";
+    public static final String EXPECTED_ANNOTATION_SET_NAME = "myexpected";
 
     private Corpus corpus;
     private Set<String> tags;
@@ -57,13 +54,13 @@ public class PipelineTestSuite {
 
         List<String> lines = Files.readAllLines(path);
 
-        Corpus corpus = Factory.newCorpus(path.getFileName().toString());
-
         String header = lines.get(0);
         Pair<Set<String>, Set<String>> tagsPair = parseHeader(header);
 
         Set<String> tags = tagsPair.getLeft();
         Set<String> contextTags = tagsPair.getRight();
+
+        List<Document> docs = new ArrayList<>();
 
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -95,7 +92,7 @@ public class PipelineTestSuite {
                 doc.setFeatures(fm);
 
                 AnnotationSet originalMarkups = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
-                AnnotationSet expectedTags = doc.getAnnotations(EXPECTED_AS_NAME);
+                AnnotationSet expectedTags = doc.getAnnotations(EXPECTED_ANNOTATION_SET_NAME);
 
                 for(String t : tags) {
                     for(Annotation a : originalMarkups.get(t)) {
@@ -104,7 +101,7 @@ public class PipelineTestSuite {
                     }
                 }
 
-                corpus.add(doc);
+                docs.add(doc);
             } catch (ResourceInstantiationException e) {
                 e.printStackTrace();
             } catch (InvalidOffsetException e) {
@@ -112,9 +109,26 @@ public class PipelineTestSuite {
             }
         }
 
-
-        return new PipelineTestSuite(path.getFileName().toString(), corpus, tags, contextTags);
+        return createTestSuite(docs, tags, contextTags, path.getFileName().toString(), path.getFileName().toString());
     }
+
+    public static PipelineTestSuite createTestSuite(List<Document> docs, Set<String> tags, Set<String> contextTags) throws ResourceInstantiationException {
+        return createTestSuite(docs, tags, contextTags, "mysuite", "mytestcorpus");
+    }
+
+    public static PipelineTestSuite createTestSuite(List<Document> docs, Set<String> tags, Set<String> contextTags, String suiteName, String corpusName) throws ResourceInstantiationException {
+        Corpus corpus = Factory.newCorpus(corpusName);
+
+        for(int i = 0; i < docs.size(); i++) {
+            Document d = docs.get(i);
+            FeatureMap fm = d.getFeatures();
+            fm.putIfAbsent(PipelineTestSuite.LINE_NR_KEY, i);
+            corpus.add(d);
+        }
+
+        return new PipelineTestSuite(suiteName, corpus, tags, contextTags);
+    }
+
 
     private static String removeComment(String line) {
         int pos = line.indexOf('#');
