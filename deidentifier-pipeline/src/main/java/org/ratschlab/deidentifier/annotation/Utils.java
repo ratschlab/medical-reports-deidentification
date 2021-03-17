@@ -262,7 +262,9 @@ public class Utils {
                 if(!c.equals(" ")) {
                     notAllWhiteSpace = true;
 
-                    sep.append(c);
+                    if(!c.equals(prev)) {
+                        sep.append(c);
+                    }
                 }
 
                 prev = c;
@@ -326,7 +328,8 @@ public class Utils {
         Optional<Annotation> yearAnnotation = getAnnotationWithPrefix("year" + datePostfix, bindings);
         yearAnnotation.ifPresent(year -> {
             String yearStr = gate.Utils.stringFor(doc, year);
-            String yearFormat = dateUtils.determineYearFormat(yearStr).map(df -> df.toPattern()).orElse("yyyy") + separatorAfterAnnot(doc, year);
+            String yearFormat = dateUtils.determineYearFormat(yearStr).map(df -> df.toPattern()).orElse("yyyy") +
+                    separatorAfterAnnot(doc, year).replace(".", ""); // year not followed by dot
 
             String yearStrFixed = yearStr;
             if(yearStr.length() == 2) {

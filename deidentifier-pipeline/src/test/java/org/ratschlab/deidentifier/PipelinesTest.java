@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableSet;
 import gate.*;
 import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
+import gate.util.InvalidOffsetException;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -46,6 +48,7 @@ public class PipelinesTest {
         }
     }
 
+
     @Test
     public void testDateFormatNotIncludeDanglingSlash() throws GateException {
         // doing a specialised test here, since with '<Date>09.03.2017</Date>/Zürich' in a testfile, a whitespace before
@@ -57,9 +60,21 @@ public class PipelinesTest {
         fm.put("format", "dd.MM.yyyy");
         expected.add(0L, 10L, "Date", fm);
 
-        PipelineTestSuite suite = PipelineTestSuite.createTestSuite(ImmutableList.of(doc), ImmutableSet.of("Date"), Collections.emptySet());
+        runSingleTest(doc);
+    }
 
-        tester.runSuite(suite);
+    @Test
+    public void testDateFormatNoDoubleDots() throws GateException {
+        // doing a specialised test here, since with '<Date>09.03.2017</Date>/Zürich' in a testfile, a whitespace before
+        // the '/' is introduced during parsing, potentially leading to a different behaviour of the algorithm determining the date format
+        Document doc = TestUtils.fromString("am 24. November 2015....");
+        AnnotationSet expected = doc.getAnnotations(PipelineTestSuite.EXPECTED_ANNOTATION_SET_NAME);
+
+        FeatureMap fm = Factory.newFeatureMap();
+        fm.put("format", "dd. MMMM yyyy");
+        expected.add(3L, 20L, "Date", fm);
+
+        runSingleTest(doc);
     }
 
     private static Stream<Arguments> createTestCases() {
@@ -69,5 +84,16 @@ public class PipelinesTest {
                 listFiles((d, n) -> n.endsWith(".txt"));
 
         return Arrays.stream(fileList).map(f -> Arguments.of(f));
+    }
+
+    private static void runSingleTest(Document doc) {
+        PipelineTestSuite suite = null;
+        try {
+            suite = PipelineTestSuite.createTestSuite(ImmutableList.of(doc), ImmutableSet.of("Date"), Collections.emptySet());
+        } catch (ResourceInstantiationException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        tester.runSuite(suite);
     }
 }

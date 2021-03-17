@@ -26,6 +26,7 @@ Schub <Date>10/08</Date> <Date>3/09</Date>
 Sturz am <Date>20. Oktober</Date> # how to know year?? take previous and next years?
 es wurde am <Date>13.08</Date> ein MRI durchgefuehrt
 MRI Halsgefässe <Date>27.11.</Date> konnte
+MRI Halsgefässe <Date format="dd.MM.">27.11.</Date>.
 #(nach Lublin et al. 2013) # TODO: citation, technically don't need to deidentifiy
 bis <Date>10.12</Date> weiter
 am <Date>30.11</Date> um 13:00, am <Date>23.11</Date> um 13:00,
