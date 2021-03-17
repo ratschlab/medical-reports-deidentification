@@ -15,7 +15,7 @@ Macro: SIGNATURE_TOKEN
 Rule: ProcessDateSmallCapsSignField
 (
      // already regonized date or some date like '20.11' without a dot
-     ({Date} | ( ({Token.kind == "number"}):day {Token.string == "."} ({Token.kind == "number"}):month)):date
+     ({Date} | ( ({Token.kind == "number"}):day1 {Token.string == "."} ({Token.kind == "number"}):month1)):date1
     (SIGNATURE_TOKEN):first_tok
     (
                 {Token.string ==~ "[,/]"}
@@ -32,7 +32,7 @@ Rule: ProcessDateSmallCapsSignFieldInv
 (
      (SIGNATURE_TOKEN):sig
      // already regonized date or some date like '20.11' without a dot
-     ({Date} | ( ({Token.kind == "number"}):day {Token.string == "."} ({Token.kind == "number"}):month)):date
+     ({Date} | ( ({Token.kind == "number"}):day1 {Token.string == "."} ({Token.kind == "number"}):month1)):date1
 
 ) --> {
     Utils.addDateAnnotation("ProcessDateSmallCapsSignFieldInv", "other", bindings, doc, outputAS);

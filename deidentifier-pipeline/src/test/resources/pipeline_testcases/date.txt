@@ -46,7 +46,7 @@ ED <Date>5/10</Date>
 <Date month="Sept" year="2016" format="MMM yyyy">Sept 2016</Date>
 <Date month="3" format="MM/yyyy">3/2005</Date>
 <Date month="2" year="2000" format="MM/yy">02/00</Date>
-<Date>21/01/15</Date>
+<Date format="dd/MM/yy">21/01/15</Date>
 Lungenembolien <Date>02/2014</Date>
 
 Anfang <Date>Dezember 2021</Date>
@@ -134,6 +134,7 @@ Pemetrexed <Date>10/2012</Date> - <Date>02/2013</Date>,
 7-8/10 Punkten
 Th 11/12
 Bwk 9/11, BWK 9/11, BWK 11/12
+2.5/10
 
 <Date>2006</Date>/<Date>07</Date> und weiter...
 #<Date>April</Date>/<Date>Mai 2018</Date> weiter # TODO: consider?

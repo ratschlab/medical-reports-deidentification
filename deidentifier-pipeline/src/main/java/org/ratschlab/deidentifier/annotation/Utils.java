@@ -209,12 +209,12 @@ public class Utils {
     }
 
     public static void addDateAnnotation(String rule, String type, Map<String,AnnotationSet> bindings, Document doc, AnnotationSet outputAs) {
-        if(!bindings.containsKey("date")) {
+        if(!bindings.containsKey("date1")) {
             return;
         }
 
         List<FeatureMap> featuresLst =  ImmutableList.of(
-                processDateFeatures(rule, type, doc, "", bindings),
+                processDateFeatures(rule, type, doc, "1", bindings),
                 processDateFeatures(rule, type, doc, "2", bindings));
 
         // fill in year, month if available in other date
@@ -227,7 +227,7 @@ public class Utils {
             }
         }
 
-        outputAs.add(bindings.get("date").firstNode(), bindings.get("date").lastNode(), "Date", featuresLst.get(0));
+        outputAs.add(bindings.get("date1").firstNode(), bindings.get("date1").lastNode(), "Date", featuresLst.get(0));
 
         if(bindings.containsKey("date2")) {
             outputAs.add(bindings.get("date2").firstNode(), bindings.get("date2").lastNode(), "Date", featuresLst.get(1));
@@ -284,6 +284,11 @@ public class Utils {
         return org.ratschlab.util.Utils.maybeParseInt(annotStr).map(i -> i.toString()).orElse(annotStr);
     }
 
+    private static Optional<Annotation> getAnnotationWithPrefix(String prefix, Map<String,AnnotationSet> bindings) {
+        Optional<String> existingKey = bindings.keySet().stream().filter(s -> s.startsWith(prefix)).findFirst();
+        return existingKey.map(k -> bindings.get(k).iterator().next());
+    }
+
     private static FeatureMap processDateFeatures(String rule, String type, Document doc, String datePostfix, Map<String,AnnotationSet> bindings) {
         FeatureMap feat = Factory.newFeatureMap();
 
@@ -293,23 +298,21 @@ public class Utils {
         List<Pair<String, Annotation>> dateComponents = new ArrayList<>();
 
         // extract day
-        String dayKey = "day" + datePostfix;
-        if(bindings.containsKey(dayKey)) {
-            Annotation day = bindings.get(dayKey).iterator().next();
+        Optional<Annotation> dayAnnotation = getAnnotationWithPrefix("day" + datePostfix, bindings);
+        dayAnnotation.ifPresent(day -> {
             String dayStr = gate.Utils.stringFor(doc, day);
             String dayFormat = "dd" + separatorAfterAnnot(doc, day);
 
             dateComponents.add(Pair.of(dayFormat, day));
             feat.put("day", removeLeadingZeroFromDateComponent(dayStr));
-        }
+        });
 
         DateUtils dateUtils = new DateUtils();
         DateUtils dateUtilsEng = new DateUtils(Locale.ENGLISH);
 
         // extract month
-        String monthKey = "month" + datePostfix;
-        if(bindings.containsKey(monthKey)) {
-            Annotation month = bindings.get(monthKey).iterator().next();
+        Optional<Annotation> monthAnnotation = getAnnotationWithPrefix("month" + datePostfix, bindings);
+        monthAnnotation.ifPresent(month -> {
             String monthStr = gate.Utils.stringFor(doc, month);
             String monthFormat = dateUtils.determineMonthFormat(monthStr).
                 orElse(dateUtilsEng.determineMonthFormat(monthStr).orElse(new SimpleDateFormat("MM"))).
@@ -317,12 +320,11 @@ public class Utils {
 
             dateComponents.add(Pair.of(monthFormat, month));
             feat.put("month", removeLeadingZeroFromDateComponent(monthStr));
-        }
+        });
 
         // extract year
-        String yearKey = "year" + datePostfix;
-        if(bindings.containsKey(yearKey)) {
-            Annotation year = bindings.get(yearKey).iterator().next();
+        Optional<Annotation> yearAnnotation = getAnnotationWithPrefix("year" + datePostfix, bindings);
+        yearAnnotation.ifPresent(year -> {
             String yearStr = gate.Utils.stringFor(doc, year);
             String yearFormat = dateUtils.determineYearFormat(yearStr).map(df -> df.toPattern()).orElse("yyyy") + separatorAfterAnnot(doc, year);
 
@@ -335,7 +337,7 @@ public class Utils {
 
             dateComponents.add(Pair.of(yearFormat, year));
             feat.put("year", yearStrFixed);
-        }
+        });
 
         String dateFormat = dateComponents.stream().sorted(Map.Entry.comparingByValue()).
                map(p -> p.getKey()).collect(Collectors.joining()).
@@ -349,12 +351,12 @@ public class Utils {
     }
 
     public static boolean possibleSlashDate(Map<String,AnnotationSet> bindings, Document doc) {
-        if(!bindings.containsKey("month") || !bindings.containsKey("year") ) {
+        if(!bindings.containsKey("month1") || !bindings.containsKey("year1") ) {
             return false;
         }
 
-        String month = gate.Utils.stringFor(doc, bindings.get("month").iterator().next());
-        String year = gate.Utils.stringFor(doc, bindings.get("year").iterator().next());
+        String month = gate.Utils.stringFor(doc, bindings.get("month1").iterator().next());
+        String year = gate.Utils.stringFor(doc, bindings.get("year1").iterator().next());
 
         int monthNum = org.ratschlab.util.Utils.maybeParseInt(month).orElse(0);
         int yearNum = org.ratschlab.util.Utils.maybeParseInt(year).orElse(0);
