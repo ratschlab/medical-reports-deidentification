@@ -163,6 +163,46 @@ public class Utils {
             replaceAll("SLASH", "/")).collect(Collectors.joining(" "));
     }
 
+    private static void checkNameAnnotationConsistency(FeatureMap fm) {
+        String format = fm.get(FeatureKeysName.NAME_FORMAT).toString().toLowerCase();
+
+        Map<String, String> formatMapping = ImmutableMap.of(
+                "ff", "firstname",
+                "f", "firstname",
+                "ll", "lastname",
+                "s", "signature"
+                );
+
+        for (Map.Entry<String, String> e : formatMapping.entrySet()) {
+            String fStr = e.getKey();
+            String field = e.getValue();
+
+            if (format.contains(fStr) && (!fm.containsKey(field) || fm.get(field).toString().isEmpty())) {
+                System.out.println(String.format("WARNING: format contains %s but field %s not set or empty (rule: %s)",
+                        fStr, field, fm.getOrDefault(FeatureKeysGeneral.RULE, "UNKNOWN").toString()));
+            }
+        }
+
+        Map<String, Set<String>> formatMappingRev = formatMapping.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> ImmutableSet.of(e.getValue()),
+                (x, y) -> {
+                    HashSet<String> r = new HashSet<>();
+                    r.addAll(x);
+                    r.addAll(y);
+                    return r;
+                }));
+
+        for (Map.Entry<String, Set<String>> e : formatMappingRev.entrySet()) {
+            Set<String> formats = e.getValue();
+            String field = e.getKey();
+
+            if (fm.containsKey(field) && !fm.get(field).toString().isEmpty() && formats.stream().noneMatch(s -> format.contains(s))) {
+                String possibleFormats = formats.stream().collect(Collectors.joining(" or "));
+                System.out.println(String.format("WARNING: field %s set but cannot find %s in format %s (rule: %s)",
+                        field, possibleFormats, format, fm.getOrDefault(FeatureKeysGeneral.RULE, "UNKNOWN").toString()));
+            }
+        }
+    }
+
     public static void addNameAnnotation(String rule, String type, String format, String nameBinding, Map<String,AnnotationSet> bindings, Document doc, AnnotationSet outputAs) {
         if(!bindings.containsKey(nameBinding)) {
             return;
@@ -204,6 +244,8 @@ public class Utils {
         if(format.equals("S") && !feat.containsKey(FeatureKeysName.NAME_SIGNATURE)) {
             feat.put(FeatureKeysName.NAME_SIGNATURE, gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
         }
+
+        checkNameAnnotationConsistency(feat);
 
         outputAs.add(bindings.get(nameBinding).firstNode(), bindings.get(nameBinding).lastNode(), "Name", feat);
     }
