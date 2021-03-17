@@ -47,6 +47,11 @@ Macro: SURNAME_TOKEN_UPPER_SEQ
     )*
 )
 
+Macro: NAME_TOKEN_NON_ORGANIZATION
+(
+    {Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"}
+)
+
 Macro: SURNAME_LOOKUP
 (
     {Lookup.majorType =~ "name", Lookup.minorType =~ "surname|suffixed", !Lookup.minorType =~ "stop"}
@@ -149,9 +154,10 @@ Priority: 100 //overruling SimpleDetectPatient
         ((DOUBLE_NAME):lastname_DoctorsLeftContext):format_ll-SPACE-ll_DoctorsLeftContext |
         (
             // separating the rules to add in some distinct format binding
-            ({Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"}):format_ll_DoctorsLeftContext |
-            ({Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"})[3,6]:format_ff-SPACE-ll-SPACE-ll_DoctorsLeftContext
-        ):lastname_DoctorsLeftContext2
+            ((NAME_TOKEN_NON_ORGANIZATION):lastname_DoctorsLeftContext_ll):format_ll_DoctorsLeftContext |
+            ((NAME_TOKEN_NON_ORGANIZATION):firstname_DoctorsLeftContext1 ((NAME_TOKEN_NON_ORGANIZATION)[2]):lastname_DoctorsLeftContext1):format_ff-SPACE-ll-SPACE-ll_DoctorsLeftContext |
+            (((NAME_TOKEN_NON_ORGANIZATION)[2]):firstname_DoctorsLeftContext2 ((NAME_TOKEN_NON_ORGANIZATION)[2,4]):lastname_DoctorsLeftContext2):format_ff-SPACE-ff-SPACE-ll-SPACE-ll_DoctorsLeftContext2
+        )
      ): name
 )
 --> { Utils.addNameAnnotation("DoctorsLeftContext", "doctor", "", bindings, doc, outputAS); },
@@ -197,7 +203,7 @@ Rule: NursingStaffRightContext
 (
     (
         (SHORT_NAME) |
-        ((UPPER_INITIAL_TOKEN)[2]):format_ff-SPACE-ll // only taken two tokens (e.g. firstname lastname). Longer names should be picked up by other rules
+        ((UPPER_INITIAL_TOKEN):firstname (UPPER_INITIAL_TOKEN):lastname):format_ff-SPACE-ll // only taken two tokens (e.g. firstname lastname). Longer names should be picked up by other rules
     ):name
     ({Token.string == ","})?
     ({Token.string == "Pflegefachfrau"} | {Token.string == "Pflegefachmann"} | {Token.string ==~ "[Dd]ipl"} | {Token.string == "PFF"} | {Token.string == "MPA"} )
@@ -353,11 +359,11 @@ Priority: 0
 
 Rule: UniqueDoubleName
 (
-    (
+    ((
         ({Token within {Lookup.majorType ==~ "name"}})
         DASH
         ({Token within {Lookup.majorType ==~ "name"}, !Token.string ==~ "Spiegel"})
-    ):format_ll-DASH-ll
+    ):lastname):format_ll-DASH-ll
 ):name --> { Utils.addNameAnnotation("UniqueDoubleName", "other", "", bindings, doc, outputAS); }
 
 // example: Herr Muster, but not "Herr Kollege"
@@ -366,17 +372,20 @@ Priority: 0
 (
     (CIVIL_SALUTATION): salutation
     (
-        ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"})+ |
-        ({Token.string ==~ "[A-Z]"} {Token.string == "."}):lastname_SimpleDetectPatient |
+        (
+            ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"}):format_ll_SimpleDetectPatient1 |
+            (({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"})[2,6]):format_ll-SPACE-ll_SimpleDetectPatient2 |
+            ({Token.string ==~ "[A-Z]"} {Token.string == "."}):format_ll_SimpleDetectPatient3
+        ):lastname_SimpleDetectPatient2 |
         (SHORT_NAME)
     ):name
-) --> { Utils.addNameAnnotation("SimpleDetectPatient", "patient", "ll", bindings, doc, outputAS); },
+) --> { Utils.addNameAnnotation("SimpleDetectPatient", "patient", "", bindings, doc, outputAS); },
       :salutation.Salutation = { rule = "SimpleDetectPatient"}
 
 Rule: DoubleNameLeftTriggered
 (
     ({Token.string ==~ "Herr|Frau|Hr|Fr|Dr"}):salutation
-    (
+    ((
         (
             {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
             DASH
@@ -386,7 +395,7 @@ Rule: DoubleNameLeftTriggered
             {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
             {Token within {Lookup.majorType ==~ "name"}}
         ):format_ll-SPACE-ll
-    ):name
+    ):lastname):name
 ) --> { Utils.addNameAnnotation("DoubleNameLeftTriggered", "patient", "", bindings, doc, outputAS); },
        :salutation.Salutation = { rule = "DoubleNameLeftTriggered"}
 

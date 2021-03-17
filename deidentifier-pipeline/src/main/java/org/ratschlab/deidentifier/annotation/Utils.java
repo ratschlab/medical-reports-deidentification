@@ -10,6 +10,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 import org.ratschlab.deidentifier.utils.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,6 +22,8 @@ import java.util.stream.Stream;
  * Utils functions is in JAPE rules
  */
 public class Utils {
+    private static final Logger log = LoggerFactory.getLogger(Utils.class);
+
     public List<Annotation> tokensInWindow(AnnotationSet as, Annotation an, int windowSize) {
         List<Annotation> tokenList = as.get("Token").inDocumentOrder();
 
@@ -178,12 +182,12 @@ public class Utils {
             String field = e.getValue();
 
             if (format.contains(fStr) && (!fm.containsKey(field) || fm.get(field).toString().isEmpty())) {
-                System.out.println(String.format("WARNING: format contains %s but field %s not set or empty (rule: %s)",
+                log.warn(String.format("format contains %s but field %s not set or empty (rule: %s)",
                         fStr, field, fm.getOrDefault(FeatureKeysGeneral.RULE, "UNKNOWN").toString()));
             }
         }
 
-        Map<String, Set<String>> formatMappingRev = formatMapping.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> ImmutableSet.of(e.getValue()),
+        Map<String, Set<String>> formatMappingRev = formatMapping.entrySet().stream().collect(Collectors.toMap(e -> e.getValue(), e -> ImmutableSet.of(e.getKey()),
                 (x, y) -> {
                     HashSet<String> r = new HashSet<>();
                     r.addAll(x);
@@ -197,7 +201,7 @@ public class Utils {
 
             if (fm.containsKey(field) && !fm.get(field).toString().isEmpty() && formats.stream().noneMatch(s -> format.contains(s))) {
                 String possibleFormats = formats.stream().collect(Collectors.joining(" or "));
-                System.out.println(String.format("WARNING: field %s set but cannot find %s in format %s (rule: %s)",
+                log.warn(String.format("field %s set but cannot find %s in format %s (rule: %s)",
                         field, possibleFormats, format, fm.getOrDefault(FeatureKeysGeneral.RULE, "UNKNOWN").toString()));
             }
         }
@@ -219,7 +223,7 @@ public class Utils {
         feat.put(FeatureKeysName.NAME_FORMAT, format);
 
         if(format.isEmpty()) {
-            System.out.println("WARNING: didn't find format " + rule + " " + gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
+            log.warn("WARNING: didn't find format " + rule + " " + gate.Utils.stringFor(doc, bindings.get(nameBinding).iterator().next()));
         }
 
         Map<String, String> fieldMappings = ImmutableMap.of("firstname", FeatureKeysName.FIRSTNAME,
