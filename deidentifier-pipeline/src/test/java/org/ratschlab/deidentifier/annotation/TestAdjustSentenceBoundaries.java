@@ -6,8 +6,8 @@ import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class TestAdjustSentenceBoundaries extends AnalyserTestBase{
     private String INPUT_AS_NAME = "inputas";
     private String OUTPUT_AS_NAME = "outputas";
 
-    @Before
+    @BeforeEach
     public void initialize() {
         super.initialize();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();

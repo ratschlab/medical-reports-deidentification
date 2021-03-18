@@ -1,11 +1,9 @@
 package org.ratschlab.deidentifier.sources;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.dbunit.Assertion;
-import org.dbunit.DataSourceBasedDBTestCase;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -18,16 +16,12 @@ import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 class KisimSourceTest{

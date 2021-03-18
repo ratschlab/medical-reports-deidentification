@@ -5,8 +5,8 @@ import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 public class TestAnnotationNormalizer extends AnalyserTestBase {
     private AbstractLanguageAnalyser pr = null;
 
-    @Before
+    @BeforeEach
     public void initialize() {
         super.initialize();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();

@@ -1,13 +1,16 @@
 package org.ratschlab.deidentifier.annotation;
 
-import gate.*;
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Document;
+import gate.Factory;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.util.InvalidOffsetException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -19,7 +22,7 @@ public class TestAnnotationBlacklist extends AnalyserTestBase{
 
     private String ANNOTATION_SET_NAME = "SomeAnnotationSet";
 
-    @Before
+    @BeforeEach
     public void initialize() {
         super.initialize();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();

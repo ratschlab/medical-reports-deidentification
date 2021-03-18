@@ -5,9 +5,7 @@ import gate.FeatureMap;
 import org.junit.jupiter.api.Test;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 
-import java.util.HashMap;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReplacementTagsSubstitutionTest {
 

@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableSet;
 import gate.*;
 import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
-import gate.util.InvalidOffsetException;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

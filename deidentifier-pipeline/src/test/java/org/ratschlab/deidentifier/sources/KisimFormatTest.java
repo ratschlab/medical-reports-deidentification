@@ -7,7 +7,6 @@ import gate.Gate;
 import gate.util.GateException;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.ratschlab.deidentifier.sources.KisimFormat;
 
 import java.io.File;
 import java.io.FileInputStream;

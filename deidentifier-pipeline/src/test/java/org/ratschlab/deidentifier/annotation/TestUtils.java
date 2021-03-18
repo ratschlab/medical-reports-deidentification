@@ -7,8 +7,6 @@ import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 
-import java.net.URL;
-
 public class TestUtils {
     public static Document runTest(String xmlStr, AbstractLanguageAnalyser pr) throws ResourceInstantiationException, ExecutionException {
         Document doc = fromXmlString(xmlStr);
