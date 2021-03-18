@@ -1,11 +1,13 @@
 package org.ratschlab.deidentifier.annotation;
 
+import com.fasterxml.jackson.core.JsonParser;
 import gate.*;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.RunTime;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,6 +150,8 @@ public class AnnotationCleanup extends AbstractLanguageAnalyser {
                 outputAS.add(cur);
             }
         }
+
+        inputAS.get("Name").stream().forEach(a -> AnnotationCleanup.cleanupNameAnnotationFeature(a.getFeatures()));
     }
 
     static FeatureMap mergeFeatureMaps(FeatureMap a, FeatureMap b) {
@@ -170,5 +174,41 @@ public class AnnotationCleanup extends AbstractLanguageAnalyser {
         }
 
         return ret;
+    }
+
+    protected static void cleanupNameAnnotationFeature(FeatureMap fm) {
+        String nameFormat = fm.getOrDefault(FeatureKeysName.NAME_FORMAT, "").toString();
+
+        // fix case
+        String fixed = fixCase(nameFormat, "ff", FeatureKeysName.FIRSTNAME, fm);
+        fixed = fixCase(fixed, "ll", FeatureKeysName.LASTNAME, fm);
+
+        String separator = ",";
+
+        List<String> parts = Arrays.stream(fixed.split(separator)).
+            map(String::trim).collect(Collectors.toList());
+
+        // remove duplicates and format definitions which are already contained in others (e.g "ff ll, ll" -> "ff ll")
+        Set<String> partsNonRedundant = new HashSet();
+        for(String part : parts) {
+            if(parts.stream().noneMatch(p -> !p.equals(part) && p.contains(part))) {
+                partsNonRedundant.add(part);
+            }
+        }
+
+        String newNameFormat = partsNonRedundant.stream().collect(Collectors.joining(separator));
+        if (!newNameFormat.equals(nameFormat)) {
+            fm.put(FeatureKeysName.NAME_FORMAT, newNameFormat);
+        }
+    }
+
+    private static String fixCase(String format, String formatAbbrev, String featureKey, FeatureMap fm) {
+        String val = fm.getOrDefault(featureKey, "").toString();
+
+        if (!val.isEmpty() && val.equals(val.toUpperCase())) {
+            return format.replaceAll(formatAbbrev, formatAbbrev.toUpperCase());
+        }
+
+        return format.replaceAll(formatAbbrev.toUpperCase(), formatAbbrev);
     }
 }

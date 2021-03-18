@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 
 import java.util.List;
 
@@ -181,6 +182,56 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
 
         Assert.assertEquals("a", a.get("a"));
         Assert.assertEquals("b", b.get("b"));
+    }
+
+    @Test
+    void testCleanupNameAnnotationFeature() {
+        // test on empty feature map
+        FeatureMap fm = gate.Factory.newFeatureMap();
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+        Assert.assertEquals(0, fm.size());
+
+        fm = gate.Factory.newFeatureMap();
+        fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, ll ff");
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+
+        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+
+        fm = gate.Factory.newFeatureMap();
+        fm.put(FeatureKeysName.NAME_FORMAT, "ll ff");
+        fm.put(FeatureKeysName.FIRSTNAME, "Hans");
+        fm.put(FeatureKeysName.LASTNAME, "MUSTER");
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+        Assert.assertEquals("LL ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+
+        fm = gate.Factory.newFeatureMap();
+        fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, LL ff");
+        fm.put(FeatureKeysName.FIRSTNAME, "Hans");
+        fm.put(FeatureKeysName.LASTNAME, "MUSTER");
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+        Assert.assertEquals("LL ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+
+        fm = gate.Factory.newFeatureMap();
+        fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, LL ff");
+        fm.put(FeatureKeysName.FIRSTNAME, "Hans");
+        fm.put(FeatureKeysName.LASTNAME, "Muster");
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+
+        fm = gate.Factory.newFeatureMap();
+        fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, ff");
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+
+        fm = gate.Factory.newFeatureMap();
+        fm.put(FeatureKeysName.NAME_FORMAT, "ff, ff, ll ff, ff");
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+
+        fm = gate.Factory.newFeatureMap();
+        fm.put(FeatureKeysName.NAME_FORMAT, "ff ff");
+        AnnotationCleanup.cleanupNameAnnotationFeature(fm);
+        Assert.assertEquals("ff ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
     }
 
     private AnnotationSet runTest() {
