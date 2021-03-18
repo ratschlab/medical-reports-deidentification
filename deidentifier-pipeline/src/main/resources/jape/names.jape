@@ -39,6 +39,11 @@ Macro: UPPER_INITIAL_TOKEN
     {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"}
 )
 
+Macro: UPPER_INITIAL_TOKEN_NO_SALUTATION
+(
+    {Token.string ==~ "^(?!Herr|Frau|Hr|Fr)\\p{javaUpperCase}\\p{javaLowerCase}+$"}
+)
+
 Macro: SURNAME_TOKEN_UPPER_SEQ
 (
     ((NAME_PREPOSITIONS_UPPER)? {Token.string ==~ "[\\p{javaUpperCase}]{2,}", !Lookup.majorType == "medical"})
@@ -165,11 +170,12 @@ Priority: 100 //overruling SimpleDetectPatient
 
 Rule: DoctorsRightContext
 (
+    ((CIVIL_SALUTATION)?):salutation
     (
         (SHORT_NAME) |
-        (((UPPER_INITIAL_TOKEN)[1]):lastname_DoctorsRightContext):format_ll_DoctorsRightContext |
-        ((UPPER_INITIAL_TOKEN):firstname_DoctorsRightContext2 (UPPER_INITIAL_TOKEN):lastname_DoctorsRightContext2):format_ff-SPACE-ll_DoctorsRightContext |
-        ((UPPER_INITIAL_TOKEN):firstname_DoctorsRightContext3 ((UPPER_INITIAL_TOKEN)[2]):lastname_DoctorsRightContext3 ((UPPER_INITIAL_TOKEN)[0,2])):format_ff-SPACE-ll-ll
+        (((UPPER_INITIAL_TOKEN_NO_SALUTATION)[1]):lastname_DoctorsRightContext):format_ll_DoctorsRightContext |
+        ((UPPER_INITIAL_TOKEN_NO_SALUTATION):firstname_DoctorsRightContext2 (UPPER_INITIAL_TOKEN):lastname_DoctorsRightContext2):format_ff-SPACE-ll_DoctorsRightContext |
+        ((UPPER_INITIAL_TOKEN_NO_SALUTATION):firstname_DoctorsRightContext3 ((UPPER_INITIAL_TOKEN)[2]):lastname_DoctorsRightContext3 ((UPPER_INITIAL_TOKEN)[0,2])):format_ff-SPACE-ll-SPACE-ll
     ):name
     ({Token.string == ","})
     (
