@@ -3,10 +3,6 @@ Patient/GebDat; Date; type=DOB
 
 # (PATIENT) NAME
 //Patient//Name; Name; type=patient, format=ll
-/PatName; Name; type=patient, format=ll
-//Bericht//PatName; Name; type=patient, format=ll
-//Bilder//PatName; Name; type=patient, format=ll
-PATNAME; Name; type=patient, format=ll
 //Patient//Vorname; Name; type=patient, format=ff
 //Adressat//Name; Name; type=other, confidence=90, format=ll
 //Adressat//Vorname; Name; type=other, format=ff

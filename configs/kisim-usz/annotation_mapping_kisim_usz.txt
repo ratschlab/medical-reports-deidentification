@@ -1,5 +1,6 @@
 PatPersonalien; Patienteninformation
 Patpersonalien; Patienteninformation
+PATNAME; PatName
 //PatInfo//Text; Patienteninformation
 AddrLine; AddressField
 Address; AddressField

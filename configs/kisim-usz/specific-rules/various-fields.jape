@@ -3,7 +3,7 @@ Imports: {
 }
 
 Phase: ProcessVariousFields
-Input: Token OrtDat VisDat Date DisplayName AgeField Newline FieldWithSignature FieldWithAddress Lookup
+Input: Token OrtDat VisDat Date DisplayName AgeField Newline FieldWithSignature FieldWithAddress Lookup PatName
 Options: control=appelt
 
 Macro: COMMA
@@ -123,6 +123,12 @@ Rule: NamesInDisplayName
     (({Token.orth == "upperInitial", Token within DisplayName}|{Token.string == "-"})+):lastname_NamesInDisplayName
 ):name --> { Utils.addNameAnnotation("NamesInDisplayName", "medical staff", "F ll", bindings, doc, outputAS); }
 
+Rule: ExtractNameFromPatName
+(
+    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+|\\p{javaUpperCase}+|-", Token within PatName})+):name
+    ({Token.string == ",", Token within PatName})?
+    ({Token within PatName})*
+) -->  {Utils.addNameAnnotation("ExtractNameFromPatName", "patient", "", bindings, doc, outputAS); }
 
 Rule: DetectSignatures
 (

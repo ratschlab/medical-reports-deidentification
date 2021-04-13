@@ -1,4 +1,4 @@
-Name; Patienteninformation, FieldWithSignature, Addressor, OrtDat, VisDat, DisplayName, Visum, DateSmallCapsSignField, SomePrefixVisDat, Vis
+Name; Patienteninformation, PatName, FieldWithSignature, Addressor, OrtDat, VisDat, DisplayName, Visum, DateSmallCapsSignField, SomePrefixVisDat, Vis
 
 # gazetteer annotation
 hello <Name>Luigi D'Ambrosio</Name> oder <Name>Vreni Meier Huber</Name> oder auch <Name>Vreni Meier-Huber</Name>, <Name>Hans Meier</Name>
@@ -7,6 +7,9 @@ hello <Name>Luigi D'Ambrosio</Name> oder <Name>Vreni Meier Huber</Name> oder auc
 <Name>HUBER-MEIER Vreni</Name> hat
 Dr. <Name>Meier-Outofvoc</Name> ...
 
+<PatName><Name>OUTOFVOC Outofvocööö</Name>, geb. 01.01.1971</PatName>
+<PatName><Name>OUTOFVOC Outofvocööö</Name></PatName>
+<PATNAME><Name>OUTOFVOC-VERYSELDOM Outofvocööö</Name>, Geb. 01.01.1971</PATNAME>
 
 Liebe <Name>Yvonne</Name>
 
