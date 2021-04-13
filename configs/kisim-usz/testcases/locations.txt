@@ -1,4 +1,4 @@
-Location; Addressor, Patienteninformation
+Location; Addressor, Patienteninformation, Sprechstunde, Nested
 
 
 <Location>Bahnhofsstrasse 1</Location> <Location>DE</Location>-<Location>12345</Location> <Location>Einhausen</Location>
@@ -78,6 +78,9 @@ Patient stammt aus der <Location>Lavaux</Location>
 <Location>Bad Säckingen</Location>
 <Location>Serbokroatische</Location>
 <Location>Südtiroler</Location>
+
+<Sprechstunde><Location>Eine Sprechstunde</Location></Sprechstunde>
+<Sprechstunde><Nested>Eine Sprechstunde</Nested></Sprechstunde>
 
 ## Nationalitities and Languages
 Der Patient ist <Location>Grieche</Location>.

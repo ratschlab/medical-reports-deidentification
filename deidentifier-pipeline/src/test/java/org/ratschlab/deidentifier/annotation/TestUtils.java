@@ -6,15 +6,22 @@ import gate.FeatureMap;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
+import org.junit.Assert;
 
 public class TestUtils {
-    public static Document runTest(String xmlStr, AbstractLanguageAnalyser pr) throws ResourceInstantiationException, ExecutionException {
-        Document doc = fromXmlString(xmlStr);
+    public static Document runTest(String xmlStr, AbstractLanguageAnalyser pr) {
+        try {
+            Document doc = fromXmlString(xmlStr);
 
-        pr.setDocument(doc);
-        pr.execute();
+            pr.setDocument(doc);
+            pr.execute();
 
-        return doc;
+            return doc;
+        } catch(ExecutionException | ResourceInstantiationException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        return null;
     }
 
     public static Document fromString(String content) throws ResourceInstantiationException {

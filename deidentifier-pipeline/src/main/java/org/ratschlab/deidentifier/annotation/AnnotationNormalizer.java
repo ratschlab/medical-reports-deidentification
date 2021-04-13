@@ -76,6 +76,20 @@ public class AnnotationNormalizer extends AbstractLanguageAnalyser {
         this.configPath = configPath;
     }
 
+    public Boolean getLeavesOnly() {
+        return leavesOnly;
+    }
+
+    @HiddenCreoleParameter
+    private Boolean leavesOnly = false;
+
+    @Optional
+    @RunTime
+    @CreoleParameter(comment = "Whether to consider leaves only in markup to normalize")
+    public void setLeavesOnly(Boolean leavesOnly) {
+        this.leavesOnly = leavesOnly;
+    }
+
     public List<NormalizationEntry> getNormalizationEntries() {
         return normalizationEntries;
     }
@@ -169,7 +183,16 @@ public class AnnotationNormalizer extends AbstractLanguageAnalyser {
         // doing temporary annotation just in case inputASName = outputASName
         AnnotationSet tmpAS = doc.getAnnotations(tmpAnnotationName);
 
+        Set<Annotation> allLeaves = new HashSet<>();
+        if(this.leavesOnly) {
+            allLeaves = new HashSet(AnnotationUtils.computeLeaves(inputAS));
+        }
+
         for (Annotation a : inputAS) {
+            if(this.leavesOnly && !allLeaves.contains(a)) {
+                continue;
+            }
+
             for(NormalizationEntry normalizationEntry : normalizationEntries) {
                 if (normalizationEntry.getOriginal().matcher(a.getType()).matches()) {
                     if (parentConstraintsValid(inputAS, a, normalizationEntry.getParents(), normalizationEntry.getBlackListedParents())) {

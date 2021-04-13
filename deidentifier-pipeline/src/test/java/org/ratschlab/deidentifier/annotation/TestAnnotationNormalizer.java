@@ -106,4 +106,18 @@ public class TestAnnotationNormalizer extends AnalyserTestBase {
         Assert.assertEquals("world", features.get("hello"));
         Assert.assertTrue(features.containsKey("rule"));
     }
+
+    @Test
+    public void testNormalizationLeavesOnly() {
+        String text = "<doc><SomeField><other>content</other><another>more</another></SomeField></doc>";
+
+        try {
+            pr.setParameterValue("leavesOnly", Boolean.TRUE);
+        } catch (ResourceInstantiationException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Document doc = TestUtils.runTest(text, pr);
+        Assert.assertTrue(doc.getAnnotations().get("NormalizedField").isEmpty());
+    }
 }

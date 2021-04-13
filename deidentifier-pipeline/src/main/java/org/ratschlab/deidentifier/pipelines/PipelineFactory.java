@@ -116,6 +116,7 @@ public class PipelineFactory {
             controller.add(PipelineUtils.getPr("org.ratschlab.deidentifier.annotation.AnnotationNormalizer", ImmutableMap.of(
                     "inputASName", normalizingTmp,
                     "outputASName", normalizingTmp,
+                    "leavesOnly", true,
                     "configPath", url)
 
             ));
