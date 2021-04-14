@@ -139,7 +139,6 @@ public class PipelineFactory {
         sourceSpecificTransducerUrl.ifPresent(url ->
                 controller.add(PipelineUtils.getTransducer(url, tmpAsName, tmpAsName)));
 
-
         controller.add(PipelineUtils.getPr("org.ratschlab.deidentifier.annotation.MetadataAnnotator", ImmutableMap.of("inputASName", tmpAsName,
                 "outputASName", tmpAsName)));
 

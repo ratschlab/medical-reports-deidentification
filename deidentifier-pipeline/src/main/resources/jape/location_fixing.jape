@@ -4,7 +4,7 @@ Options:control=appelt
 
 Rule: RemoveFalsePositiveAnnotation
 (
-        ({Lookup.minorType =~ "false_positives"}):loc
+        ({Lookup.minorType ==~ "false_positives"}):loc
 ) --> {
         Annotation an = bindings.get("loc").iterator().next();
         String typeRemove = an.getFeatures().getOrDefault("majorType", "").toString();
@@ -17,7 +17,7 @@ Rule: RemoveFalsePositiveAnnotation
 // Note, that a Location annotation might be readded later on in the pipeline by more specialized processing
 Rule: RemoveAmbiguousCityAnnotation
 (
-    ({Lookup.majorType =~ "location", Lookup.minorType =~ "city_ambiguous"}):loc
+    ({Lookup.majorType ==~ "location", Lookup.minorType ==~ "city_ambiguous"}):loc
 
 ) --> {
     Annotation an = bindings.get("loc").iterator().next();
@@ -26,19 +26,19 @@ Rule: RemoveAmbiguousCityAnnotation
 
 Rule: StreetNamesFromGazetteer
 (
-    {Lookup.majorType =~ "location", Lookup.minorType =~ "street"}
+    {Lookup.majorType ==~ "location", Lookup.minorType ==~ "street"}
     (({Token.string ==~ "[1-9][0-9]{0,2}"} ({Token.string ==~ "[A-Za-z]"})?))?
 ):loc --> :loc.Location = { rule = "StreetNamesFromGazetteer", type = "street" }
 
 Rule: AddCantonAbbrev
 (
-    {Location} ({ Lookup.majorType =~ "location", Lookup.minorType =~ "cantons_abbrevs" })
+    {Location} ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "cantons_abbrevs" })
 ):loc --> :loc.Location = { rule = "AddCantonAbbrev", type = "other" } // TODO: type could be taken from original location
 
 Rule: AddCantonAbbrevName
 (
     {Name}
     {Token.string == ","}
-    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "cantons_abbrevs" }):loc
+    ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "cantons_abbrevs" }):loc
 ) --> :loc.Location = { rule = "AddCantonAbbrevName", type = "other" } // TODO: type could be taken from original location
 

@@ -26,10 +26,11 @@ Macro: NAME_PREPOSITIONS_UPPER
 Macro: FIRST_NAME_INITIALS
 (
     (
-        ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?", Token.string !=~ "Dr|Hr|Fr|Hd"} {Token.string == "."}) // first initial, 'Hd' in z.Hd.
+        // excluding title as well as St (for Sankt) and some medical abbrevs
+        ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?", Token.string !=~ "Dr|Hr|Fr|Hd|St"} {Token.string == "."}) // first initial, 'Hd' in z.Hd.
         ({Token.string == "-"})?
         ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?"} {Token.string == "."})? // second initial
-    ) | ({Token.string ==~ "^(?!(OP|DD))\\p{javaUpperCase}[\\p{javaUpperCase}&&[^AÄ]]"}) // Allowing for HP initials, but excluding OA, OÄ etc (triggers) in a crude way
+    ) | ({Token.string ==~ "^(?!(OP|DD|IV|AT|PD))\\p{javaUpperCase}[\\p{javaUpperCase}&&[^AÄ]]"}) // Allowing for HP initials, but excluding OA, OÄ etc (triggers) in a crude way
 )
 
 // e.g. "Hello".
@@ -59,7 +60,7 @@ Macro: NAME_TOKEN_NON_ORGANIZATION
 
 Macro: SURNAME_LOOKUP
 (
-    {Lookup.majorType =~ "name", Lookup.minorType =~ "surname|suffixed", !Lookup.minorType =~ "stop"}
+    {Lookup.majorType ==~ "name", Lookup.minorType ==~ "surname|suffixed", !Lookup.minorType ==~ "stop"}
 )
 
 Macro: SURNAME_TOKEN_SEQ
@@ -72,7 +73,7 @@ Macro: SURNAME_TOKEN_SEQ
 
 Macro: FIRSTNAME_LOOKUP
 (
-    {Lookup.majorType =~ "name", Lookup.minorType =~ "firstname", !Lookup.minorType =~ "stop"}
+    {Lookup.majorType ==~ "name", Lookup.minorType ==~ "firstname", !Lookup.minorType ==~ "stop"}
 )
 
 
@@ -218,10 +219,10 @@ Rule: NursingStaffRightContext
 // ex: Huber / Meier
 Rule: StaffSurnameEnumeration
 (
-    ({Token within {Lookup.minorType =~ "surname|suffixed"}}):first_tok
+    ({Token within {Lookup.minorType ==~ "surname|suffixed"}}):first_tok
     (
         {Token.string ==~ "[/]"}
-        ((NAME_PREPOSITIONS)? {Token within {Lookup.minorType =~ "surname|suffixed"}}):remaining_toks
+        ((NAME_PREPOSITIONS)? {Token within {Lookup.minorType ==~ "surname|suffixed"}}):remaining_toks
     )+
 ) --> {
     // filtering tokens in general or medical, annotate remaining_toks
@@ -304,7 +305,7 @@ Rule: LastNameFirstNameFromGazetteers
         ((FIRSTNAME_LOOKUP)+):firstname_LastNameFirstNameFromGazetteers
 
     ):name
-) --> { Utils.addNameAnnotation("FirstNameLastNameUpper", "other", "ll ff", bindings, doc, outputAS); }
+) --> { Utils.addNameAnnotation("LastNameFirstNameFromGazetteers", "other", "ll ff", bindings, doc, outputAS); }
 
 
 // matching names from Gazetteers
@@ -338,7 +339,7 @@ Priority: 200
 Rule: NameOutOfVoc
 (
     (
-        (({Lookup.majorType =~ "name", Lookup.minorType =~ "firstname", !Lookup.minorType =~ "stop|medical", Lookup.language == "frequent"})+):firstname_NameOutOfVoc
+        (({Lookup.majorType ==~ "name", Lookup.minorType ==~ "firstname", !Lookup.minorType ==~ "stop|medical", Lookup.language == "frequent"})+):firstname_NameOutOfVoc
         (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+", !Token within Lookup, !Token contains Lookup})+):lastname_NameOutOfVoc
     ):name
 ) --> { Utils.addNameAnnotation("NameOutOfVoc", "other", "ff ll", bindings, doc, outputAS); }
@@ -347,7 +348,7 @@ Rule: NameOutOfVoc
 Rule: FirstNamesPos
 (
     (
-        ({Token.category == "NE", Token within Lookup.minorType =~ "firstname", !Token within Lookup.majorType =~ "medical|stop"
+        ({Token.category == "NE", Token within Lookup.minorType ==~ "firstname", !Token within Lookup.majorType ==~ "medical|stop"
         })+
     ):tok
 ) --> :tok.Name = { rule = "FirstNamesPos", type = "other" }
@@ -357,20 +358,44 @@ Rule: UniqueNameOrSurname
 Priority: 0
 (
     (
-        (({Token within {Lookup.minorType ==~ "firstname"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop"}}):format_ff):firstname |
-        (({Token within {Lookup.minorType ==~ "surname"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop"}}):format_ll):lastname
+        (({Token within {Lookup.minorType ==~ "firstname"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop|location|occupation"}}):format_ff):firstname |
+        (({Token within {Lookup.minorType ==~ "surname"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop|location|occupation"}}):format_ll):lastname
     )+:name
 ) --> { Utils.addNameAnnotation("UniqueNameOrSurname", "other", "", bindings, doc, outputAS); }
 
-
+// example: Meier-Huber.
+// if either token is medical, then it is not annotated (see rules UniqueDoubleNameNegative1, UniqueDoubleNameNegative2)
 Rule: UniqueDoubleName
+Priority: 0
 (
     ((
         ({Token within {Lookup.majorType ==~ "name"}})
         DASH
-        ({Token within {Lookup.majorType ==~ "name"}, !Token.string ==~ "Spiegel"})
+        ({Token within {Lookup.majorType ==~ "name"}})
     ):lastname):format_ll-DASH-ll
 ):name --> { Utils.addNameAnnotation("UniqueDoubleName", "other", "", bindings, doc, outputAS); }
+
+
+Rule: UniqueDoubleNameNegative1
+Priority: 100
+(
+    (
+        {Token}
+        DASH
+        ({Token within {Lookup.majorType ==~ "medical"}})
+    )
+) --> {}
+
+Rule: UniqueDoubleNameNegative2
+Priority: 100
+(
+    (
+        ({Token within {Lookup.majorType ==~ "medical"}})
+        DASH
+        {Token}
+    )
+) --> {}
+
 
 // example: Herr Muster, but not "Herr Kollege"
 Rule: SimpleDetectPatient
@@ -379,8 +404,8 @@ Priority: 0
     (CIVIL_SALUTATION): salutation
     (
         (
-            ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"}):format_ll_SimpleDetectPatient1 |
-            (({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"})[2,6]):format_ll-SPACE-ll_SimpleDetectPatient2 |
+            ({Token.orth == "upperInitial", !Token.string ==~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"}):format_ll_SimpleDetectPatient1 |
+            (({Token.orth == "upperInitial", !Token.string ==~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"})[2,6]):format_ll-SPACE-ll_SimpleDetectPatient2 |
             ({Token.string ==~ "[A-Z]"} {Token.string == "."}):format_ll_SimpleDetectPatient3
         ):lastname_SimpleDetectPatient2 |
         (SHORT_NAME)
@@ -393,12 +418,12 @@ Rule: DoubleNameLeftTriggered
     ({Token.string ==~ "Herr|Frau|Hr|Fr|Dr"}):salutation
     ((
         (
-            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
+            {Token.orth == "upperInitial", !Token.string ==~ "Kollege|Kollegin|Dr"}
             DASH
-            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
+            {Token.orth == "upperInitial", !Token.string ==~ "Kollege|Kollegin|Dr"}
         ):format_ll-DASH-ll |
         (
-            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin|Dr"}
+            {Token.orth == "upperInitial", !Token.string ==~ "Kollege|Kollegin|Dr"}
             {Token within {Lookup.majorType ==~ "name"}}
         ):format_ll-SPACE-ll
     ):lastname):name
@@ -411,7 +436,7 @@ Priority: 100
 (
     {Token.string ==~ "[Ll]iebe[r]?"}
     (
-      (({Lookup.minorType =~ "firstname"} | (DASH)?)+):firstname_FirstNameInSalutation
+      (({Lookup.minorType ==~ "firstname"} | (DASH)?)+):firstname_FirstNameInSalutation
     ) :name
 ) --> { Utils.addNameAnnotation("FirstNameInSalutation", "other", "ff", bindings, doc, outputAS); }
 

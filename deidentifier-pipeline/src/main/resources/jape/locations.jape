@@ -22,21 +22,21 @@ Rule: LocationLeftTrigger
 
 Rule: CityLookup
 (
-   ({ Lookup.majorType =~ "location", Lookup.minorType =~ "city", !Token.string ==~ "Gross" }):loc
+   ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "city", !Token.string ==~ "Gross" }):loc
 )
 --> :loc.Location = { rule = "CityLookup", type = "city" }
 
 Rule: RegionLookup
 (
-   ({ Lookup.majorType =~ "location", Lookup.minorType ==~ "region|cantons" }):loc
+   ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "region|cantons" }):loc
 )
 --> :loc.Location = { rule = "RegionLookup", type = "region" }
 
 Rule: CityAndCanton
 (
-    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "city" })[1,3]
+    ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "city" })[1,3]
     ({Token.string ==~ "[(,/]"})?
-    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "cantons_abbrevs" })
+    ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "cantons_abbrevs" })
     ({Token.string == ")"})?
 ):loc --> :loc.Location = { rule = "CityAndCanton", type = "city" }
 
@@ -76,35 +76,35 @@ Rule: PostalBox
 
 Rule: ZipCodeAndCityWithCountry
 (
-    ({Lookup.majorType =~ "location", Lookup.minorType =~ "country_code"}):country
+    ({Lookup.majorType ==~ "location", Lookup.minorType ==~ "country_code"}):country
     ({Token.string == "-"})?
     ({Token.string ==~ "[0-9]{4,}"}):zip
-    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} | { Lookup.majorType =~ "location"}):city)?
+    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} | { Lookup.majorType ==~ "location"}):city)?
 ):loc --> :country.Location = { rule = "ZipCodeAndCityWithCountry", type = "country" },
           :zip.Location = { rule = "ZipCodeAndCityWithCountry", type = "zip" },
           :city.Location = { rule = "ZipCodeAndCityWithCountry", type = "city" }
 
 Rule: CountriesLookup
 (
-     ({ Lookup.majorType =~ "location", Lookup.minorType ==~ "country" }):loc
+     ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "country" }):loc
 )
 --> :loc.Location = { rule = "CountriesLookup", type = "country" }
 
 
 Rule: CountryAdjectivesLookup
 (
-     ({ Lookup.majorType =~ "location", Lookup.minorType =~ "country_adjective|citizenship" }):loc
+     ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "country_adjective|citizenship" }):loc
 )
 --> :loc.Location = { rule = "CountryAdjectivesLookup", type = "geographical adjective" }
 
 Rule: LanguagesFromGazetteer
 (
-    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "language" })
+    ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "language" })
 ):loc --> :loc.Location = { rule = "LanguagesFromGazetteer", type = "other" }
 
 Rule: CopyLocationOther
 (
-    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "other" }):loc
+    ({ Lookup.majorType ==~ "location", Lookup.minorType ==~ "other" }):loc
 ) --> :loc.Location = { rule = "CopyLocationOther", type = "other" }
 
 Rule: PossibleZipCode
@@ -118,7 +118,7 @@ Rule: HospitalLocation
     (
         // prefix by Spital
         ({Token.string ==~ "(\\p{javaUpperCase}?\\p{javaLowerCase}*[Ss]pital(s|es)?|Sanatorium|Pathologie|Reha|Krankenhaus|UniversitätsSpitals)"})
-        ({Token.string =~"[.-]"})?
+        ({Token.string ==~"[.-]"})?
         ({Lookup.majorType == "location"} | {Token.orth == "upperInitial"}) // location could consist of several tokens
     ) |
     (
@@ -166,8 +166,8 @@ Rule: HospitalUnitRightTriggered
 Rule: HospitalUnitPostfix
 (
     ({Token.string == "Universitäres"})?
-    {Token.string =~ "\\p{javaUpperCase}\\p{javaLowerCase}+(klinik|institut|zentrum[s]?|departement)"}
-    ({Token.string =~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} | {Lookup.major == "location"})?
+    {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+(klinik|institut|zentrum[s]?|departement)"}
+    ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} | {Lookup.major == "location"})?
 ):loc --> :loc.Location = { rule = "HospitalUnitPostfix", type = "organisational unit" }
 
 
@@ -211,13 +211,13 @@ Rule: HealthcareOrSocialInstitutionsRightTriggered
 
 Rule: CopyHospitalsFromGazetteer
 (
-    ({Lookup.majorType =~ "organization", Lookup.minorType =~ "hospital"}): loc
+    ({Lookup.majorType ==~ "organization", Lookup.minorType ==~ "hospital"}): loc
 ) --> :loc.Location = { rule = "CopyHospitalsFromGazetteer", type = "organisation", confidence = "high" }
 
 
 Rule: CopyInstitutionsFromGazetteer
 (
-    ({Lookup.majorType =~ "organization", Lookup.minorType =~ "organization"}): loc
+    ({Lookup.majorType ==~ "organization", Lookup.minorType ==~ "organization"}): loc
 ) --> :loc.Location = { rule = "CopyInstitutionsFromGazetteer", type = "organisation" }
 
 
@@ -251,6 +251,6 @@ Rule: DetectLanguages
 // false positives: Entzugsklinik, Tagesklinik if not followed by a name
 Rule: ConsumeKlinik
 (
-    {Token.string =~ "\\p{javaUpperCase}\\p{javaLowerCase}+(klinik)", !Token within Lookup}
+    {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+(klinik)", !Token within Lookup}
     {Token.orth == "lowercase"}
 ) --> {}

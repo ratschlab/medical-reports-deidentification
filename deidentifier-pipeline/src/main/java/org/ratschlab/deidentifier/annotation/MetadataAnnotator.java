@@ -96,15 +96,27 @@ public class MetadataAnnotator extends AbstractLanguageAnalyser {
 
         AnnotationSet inputAS = doc.getAnnotations(inputASName);
         AnnotationSet outputAS = doc.getAnnotations(outputASName);
+
+        AnnotationSet lookups = inputAS.get("Lookup");
+
         for (Annotation a : inputAS.get("Token")) {
             String t = gate.Utils.stringFor(doc, a);
 
-            if (annotationMap.containsKey(t) && !t.equals("-")) {
-                FeatureMap m = Factory.newFeatureMap();
-                m.put("rule", "meta_annotator");
+            if (annotationMap.containsKey(t)) {
+                boolean skip = gate.Utils.getOverlappingAnnotations(lookups, a).stream().map(x -> x.getFeatures()).anyMatch(this::skipAnnotation);
 
-                annotationMap.get(t).forEach(s -> outputAS.add(a.getStartNode(), a.getEndNode(), s, m));
+                if (!t.equals("-") && !skip) {
+                    FeatureMap m = Factory.newFeatureMap();
+                    m.put("rule", "meta_annotator");
+
+                    annotationMap.get(t).forEach(s -> outputAS.add(a.getStartNode(), a.getEndNode(), s, m));
+                }
             }
         }
+    }
+
+    private boolean skipAnnotation(FeatureMap fm) {
+        return fm.getOrDefault("majorType", "").toString().contains("medical") ||
+                fm.getOrDefault("minorType", "").toString().contains("false_positive");
     }
 }

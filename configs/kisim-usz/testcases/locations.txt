@@ -72,12 +72,14 @@ durch die Kollegen von <Location>PSY</Location>
 
 ## Various Locations
 Patient stammt aus der <Location>Lavaux</Location>
+Patient aus <Location>Windisch</Location>
 <Location>St. Gallen</Location>
 <Location>St.Gallen</Location>
 <Location>Kantonsspital St.Gallen</Location> <Location>Kantonsspital St. Gallen</Location>
 <Location>Bad Säckingen</Location>
 <Location>Serbokroatische</Location>
 <Location>Südtiroler</Location>
+<Location>St. Anna</Location>
 
 <Sprechstunde><Location>Eine Sprechstunde</Location></Sprechstunde>
 <Sprechstunde><Nested>Eine Sprechstunde</Nested></Sprechstunde>

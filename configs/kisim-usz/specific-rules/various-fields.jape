@@ -123,10 +123,22 @@ Rule: NamesInDisplayName
     (({Token.orth == "upperInitial", Token within DisplayName}|{Token.string == "-"})+):lastname_NamesInDisplayName
 ):name --> { Utils.addNameAnnotation("NamesInDisplayName", "medical staff", "F ll", bindings, doc, outputAS); }
 
+Macro: PATNAME_TOKEN
+(
+    {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+|\\p{javaUpperCase}+|-", Token within PatName}
+)
+
+
 Rule: ExtractNameFromPatName
 (
-    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+|\\p{javaUpperCase}+|-", Token within PatName})+):name
-    ({Token.string == ",", Token within PatName})?
+    (
+        // separating the rules to add in some distinct format binding
+        ((PATNAME_TOKEN):lastname_ExtractNameFromPatName):format_ll_ExtractNameFromPatName |
+        ((PATNAME_TOKEN):lastname_ExtractNameFromPatName2 (PATNAME_TOKEN):firstname_ExtractNameFromPatName2):format_ll-SPACE-ff_ExtractNameFromPatName |
+        (((PATNAME_TOKEN)[2,3]):lastname_ExtractNameFromPatName3 (PATNAME_TOKEN):firstname_ExtractNameFromPatName3):format_ll-SPACE-ll-SPACE-ff_ExtractNameFromPatName |
+        (((PATNAME_TOKEN)[2]):lastname_ExtractNameFromPatName4 ((PATNAME_TOKEN)[2,4]):firstname_ExtractNameFromPatName4):format_ll-SPACE-ll-SPACE-ff-SPACE-ff_ExtractNameFromPatName
+    ):name
+    ({Token.string == ",", Token within PatName})? // parse until comma encountered, if available
     ({Token within PatName})*
 ) -->  {Utils.addNameAnnotation("ExtractNameFromPatName", "patient", "", bindings, doc, outputAS); }
 
