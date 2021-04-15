@@ -1,14 +1,20 @@
 Age
 
 eine <Age>58</Age>-jährige Patientin, ein <Age>119</Age>-jähriger Rechtshänder
+1. <Age>58</Age>-jährige
+<Age>58</Age>-jähriger Patient
 eine <Age>58</Age> jähriger Patient
 einen <Age>71</Age> jährigen Patienten
 Alter: <Age>25.9</Age>
+Alter: <Age>25.934342</Age>
 im Alter von <Age>72</Age> Jahren
 mit <Age>72</Age> gestorben
+<Age>72</Age> Jahren verstorben
 mit <Age>72</Age> J. gestorben
 mit <Age>72</Age> J.
 mit <Age>72</Age> J gestorben
+<Age>2</Age>J Patient
+<Age>2.5</Age>J Patient
 <Age>72</Age>-j Patient
 <Age>72</Age> Jahre alte Patientin
 <Age>72</Age> J Patientin
@@ -17,5 +23,10 @@ Mit <Age>26</Age> Jahren oder mit <Age>26</Age> Jahren oder mit <Age>26</Age> j
 seit dem <Age>15</Age> Lebensjahr, seit dem <Age>18</Age>. Lebensjahr
 Kinder (<Age>2</Age>, <Age>4</Age>)
 Kinder (<Age>2</Age>J, <Age>4</Age>j)
+Kinder (<Age>22</Age>J, <Age>25</Age>j)
+Kinder (<Age>2.5</Age>J, <Age>4.1</Age>)
+
 Kinder (2 Söhne)
 34\nJ
+
+01

@@ -1,11 +1,11 @@
 Phase: Age
-Input: Token Newline // Adding new line s.t. ages are not recognized across lines
+Input: SpaceToken Token Newline // Adding new line s.t. ages are not recognized across lines
 Options:control=appelt
 
 // 0-120
 Macro: POSSIBLE_AGE
 (
-  ({Token.string ==~ "[1-9]*[0-9]"} | {Token.string ==~ "1[0-2][0-9]"})
+  ({Token.string ==~ "[1-9]?[0-9]"} | {Token.string ==~ "1[0-2][0-9]"})
   ({Token.string == "."} {Token.string ==~ "[0-9]+"})?
 )
 
@@ -20,19 +20,23 @@ examples:
 Rule: AgeRightContextTrigger
 (
     (POSSIBLE_AGE):age
+    ({SpaceToken})*
     (
-        ((DASH)? ({Token.string ==~ "jährig|jährige[rnm]?"})) |
+        ((DASH)? ({SpaceToken})* ({Token.string ==~ "j|jährig|jährige[rnm]?"})) ({SpaceToken})* |
         (
             (
-                ({Token.string == "Jahre"} {Token.string ==~ "alte[r]?"} ) |
+                ({Token.string == "Jahre"} ({SpaceToken})+ {Token.string ==~ "alte[r]?"} ) |
                 {Token.string ==~ "[Jj]"}
             )
+            ({SpaceToken})*
             {Token.string ==~ "Patient|Patientin"}
-        )
+        ) |
+        ( ({Token.string ==~ "Jahre[n]?"})? ({SpaceToken})* {Token.string ==~ "gestorben|verstorben"})
     )
 )
 -->
 :age.Age = {rule = "AgeRightContextTrigger"}
+
 
 /*
 examples:
@@ -41,7 +45,9 @@ examples:
 Rule: AgeLeftContextTrigger
 (
     {Token.string == "Alter"}
+    ({SpaceToken})*
     ({Token.kind == "punctuation"})?
+    ({SpaceToken})*
     (POSSIBLE_AGE):age
 )
 -->
@@ -55,16 +61,17 @@ Rule: AgeLeftRightContext
 (
     (
         {Token.string ==~ "mit|Mit"} |
-        ({Token.string == "im"} {Token.string == "Alter"} {Token.string == "von"} )
+        ({Token.string == "im"} ({SpaceToken})+ {Token.string == "Alter"} ({SpaceToken})+ {Token.string == "von"} )
     )
+    ({SpaceToken})+
     (POSSIBLE_AGE):age
-    ( {Token.string ==~ "Jahren|gestorben|verstorben"} |
+    ({SpaceToken})+
+    (  {Token.string ==~ "Jahren"} |
        ({Token.string ==~ "[J|j]"})
     )
 )
 -->
 :age.Age = {rule = "AgeLeftRightContext"}
-
 
 /*
 examples:
@@ -72,36 +79,33 @@ examples:
 */
 Rule: AgeYearOfLife
 (
-    {Token.string == "seit"} {Token.string == "dem"}
+    {Token.string ==~ "seit|nach"} ({SpaceToken})+ {Token.string == "dem"}
+    ({SpaceToken})+
     (POSSIBLE_AGE):age
+    ({SpaceToken})*
     ({Token.string == "."})?
+    ({SpaceToken})+
     {Token.string == "Lebensjahr"}
 )
 -->
 :age.Age = {rule = "AgeYearOfLife"}
 
-/*
-examples:
-  26j
-  26-j
-*/
-Rule: AgeRightContextShort
-(
-    (POSSIBLE_AGE):age
-    (DASH)?
-    {Token.string ==~ "j"}
-)
--->
-:age.Age = {rule = "AgeRightContextShort"}
+
 
 // examples: Kinder (2, 5)
 Rule: KidsAge
+Priority: 100
 (
    {Token.string == "Kinder"}
+   ({SpaceToken})*
    {Token.string == "("}
+   ({SpaceToken})*
    (
+     ({SpaceToken})*
      (POSSIBLE_AGE):age
-     ({Token.string ==~ "[),jJ]"})
+     ({SpaceToken})*
+     ({Token.string ==~ "[),jJ]"})+
+     ({SpaceToken})*
    )+
 ) --> {
     org.ratschlab.deidentifier.annotation.Utils.addAnnotationSequence(bindings.get("age"), "Age", "KidsAge", outputAS);

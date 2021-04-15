@@ -9,6 +9,7 @@ import gate.util.OffsetComparator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
+import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +42,33 @@ public class Utils {
     }
 
     public static void addAnnotationSequence(AnnotationSet as, String annotType, String rule, AnnotationSet outputAS) {
-        for(Annotation an : as) {
-            gate.FeatureMap features = Factory.newFeatureMap();
-            features.put("rule", rule);
-
-            outputAS.add(an.getStartNode(), an.getEndNode(), annotType, features);
+        if(as.isEmpty()) {
+            return;
         }
+
+        List<Annotation> sortedAs = as.stream().collect(Collectors.toList());
+        AnnotationUtils.sortAnnotations(sortedAs);
+
+        Node startNode = sortedAs.get(0).getStartNode();
+        Node endNode = sortedAs.get(0).getEndNode();
+        for(Annotation an : sortedAs.subList(1, sortedAs.size())) {
+
+            if(an.getStartNode().equals(endNode)) {
+                endNode = an.getEndNode();
+            } else {
+                gate.FeatureMap features = Factory.newFeatureMap();
+                features.put("rule", rule);
+                outputAS.add(startNode, endNode, annotType, features);
+
+                startNode = an.getStartNode();
+                endNode = an.getEndNode();
+            }
+        }
+
+        gate.FeatureMap features = Factory.newFeatureMap();
+        features.put("rule", rule);
+        outputAS.add(startNode, endNode, annotType, features);
+
     }
 
     public static void annotateIfBeginningOfSentence(AnnotationSet inputAS, Annotation an, String annotType, String rule, AnnotationSet outputAS) {
