@@ -8,6 +8,8 @@
         "Beilage": "1",
         "Datum": "21.01.2016"
     },
+    "NullField": "null",
+    "NullField2": null,
     "Version2": "1",
     "ErgometrieSpiroFahrrad": {
         "Titel": "Spiroergometrie Fahrrad"

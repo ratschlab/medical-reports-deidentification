@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +34,7 @@ public class KisimFormat {
     public static final String LIST_ELEMENT_NAME = "LISTELEMENT";
     public static final String NUMBER_MARKER = "NUMBER_";
 
+    public static final String RAW_NULL_TOKEN = "___RAW_NULL___";
 
     // TODO: more structured input with metadat
     // TODO: perhaps json in
@@ -122,7 +124,10 @@ public class KisimFormat {
                 out.println("</" + LIST_ELEMENT_NAME + ">"); // TODO space matters?
             }
 
-        } else {
+        } else if(node.isNull()) {
+            out.print(RAW_NULL_TOKEN);
+        }
+        else {
             String jsonStr = node.toString().replace("\\n", "\n").
                     replace("\\t", "\t");
 
@@ -254,6 +259,10 @@ public class KisimFormat {
         if (node.getNodeType() == org.w3c.dom.Node.TEXT_NODE) {
             if(node.getTextContent().equals("\n") || node.getTextContent().matches(" ")) {
                 return null;
+            }
+
+            if(node.getTextContent().equals(RAW_NULL_TOKEN)) {
+                return JsonNodeFactory.instance.nullNode();
             }
 
             return JsonNodeFactory.instance.textNode(unescapeFields(node.getTextContent()).
