@@ -54,6 +54,7 @@ Anfang <Date>Dezember 2021</Date>
 Mitte <Date>Mai</Date>
 Ende <Date>August</Date>
 im <Date>Sept. 2010</Date>
+im <Date month="Nov">Nov.2010</Date>
 im <Date>Sept</Date>. wurde
 
 seit <Date>04</Date> 100% IV
@@ -131,6 +132,7 @@ vom <Date day="16" month="3" format="dd.MM.">16.3.</Date>-<Date day="20" month="
 Aufenthalt <Date>03.</Date>-<Date>15.09.</Date>
 <Date>05</Date>+<Date>06/18</Date> Zytoskopie
 Pemetrexed <Date>10/2012</Date> - <Date>02/2013</Date>,
+
 
 7-8/10 Punkten
 Th 11/12

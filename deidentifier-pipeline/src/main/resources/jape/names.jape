@@ -45,6 +45,11 @@ Macro: UPPER_INITIAL_TOKEN_NO_SALUTATION
     {Token.string ==~ "^(?!Herr|Frau|Hr|Fr)\\p{javaUpperCase}\\p{javaLowerCase}+$"}
 )
 
+Macro: UPPER_INITIAL_TOKEN_NO_NAME_FP
+(
+    {Token.string ==~ "^(?!Kollege|Kollegin|Anfang|Mitte|Ende|Dr)\\p{javaUpperCase}\\p{javaLowerCase}+"}
+)
+
 Macro: SURNAME_TOKEN_UPPER_SEQ
 (
     ((NAME_PREPOSITIONS_UPPER)? {Token.string ==~ "[\\p{javaUpperCase}]{2,}", !Lookup.majorType == "medical"})
@@ -404,10 +409,14 @@ Priority: 0
     (CIVIL_SALUTATION): salutation
     (
         (
-            ({Token.orth == "upperInitial", !Token.string ==~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"}):format_ll_SimpleDetectPatient1 |
-            (({Token.orth == "upperInitial", !Token.string ==~ "Kollege|Kollegin|Anfang|Mitte|Ende|Dr"})[2,6]):format_ll-SPACE-ll_SimpleDetectPatient2 |
+            (UPPER_INITIAL_TOKEN_NO_NAME_FP):format_ll_SimpleDetectPatient1 |
+            (UPPER_INITIAL_TOKEN_NO_NAME_FP DASH UPPER_INITIAL_TOKEN_NO_NAME_FP):format_ll-DASH-LL_SimpleDetectPatient1 |
+            ((UPPER_INITIAL_TOKEN_NO_NAME_FP)[2,6]):format_ll-SPACE-ll_SimpleDetectPatient2 |
             ({Token.string ==~ "[A-Z]"} {Token.string == "."}):format_ll_SimpleDetectPatient3
         ):lastname_SimpleDetectPatient2 |
+        (
+            (UPPER_INITIAL_TOKEN_NO_NAME_FP):firstname_SimpleDetectPatient (UPPER_INITIAL_TOKEN_NO_NAME_FP DASH UPPER_INITIAL_TOKEN_NO_NAME_FP):lastname_SimpleDetectPatient3
+        ):format_ff-SPACE-ll-DASH-LL_SimpleDetectPatient1 |
         (SHORT_NAME)
     ):name
 ) --> { Utils.addNameAnnotation("SimpleDetectPatient", "patient", "", bindings, doc, outputAS); },

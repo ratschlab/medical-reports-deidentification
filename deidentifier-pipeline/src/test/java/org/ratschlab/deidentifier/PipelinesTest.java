@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.ratschlab.deidentifier.annotation.TestUtils;
+import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.pipelines.testing.PipelineTestSuite;
 import org.ratschlab.deidentifier.pipelines.testing.PipelineTester;
 
@@ -72,6 +73,21 @@ public class PipelinesTest {
         FeatureMap fm = Factory.newFeatureMap();
         fm.put("format", "dd. MMMM yyyy");
         expected.add(3L, 20L, "Date", fm);
+
+        runSingleTest(doc);
+    }
+
+    @Test
+    public void testDateFormatInDateRange() throws GateException {
+        Document doc = TestUtils.fromString("vom 11.02.-15.02.2018");
+        AnnotationSet expected = doc.getAnnotations(PipelineTestSuite.EXPECTED_ANNOTATION_SET_NAME);
+
+        FeatureMap fm = Factory.newFeatureMap();
+        fm.put("day", "11");
+        fm.put("month", "2");
+        expected.add(4L, 10L, "Date", fm);
+
+        expected.add(11L, 21L, "Date", Factory.newFeatureMap());
 
         runSingleTest(doc);
     }

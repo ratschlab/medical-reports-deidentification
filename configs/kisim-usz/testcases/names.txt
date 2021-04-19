@@ -29,6 +29,9 @@ Liebe <Name>Yvonne</Name>
 <Name>Hans Peter Muster</Name>, Assistenzarzt
 und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
 
+Frau <Name>Andrea Huber-Stutz</Name>
+Frau <Name>Huber Stutz</Name>
+Sehr geehrter Herr Kollege <Name>Huber</Name>
 
 # signature field
 <FieldWithSignature><Name format="S">AMUSTER</Name> sig. Dr. <Name format="F ll">A. Muster</Name>, Oberarzt</FieldWithSignature>

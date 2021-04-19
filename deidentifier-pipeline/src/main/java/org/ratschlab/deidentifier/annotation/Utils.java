@@ -354,9 +354,9 @@ public class Utils {
         return org.ratschlab.util.Utils.maybeParseInt(annotStr).map(i -> i.toString()).orElse(annotStr);
     }
 
-    private static Optional<Annotation> getAnnotationWithPrefix(String prefix, Map<String,AnnotationSet> bindings) {
+    private static Optional<Annotation> getSingleAnnotationWithPrefix(String prefix, Map<String,AnnotationSet> bindings) {
         Optional<String> existingKey = bindings.keySet().stream().filter(s -> s.startsWith(prefix)).findFirst();
-        return existingKey.map(k -> bindings.get(k).iterator().next());
+        return existingKey.flatMap(k -> bindings.get(k).stream().sorted().findFirst());
     }
 
     private static FeatureMap processDateFeatures(String rule, String type, Document doc, String datePostfix, Map<String,AnnotationSet> bindings) {
@@ -368,7 +368,7 @@ public class Utils {
         List<Pair<String, Annotation>> dateComponents = new ArrayList<>();
 
         // extract day
-        Optional<Annotation> dayAnnotation = getAnnotationWithPrefix("day" + datePostfix, bindings);
+        Optional<Annotation> dayAnnotation = getSingleAnnotationWithPrefix("day" + datePostfix, bindings);
         dayAnnotation.ifPresent(day -> {
             String dayStr = gate.Utils.stringFor(doc, day);
             String dayFormat = "dd" + separatorAfterAnnot(doc, day);
@@ -381,7 +381,7 @@ public class Utils {
         DateUtils dateUtilsEng = new DateUtils(Locale.ENGLISH);
 
         // extract month
-        Optional<Annotation> monthAnnotation = getAnnotationWithPrefix("month" + datePostfix, bindings);
+        Optional<Annotation> monthAnnotation = getSingleAnnotationWithPrefix("month" + datePostfix, bindings);
         monthAnnotation.ifPresent(month -> {
             String monthStr = gate.Utils.stringFor(doc, month);
             String monthFormat = dateUtils.determineMonthFormat(monthStr).
@@ -393,7 +393,7 @@ public class Utils {
         });
 
         // extract year
-        Optional<Annotation> yearAnnotation = getAnnotationWithPrefix("year" + datePostfix, bindings);
+        Optional<Annotation> yearAnnotation = getSingleAnnotationWithPrefix("year" + datePostfix, bindings);
         yearAnnotation.ifPresent(year -> {
             String yearStr = gate.Utils.stringFor(doc, year);
             String yearFormat = dateUtils.determineYearFormat(yearStr).map(df -> df.toPattern()).orElse("yyyy") +
