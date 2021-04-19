@@ -1,6 +1,5 @@
 package org.ratschlab.deidentifier.substitution;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import gate.*;
 import gate.util.InvalidOffsetException;
@@ -10,23 +9,36 @@ import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
 import org.ratschlab.gate.FilterDocuments;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+
+
 public class DeidentificationSubstitution implements SubstitutionStrategy {
+    private static final Logger log = LoggerFactory.getLogger(DeidentificationSubstitution.class);
+
     private String phiAnnotationSetName;
     private Function<Document, DeidentificationSubstituter> substituterFactory;
     private boolean substituteWholeAddress;
     private List<PathConstraint> filterTags;
+    private int contextWindowForReplacementTags;
 
     public DeidentificationSubstitution(String phiAnnotationSetName, Function<Document, DeidentificationSubstituter> substituterFactory,
-                                        boolean substituteWholeAddress, List<PathConstraint> filterTags) {
+                                        boolean substituteWholeAddress, List<PathConstraint> filterTags, int contextWindowForReplacementTags) {
         this.phiAnnotationSetName = phiAnnotationSetName;
         this.substituterFactory = substituterFactory;
         this.substituteWholeAddress = substituteWholeAddress;
         this.filterTags = filterTags;
+        this.contextWindowForReplacementTags = contextWindowForReplacementTags;
+    }
+
+    public DeidentificationSubstitution(String phiAnnotationSetName, Function<Document, DeidentificationSubstituter> substituterFactory,
+                                        boolean substituteWholeAddress, List<PathConstraint> filterTags) {
+        this(phiAnnotationSetName, substituterFactory, substituteWholeAddress, filterTags, 0);
     }
 
     @Override
@@ -46,6 +58,12 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
                 FeatureMap newMap = Factory.newFeatureMap();
                 newMap.putAll(a.getFeatures());
                 newMap.put(FeatureKeysGeneral.ORIG_ANNOTATED_STR, gate.Utils.stringFor(origDoc, a));
+
+                if(this.contextWindowForReplacementTags > 0) {
+                    Pair<String, String> context = this.extractAnnotationContext(a, origDoc);
+                    newMap.put(FeatureKeysGeneral.ANNOTATED_CONTEXT_LEFT, context.getLeft());
+                    newMap.put(FeatureKeysGeneral.ANNOTATED_CONTEXT_RIGHT, context.getRight());
+                }
 
                 phiAnnotationsCopy.add(a.getStartNode(), a.getEndNode(), a.getType(), newMap);
             });
@@ -338,6 +356,26 @@ public class DeidentificationSubstitution implements SubstitutionStrategy {
         }
 
         return XML.escape(anStr);
+    }
+
+    private Pair<String, String> extractAnnotationContext(Annotation annot, Document origDoc) {
+        try {
+            String leftContext = origDoc.getContent().getContent(
+                    Math.max(annot.getStartNode().getOffset() - this.contextWindowForReplacementTags, 0L),
+                    annot.getStartNode().getOffset()
+            ).toString();
+
+
+            String rightContext = origDoc.getContent().getContent(
+                    annot.getEndNode().getOffset(),
+                    Math.min(annot.getEndNode().getOffset() + this.contextWindowForReplacementTags, origDoc.getContent().size())
+            ).toString();
+
+            return Pair.of(leftContext, rightContext);
+        } catch(gate.util.InvalidOffsetException e) {
+            log.warn("Context could not be extracted properly", e);
+            return Pair.of("","");
+        }
     }
 }
 

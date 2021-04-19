@@ -78,6 +78,10 @@ public class SubstitutionCmd implements Callable<Integer> {
     @CommandLine.Option(names = {"--fields-blacklist"}, description = "Path to files giving field blacklist")
     private File fieldsBlacklistPath = null;
 
+    @CommandLine.Option(names = {"--context-window-size"}, description = "Context window size for replacement tags")
+    private int contextWindowForReplacementTags = 0;
+
+
     public enum SubstitutionMethods {
         DateShift, ReplacementTags, Scrubber, Identity
     }
@@ -134,7 +138,7 @@ public class SubstitutionCmd implements Callable<Integer> {
                 throw new IllegalArgumentException("-o and --db-config cannot be both undefined!");
             }
 
-            concerns.add(new SubstituteAndWrite(new DeidentificationSubstitution(finalAnnotationName, substFactory, this.substituteWholeAddress, fieldBlacklist),
+            concerns.add(new SubstituteAndWrite(new DeidentificationSubstitution(finalAnnotationName, substFactory, this.substituteWholeAddress, fieldBlacklist, this.contextWindowForReplacementTags),
                     sinks));
 
             Set<String> docIds = loadDocTypeSet(docTypeFilterPath);

@@ -106,7 +106,7 @@ public class ReplacementTagsSubstitution extends DeidentificationSubstituter {
             b.append(sep);
             b.append(e.getKey());
             b.append('=');
-            b.append(e.getValue());
+            b.append(e.getValue().replaceAll(sep, sepName));
         }
 
         b.append(END_TAG);

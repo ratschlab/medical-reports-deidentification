@@ -14,7 +14,7 @@ class ReplacementTagsSubstitutionTest {
         ReplacementTagsSubstitution subst = new ReplacementTagsSubstitution();
         String origStr = "20.02.2012";
 
-        String expected = String.format("%sDate;%s;;day=;format=;month=;rule=;type=;year=%s", ReplacementTagsSubstitution.START_TAG,
+        String expected = String.format("%sDate;%s;;context_left=;context_right=;day=;format=;month=;rule=;type=;year=%s", ReplacementTagsSubstitution.START_TAG,
             origStr,
             ReplacementTagsSubstitution.END_TAG);
 
@@ -29,7 +29,7 @@ class ReplacementTagsSubstitutionTest {
         FeatureMap map = Factory.newFeatureMap();
         map.put(FeatureKeysGeneral.RULE, ruleName);
 
-        String expected = String.format("%sID;%s;;rule=%s;type=%s", ReplacementTagsSubstitution.START_TAG, origStr, ruleName, ReplacementTagsSubstitution.END_TAG);
+        String expected = String.format("%sID;%s;;context_left=;context_right=;rule=%s;type=%s", ReplacementTagsSubstitution.START_TAG, origStr, ruleName, ReplacementTagsSubstitution.END_TAG);
 
         assertEquals(expected, subst.substituteID(origStr, map));
     }
@@ -44,7 +44,7 @@ class ReplacementTagsSubstitutionTest {
         map.put(FeatureKeysGeneral.RULE, ruleName);
         map.put(FeatureKeysGeneral.ORIG_ANNOTATED_STR, origAnnotStr);
 
-        String expected = String.format("%sName;%s;%s;firstname=;format=;lastname=;rule=%s;salutation=;signature=;type=%s",
+        String expected = String.format("%sName;%s;%s;context_left=;context_right=;firstname=;format=;lastname=;rule=%s;salutation=;signature=;type=%s",
                 ReplacementTagsSubstitution.START_TAG, origStr, origAnnotStr, ruleName, ReplacementTagsSubstitution.END_TAG);
 
         assertEquals(expected, subst.substituteName(origStr, map));
