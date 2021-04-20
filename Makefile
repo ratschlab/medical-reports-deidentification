@@ -1,6 +1,8 @@
 PIPELINE_MAIN_CLASS="org.ratschlab.deidentifier.AnnotationCmd"
+SUBST_MAIN_CLASS="org.ratschlab.deidentifier.substitution.SubstitutionCmd"
 
-PIPELINE_COMMON_ARGS=-Dfile.encoding=UTF-8 -Dexec.cleanupDaemonThreads=false -Dexec.mainClass=$(PIPELINE_MAIN_CLASS) 
+COMMON_ARGS=-Dfile.encoding=UTF-8 -Dexec.cleanupDaemonThreads=false
+PIPELINE_COMMON_ARGS=$(COMMON_ARGS) -Dexec.mainClass=$(PIPELINE_MAIN_CLASS) 
 #-Dlog4j.configuration=/home/marczim/git/deidentifier-poc/log4j.properties
 
 CONFIG_PATH="../configs/kisim-usz/kisim_usz.conf"
@@ -140,8 +142,23 @@ run-full-eval:
     options=$$(echo "$${l}" | cut -d $(SEP) -f 3); \
     echo "Running $${batch} ....."; \
     mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -o /home/marczim/data/deid_poc/eval_runs/corpora/$${batch} --diagnostics-dir /home/marczim/data/deid_poc/eval_runs/diagnostics/$${batch} -m /data/share/$${batch} -t 25 $${options}" ; \
+    mvn -e exec:java $(COMMON_ARGS) -Dexec.mainClass=$(SUBST_MAIN_CLASS) -Dexec.args="/home/marczim/data/deid_poc/eval_runs/corpora/$${batch} --method ReplacementTags -o /home/marczim/data/deid_poc/eval_runs/substitution/$${batch} --no-substitute-whole-address --context-window-size 40 -t 10" ; \
     python ../scripts/convert_ml_features_to_parquet.py /home/marczim/data/deid_poc/eval_runs/diagnostics/$${batch}/ml-features.json ; \
-    done
+    done ; \
+    cd /home/marczim/data/deid_poc/eval_runs/substitution && find . -name '*.json' | xargs grep -o '\[&\[[^]]*\]&\]' | sed 's/\]//g' | sed 's/\[//g' | tr -d '&' | sed 's/json:/json;/' | sort -t ';' -k2,2 > all_annots.txt
+
+
+run-all-dnar:
+	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -o /home/marczim/data/deid_poc/dnar/dnar_processed -t 20 -d /home/marczim/postgres_pipeline_dnar.txt"
+	cd deidentifier-pipeline; mvn -e exec:java $(COMMON_ARGS) -Dexec.mainClass=$(SUBST_MAIN_CLASS) -Dexec.args="/home/marczim/data/deid_poc/dnar/dnar_processed --method ReplacementTags -o /home/marczim/data/deid_poc/dnar/dnar_subst --no-substitute-whole-address --context-window-size 40 -t 10"
+	cd /home/marczim/data/deid_poc/dnar && find . -name '*.json' | xargs grep -o '\[&\[[^]]*\]&\]' | sed 's/\]//g' | sed 's/\[//g' | tr -d '&' | sed 's/json:/json;/' | sort -t ';' -k2,2 > all_annots.txt
+
+
+run-all-usz-src:
+	cd deidentifier-pipeline; mvn -e exec:java $(PIPELINE_COMMON_ARGS) -Dexec.args="-c $(CONFIG_PATH) -o /home/marczim/data/deid_poc/usz_src/usz_src_processed -t 30 -d /home/marczim/postgres_pipeline_usz_kisim_json_reports_source.txt"
+	cd deidentifier-pipeline; mvn -e exec:java $(COMMON_ARGS) -Dexec.mainClass=$(SUBST_MAIN_CLASS) -Dexec.args="/home/marczim/data/deid_poc/usz_src/usz_src_processed --method ReplacementTags -o /home/marczim/data/deid_poc/usz_src/usz_src_subst --no-substitute-whole-address --context-window-size 40 -t 10"
+	cd /home/marczim/data/deid_poc/usz_src && find . -name '*.json' | xargs grep -o '\[&\[[^]]*\]&\]' | sed 's/\]//g' | sed 's/\[//g' | tr -d '&' | sed 's/json:/json;/' | sort -t ';' -k2,2 > all_annots.txt
+
 
 UF=deployment/usage.txt.tmp
 usage-readme:
@@ -149,6 +166,7 @@ usage-readme:
 	for c in annotate substitute import 'diagnostics conversioncheck' test; do java -jar ./deidentifier-pipeline/target/deidentifier-0.1-SNAPSHOT.jar $${c} -h >> $(UF) 2>&1 && echo -e "\n\n\n" >> $(UF); done
 	grep -v Missing $(UF) >> deployment/$$(basename $(UF) .tmp)
 	rm $(UF)
+
 
 ZIP_FILE="snapshots/deid_snapshot_$$(date +%Y%m%d%H%M).zip"
 STAGING=deid_usz
