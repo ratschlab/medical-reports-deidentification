@@ -49,7 +49,7 @@ Rule: Rooms
 (
     { Token.string == "Zimmer"}
     {Token.string ==~ "[0-9]+"}
-):loc --> :loc.Location = {rule = "Rooms", type = "other"}
+):loc --> :loc.Location = {rule = "Rooms", type = "room"}
 
 Rule: Floor
 (
