@@ -34,7 +34,7 @@ public class KisimFormat {
     public static final String LIST_ELEMENT_NAME = "LISTELEMENT";
     public static final String NUMBER_MARKER = "NUMBER_";
 
-    public static final String RAW_NULL_TOKEN = "___RAW_NULL___";
+    public static final String RAW_NULL_TOKEN = "___raw_null___";
 
     // TODO: more structured input with metadat
     // TODO: perhaps json in

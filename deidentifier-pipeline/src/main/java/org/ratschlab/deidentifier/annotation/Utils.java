@@ -9,6 +9,7 @@ import gate.util.OffsetComparator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
+import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.utils.AnnotationUtils;
 import org.ratschlab.deidentifier.utils.DateUtils;
 import org.slf4j.Logger;
@@ -441,5 +442,22 @@ public class Utils {
         }
 
         return true;
+    }
+
+    public static void removeFalsePositive(Map<String,AnnotationSet> bindings, AnnotationSet inputAS, AnnotationSet outputAS) {
+        for(Annotation an : bindings.get("fp_cand")) {
+            String typeRemove = an.getFeatures().getOrDefault("majorType", "").toString();
+            if(!typeRemove.isEmpty()) {
+                gate.Utils.getOverlappingAnnotations(inputAS, an).get(typeRemove).forEach(a -> outputAS.remove(a));
+            }
+        }
+    }
+
+    public static void removeRawNull(Map<String,AnnotationSet> bindings,  AnnotationSet inputAS, AnnotationSet outputAS) {
+        AnnotationSet rawNull = bindings.get("tok");
+
+        for(String type : PipelineFactory.annotationTypes) {
+            gate.Utils.getCoextensiveAnnotations(inputAS, rawNull).get(type).forEach(a -> outputAS.remove(a));
+        }
     }
 }

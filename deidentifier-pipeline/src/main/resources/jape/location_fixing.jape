@@ -1,17 +1,20 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
 Phase: FixedTerms
-Input: Token Lookup Location Name AddressField
+Input: Token Lookup Location Name AddressField Newline
 Options:control=appelt
 
 Rule: RemoveFalsePositiveAnnotation
 (
-        ({Lookup.minorType ==~ "false_positives"}):loc
-) --> {
-        Annotation an = bindings.get("loc").iterator().next();
-        String typeRemove = an.getFeatures().getOrDefault("majorType", "").toString();
-        if(!typeRemove.isEmpty()) {
-            gate.Utils.getOverlappingAnnotations(inputAS, an).get(typeRemove).forEach(a -> outputAS.remove(a));
-        }
-}
+        ({Lookup.minorType ==~ "false_positives"}):fp_cand
+) --> { Utils.removeFalsePositive(bindings, inputAS, outputAS); }
+
+Rule: RemoveRawNull
+(
+    (({Token.string == "_"})[3] {Token.string == "raw"} {Token.string == "_"} {Token.string == "null"} ({Token.string == "_"})[3]):tok
+) --> { Utils.removeRawNull(bindings, inputAS, outputAS); }
 
 // remove Location annotation of cities with ambiguous names, e.g. Laufen, Mund etc
 // Note, that a Location annotation might be readded later on in the pipeline by more specialized processing
