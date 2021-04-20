@@ -1,4 +1,4 @@
-Name; Patienteninformation, PatName, FieldWithSignature, Addressor, OrtDat, VisDat, DisplayName, Visum, DateSmallCapsSignField, SomePrefixVisDat, Vis
+Name; Patienteninformation, PatName, FieldWithSignature, Addressor, OrtDat, VisDat, DisplayName, Visum, DateSmallCapsSignField, SomePrefixVisDat, Vis, Patient, Vorname
 
 # gazetteer annotation
 hello <Name>Luigi D'Ambrosio</Name> oder <Name>Vreni Meier Huber</Name> oder auch <Name>Vreni Meier-Huber</Name>, <Name>Hans Meier</Name>
@@ -10,6 +10,8 @@ Dr. <Name>Meier-Outofvoc</Name> ...
 <PatName><Name format="LL ff">OUTOFVOC Outofvocööö</Name>, geb. 01.01.1971</PatName>
 <PatName><Name format="LL ff">OUTOFVOC Outofvocööö</Name></PatName>
 <PATNAME><Name format="LL LL ff">OUTOFVOC-VERYSELDOM Outofvocööö</Name>, Geb. 01.01.1971</PATNAME>
+
+Dr. <Name>Martin Barthel</Name>
 
 <Name format="ll-ll">Huber-Meier</Name>
 Thymian-Tee
@@ -81,6 +83,10 @@ stammen die Töchter <Name>Beatrice</Name> und <Name>Kathrin</Name>. Die Diagnos
 
 Anwesende: <Name>Huber</Name>, <Name>Meier</Name>, <Name>Zwygart</Name>
 
+<Patient><Vorname><Name>Outofvoc</Name></Vorname></Patient>
+<Patient><Vorname>konnte nicht abgeklärt werden</Vorname></Patient>
+<Patient><Vorname>___raw_null___</Vorname></Patient>
+
 Praxis Dr. <Name>Huber/Meier</Name>
 
 # false positives
@@ -131,6 +137,7 @@ Tachykardes Vorhofflimmern ED
 Mo-Mi-Fr
 Anti-Mi
 Anti Mi
+ED August
 
 Endo-Button
 Ko
@@ -165,4 +172,5 @@ Mehl, Reis
 
 IV Hand
 
+Haben fuer aeltere Tochter
 hat 3 Kinder und 6 Enkel

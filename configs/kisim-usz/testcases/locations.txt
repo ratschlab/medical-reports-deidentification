@@ -1,4 +1,4 @@
-Location; Addressor, Patienteninformation, Sprechstunde, Nested
+Location; Addressor, Patienteninformation, Sprechstunde, Nested, PLZ
 
 
 <Location>Bahnhofsstrasse 1</Location> <Location>DE</Location>-<Location>12345</Location> <Location>Einhausen</Location>
@@ -45,13 +45,16 @@ Bristol-Myers Squibb # fp location Bristol
 <Location>Tunis</Location>
 Dr. Gabbs, <Location>GE</Location>
 
+<PLZ><Location>12345x</Location></PLZ>
+<PLZ>___raw_null___</PLZ>
+
 ## Buildings
 <Location>RAE D 22</Location> <Location>HOF B</Location> <Location>HOF B 27</Location> <Location>C NORD1 129</Location> <Location>NORD2 C 129</Location> <Location>AUFN B Saal 1</Location>
 <Location>B Sued 25</Location> <Location>B Süd 1</Location> <Location>NORD 1</Location>
 <Location>Station F 1</Location>
 
 <Location>Stockwerk E</Location>
-<Location>Zimmer 123</Location>
+<Location type="room">Zimmer 123</Location>
 
 ## Organisations
 <Location>Pallasklinik</Location>
@@ -83,6 +86,7 @@ Patient aus <Location>Windisch</Location>
 
 <Sprechstunde><Location>Eine Sprechstunde</Location></Sprechstunde>
 <Sprechstunde><Nested>Eine Sprechstunde</Nested></Sprechstunde>
+<Sprechstunde><Location>Eine Sprechstunde</Location>\r\n</Sprechstunde>
 
 ## Nationalitities and Languages
 Der Patient ist <Location>Grieche</Location>.

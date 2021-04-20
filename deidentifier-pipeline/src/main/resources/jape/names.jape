@@ -30,7 +30,7 @@ Macro: FIRST_NAME_INITIALS
         ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?", Token.string !=~ "Dr|Hr|Fr|Hd|St"} {Token.string == "."}) // first initial, 'Hd' in z.Hd.
         ({Token.string == "-"})?
         ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?"} {Token.string == "."})? // second initial
-    ) | ({Token.string ==~ "^(?!(OP|DD|IV|AT|PD))\\p{javaUpperCase}[\\p{javaUpperCase}&&[^AÄ]]"}) // Allowing for HP initials, but excluding OA, OÄ etc (triggers) in a crude way
+    ) | ({Token.string ==~ "^(?!(OP|DD|IV|AT|PD|ED|EF|ES|DW|RV))\\p{javaUpperCase}[\\p{javaUpperCase}&&[^AÄ]]"}) // Allowing for HP initials, but excluding OA, OÄ etc (triggers) in a crude way
 )
 
 // e.g. "Hello".
@@ -218,7 +218,7 @@ Rule: NursingStaffRightContext
         ((UPPER_INITIAL_TOKEN):firstname (UPPER_INITIAL_TOKEN):lastname):format_ff-SPACE-ll // only taken two tokens (e.g. firstname lastname). Longer names should be picked up by other rules
     ):name
     ({Token.string == ","})?
-    ({Token.string == "Pflegefachfrau"} | {Token.string == "Pflegefachmann"} | {Token.string ==~ "[Dd]ipl"} | {Token.string == "PFF"} | {Token.string == "MPA"} )
+    ({Token.string ==~ "Pflegefachfrau|Pflegefachmann|Fachfrau|Fachmann"} | {Token.string ==~ "[Dd]ipl"} | {Token.string == "PFF"} | {Token.string == "MPA"} )
 ) --> { Utils.addNameAnnotation("NursingStaffRightContext", "medical staff", "", bindings, doc, outputAS); }
 
 // ex: Huber / Meier

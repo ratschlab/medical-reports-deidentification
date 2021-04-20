@@ -84,6 +84,8 @@ public class AnnotationCleanup extends AbstractLanguageAnalyser {
 
         AnnotationUtils.removeEmptyAnnotations(inputAS);
 
+        trimDanglingWhitespace(inputAS, doc);
+
         // TODO: enforce distinct annotations!
 
         for(String type : inputAS.getAllTypes().stream().filter(s -> annotationTypes.contains(s)).collect(Collectors.toList())) {
@@ -132,23 +134,7 @@ public class AnnotationCleanup extends AbstractLanguageAnalyser {
                 }
             }
 
-            // doesn't make sense to annotate dangling whitespaces, but causes issues further down the line.
-            String curContent = gate.Utils.stringFor(doc, cur);
-            int i = curContent.length() - 1;
-            int trim = 0;
-            while(i >= 0 && Character.isWhitespace(curContent.charAt(i))) {
-                i--; trim++;
-            }
-
-            if(trim > 0) {
-                try {
-                    outputAS.add(cur.getStartNode().getOffset(), cur.getEndNode().getOffset() - trim, cur.getType(), cur.getFeatures());
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            } else {
-                outputAS.add(cur);
-            }
+            outputAS.add(cur);
         }
 
         inputAS.get("Name").stream().forEach(a -> AnnotationCleanup.cleanupNameAnnotationFeature(a.getFeatures()));
@@ -210,5 +196,46 @@ public class AnnotationCleanup extends AbstractLanguageAnalyser {
         }
 
         return format.replaceAll(formatAbbrev.toUpperCase(), formatAbbrev);
+    }
+
+    private static void trimDanglingWhitespace(AnnotationSet as, Document doc) {
+        List<Annotation> toRemove = new ArrayList<>();
+
+        String annotTmp = "annotDanglingTmp";
+        AnnotationSet tmp = doc.getAnnotations(annotTmp);
+
+        for(Annotation cur : as) {
+            // doesn't make sense to annotate dangling whitespaces, but causes issues further down the line.
+            String curContent = gate.Utils.stringFor(doc, cur);
+            int i = curContent.length() - 1;
+            int trim = 0;
+            int oldTrim = -1;
+
+            while (i >= 0 && trim != oldTrim) {
+                oldTrim = trim;
+
+                if (Character.isWhitespace(curContent.charAt(i))) {
+                    i--;
+                    trim++;
+                }
+                if (curContent.substring(0, i + 1).endsWith("\\r") || curContent.substring(0, i + 1).endsWith("\\n")) {
+                    i -= 2;
+                    trim += 2;
+                }
+            }
+
+            if (trim > 0) {
+                try {
+                    tmp.add(cur.getStartNode().getOffset(), cur.getEndNode().getOffset() - trim, cur.getType(), cur.getFeatures());
+                    toRemove.add(cur);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        toRemove.forEach(a -> as.remove(a));
+        tmp.forEach(a -> as.add(a.getStartNode(), a.getEndNode(), a.getType(), a.getFeatures()));
+        doc.removeAnnotationSet(annotTmp);
     }
 }
