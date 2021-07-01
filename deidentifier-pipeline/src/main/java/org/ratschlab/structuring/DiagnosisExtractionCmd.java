@@ -3,6 +3,7 @@ package org.ratschlab.structuring;
 import com.google.common.collect.Lists;
 import com.typesafe.config.Config;
 import gate.*;
+import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import org.ratschlab.deidentifier.ConfigUtils;
 import org.ratschlab.deidentifier.sources.ImportCmd;
@@ -17,6 +18,7 @@ import org.ratschlab.gate.GateTools;
 import picocli.CommandLine;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,34 +69,27 @@ public class DiagnosisExtractionCmd extends DbCommands implements Callable<Integ
 
             return new PipelineWorkflow<>(
                     files.stream(),
-                    f -> GateTools.readDocumentFromFile(f),
+                    org.ratschlab.util.Utils.exceptionWrapper(f -> Optional.of(GateTools.readDocumentFromFile(f))),
                     controller,
                     threads,
                     concerns);
         }
 
-
         List<File> files = Lists.newArrayList(corpusInputDir.listFiles());
 
         KisimFormat ksf = new KisimFormat();
         return new PipelineWorkflow<>(
-                files.stream(),
-                f -> {
-                    try {
-                        // TODO: add doc id
-                        String jsonStr = new String(Files.readAllBytes(f.toPath()));
-                        Document doc = ksf.jsonToDocument(jsonStr);
-                        doc.setName(f.getName().replaceAll(".json", ""));
-                        doc.getFeatures().put(DEFAULT_REPORTNR_KEY, f.getName().split("_")[1].replaceAll(".json", ""));
-                        return Optional.of(doc);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return Optional.empty();
-                },
-                controller,
-                threads,
-                concerns);
+            files.stream(),
+            org.ratschlab.util.Utils.exceptionWrapper(f -> {
+                Document doc = ksf.jsonToDocument(f);
+
+                doc.setName(f.getName().replaceAll(".json", ""));
+                doc.getFeatures().put(DEFAULT_REPORTNR_KEY, f.getName().split("_")[1].replaceAll(".json", ""));
+                return Optional.of(doc);
+            }),
+            controller,
+            threads,
+            concerns);
 
     }
 
@@ -145,7 +140,7 @@ public class DiagnosisExtractionCmd extends DbCommands implements Callable<Integ
 
                 workflow = new PipelineWorkflow<>(
                         records,
-                        p -> ImportCmd.kisimDocConversion(p, ks),
+                        org.ratschlab.util.Utils.exceptionWrapper(p -> Optional.of(ImportCmd.kisimDocConversion(p, ks))),
                         controller,
                         threads,
                         concerns);

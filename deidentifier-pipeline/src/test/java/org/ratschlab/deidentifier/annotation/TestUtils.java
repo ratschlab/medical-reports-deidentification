@@ -6,7 +6,8 @@ import gate.FeatureMap;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import org.junit.Assert;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestUtils {
     public static Document runTest(String xmlStr, AbstractLanguageAnalyser pr) {
@@ -18,7 +19,7 @@ public class TestUtils {
 
             return doc;
         } catch(ExecutionException | ResourceInstantiationException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         return null;

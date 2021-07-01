@@ -3,6 +3,7 @@ package org.ratschlab.deidentifier.sources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gate.Document;
 import gate.Gate;
+import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
@@ -30,29 +31,24 @@ public class KisimConversionCheck {
         Stream<Pair<String, String>> records = ks.readJsonStringsWithReportId().limit(maxDocs);
 
         PipelineWorkflow<Pair<String, String>> workflow = new PipelineWorkflow<>(
-                records,
-                p -> {
-                    try {
-                        ObjectMapper om = new ObjectMapper();
-                        // parse and emit string again to not have to deal with formatting issues during assert
-                        String jsonStr = om.writeValueAsString(om.reader().readTree(p.getRight()));
-                        Files.write(new File(String.format("/home/marczim/data/deid_poc/sets/kisim/kisim_json/%s.json", p.getLeft())).toPath(), jsonStr.getBytes(StandardCharsets.UTF_8));
+            records,
+            org.ratschlab.util.Utils.exceptionWrapper(p -> {
 
-                        return Optional.of(checkConversion(p.getRight()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                ObjectMapper om = new ObjectMapper();
+                // parse and emit string again to not have to deal with formatting issues during assert
+                String jsonStr = om.writeValueAsString(om.reader().readTree(p.getRight()));
+                Files.write(new File(String.format("/home/marczim/data/deid_poc/sets/kisim/kisim_json/%s.json", p.getLeft())).toPath(), jsonStr.getBytes(StandardCharsets.UTF_8));
 
-                    return Optional.empty();
-                },
-                PipelineFactory.NoOpController(),
-                threads,
-                new ArrayList<>());
+                return Optional.of(checkConversion(p.getRight()));
+            }),
+            PipelineFactory.NoOpController(),
+            threads,
+            new ArrayList<>());
 
         workflow.run();
     }
 
-    public static Document checkConversion(String kisimJson) throws IOException {
+    public static Document checkConversion(String kisimJson) throws IOException, ResourceInstantiationException {
         ObjectMapper om = new ObjectMapper();
         // parse and emit string again to not have to deal with formatting issues during assert
         String jsonStr = om.writeValueAsString(om.reader().readTree(kisimJson));

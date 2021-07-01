@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gate.Document;
 import gate.Gate;
 import gate.util.GateException;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -13,24 +12,26 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class KisimFormatTest {
 
     @Test
     public void testEscapeFieldNames() {
-        Assert.assertEquals("hello", KisimFormat.escapeFieldNames("hello"));
-        Assert.assertEquals("NUMBER_123", KisimFormat.escapeFieldNames("123"));
-        Assert.assertEquals("Hello___36---", KisimFormat.escapeFieldNames("Hello$"));
-        Assert.assertEquals("Hello___32---World", KisimFormat.escapeFieldNames("Hello World"));
+        assertEquals("hello", KisimFormat.escapeFieldNames("hello"));
+        assertEquals("NUMBER_123", KisimFormat.escapeFieldNames("123"));
+        assertEquals("Hello___36---", KisimFormat.escapeFieldNames("Hello$"));
+        assertEquals("Hello___32---World", KisimFormat.escapeFieldNames("Hello World"));
     }
 
     @Test
     public void testUnscapeFieldNames() {
-        Assert.assertEquals("hello", KisimFormat.unescapeFieldNames("hello"));
-        Assert.assertEquals("123", KisimFormat.unescapeFieldNames("NUMBER_123"));
-        Assert.assertEquals("Hello$Bla", KisimFormat.unescapeFieldNames("Hello___36---Bla"));
-        Assert.assertEquals("Hello$", KisimFormat.unescapeFieldNames("Hello___36---"));
-        Assert.assertEquals("$", KisimFormat.unescapeFieldNames("___36---"));
-        Assert.assertEquals("Hello beautiful world", KisimFormat.unescapeFieldNames("Hello___32---beautiful___32---world"));
+        assertEquals("hello", KisimFormat.unescapeFieldNames("hello"));
+        assertEquals("123", KisimFormat.unescapeFieldNames("NUMBER_123"));
+        assertEquals("Hello$Bla", KisimFormat.unescapeFieldNames("Hello___36---Bla"));
+        assertEquals("Hello$", KisimFormat.unescapeFieldNames("Hello___36---"));
+        assertEquals("$", KisimFormat.unescapeFieldNames("___36---"));
+        assertEquals("Hello beautiful world", KisimFormat.unescapeFieldNames("Hello___32---beautiful___32---world"));
 
     }
 
@@ -50,7 +51,7 @@ public class KisimFormatTest {
             Document doc = kf.jsonToDocument(jsonStr);
             String jsonStrBack = kf.documentToJson(doc);
 
-            Assert.assertEquals(jsonStr, jsonStrBack);
+            assertEquals(jsonStr, jsonStrBack);
         } catch (GateException e) {
             e.printStackTrace();
         } catch (JsonProcessingException e) {

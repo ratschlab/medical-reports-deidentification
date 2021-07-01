@@ -5,6 +5,7 @@ import gate.Corpus;
 import gate.Document;
 import gate.Factory;
 import gate.Gate;
+import gate.creole.ResourceInstantiationException;
 import gate.persist.PersistenceException;
 import gate.util.GateException;
 import org.apache.commons.io.FileUtils;
@@ -52,7 +53,7 @@ public class ImportCmd extends DbCommands implements Callable<Integer> {
             Stream<Map<String, Object>> records = docsLimiting(documentRecordsStream(ks, Optional.ofNullable(docTypeFilterPath),
                     Optional.ofNullable(docIdFilterPath)));
 
-            Stream<Document> docs = records.map(m -> kisimDocConversion(m, ks)).filter(o -> o.isPresent()).map(o -> o.get());
+            Stream<Document> docs = records.map(org.ratschlab.util.Utils.exceptionWrapper(m -> kisimDocConversion(m, ks)));
 
             if (corpusOutputDir.exists()) {
                 FileUtils.deleteDirectory(corpusOutputDir);
@@ -126,8 +127,9 @@ public class ImportCmd extends DbCommands implements Callable<Integer> {
         }
     }
 
-    public static Optional<Document> kisimDocConversion(Map<String, Object> p, KisimSource ks) {
+    public static Document kisimDocConversion(Map<String, Object> p, KisimSource ks) throws IOException, ResourceInstantiationException {
         Document doc = new KisimFormat().jsonToDocument(p.get(ks.getContentFieldName()).toString());
+
         String reportType = p.get(ks.getReportTypeIdName()).toString();
         String reportId = p.get(ks.getReportIdFieldName()).toString();
         String reportIdLargeRadix = "";
@@ -145,10 +147,10 @@ public class ImportCmd extends DbCommands implements Callable<Integer> {
 
         // keeping columns
         p.entrySet().stream().
-                filter(e -> !e.getKey().equals(ks.getContentFieldName())).
-                forEach(e -> doc.getFeatures().put(e.getKey(), e.getValue()));
+            filter(e -> !e.getKey().equals(ks.getContentFieldName())).
+            forEach(e -> doc.getFeatures().put(e.getKey(), e.getValue()));
 
-        return Optional.of(doc);
+        return doc;
     }
 
     public static String fcodeGrouping(String fileName) {

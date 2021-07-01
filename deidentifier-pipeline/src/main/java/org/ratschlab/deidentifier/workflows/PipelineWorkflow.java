@@ -166,12 +166,8 @@ public class PipelineWorkflow<I> {
                     GraphDSL.Builder.ForwardOps processedDocs = builder.from(balancer.out(i)).via(builder.add(preprocessDocs.async()));
 
                     processedDocs.toInlet(merge.in(i));
-                } catch (ResourceInstantiationException e) {
-                    e.printStackTrace();
-                } catch (GateException e) {
-                    e.printStackTrace();
-                } catch(RuntimeException e) {
-                    e.printStackTrace();
+                } catch(Exception e) {
+                    throw new RuntimeException(e);
                 }
             });
 

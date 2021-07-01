@@ -12,6 +12,8 @@ import gate.GateConstants;
 import gate.creole.ResourceInstantiationException;
 import org.apache.tools.ant.filters.StringInputStream;
 import org.json.XML;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -20,47 +22,38 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // TODO: extract abstract interface
 public class KisimFormat {
+    private static final Logger log = LoggerFactory.getLogger(KisimFormat.class);
 
     public static final String LIST_ELEMENT_NAME = "LISTELEMENT";
     public static final String NUMBER_MARKER = "NUMBER_";
 
     public static final String RAW_NULL_TOKEN = "___raw_null___";
 
+    public Document jsonToDocument(File jsonFilePath) throws IOException, ResourceInstantiationException {
+        String jsonStr = new String(Files.readAllBytes(jsonFilePath.toPath())).replaceAll("\0", "");
+        return jsonToDocument(jsonStr);
+    }
+
     // TODO: more structured input with metadat
-    // TODO: perhaps json in
-    // TODO: how to handle exceptions?
-    public Document jsonToDocument(String jsonStr) {
-        try {
-            String xmlStr = convertToXmlString(jsonStr);
+    public Document jsonToDocument(String jsonStr) throws IOException, ResourceInstantiationException {
+        String xmlStr = convertToXmlString(jsonStr);
 
-            // TODO: do it without temporary file
-            //File xmlTmp = new File("/tmp/kisim_example.xml");
-            //Files.write(xmlTmp.toPath(), xmlStr.getBytes());
+        Document doc = Factory.newDocument(xmlStr);
 
-            //Document doc = Factory.newDocument(xmlTmp.toURI().toURL(), "UTF-8");
-            Document doc = Factory.newDocument(xmlStr);
-
-            doc.setMarkupAware(true);
-            doc.setPreserveOriginalContent(true);
-
-            return doc;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ResourceInstantiationException e) {
-            e.printStackTrace();
-        }
-
-        return null; // optional?
+        doc.setMarkupAware(true);
+        doc.setPreserveOriginalContent(true);
+        return doc;
     }
 
     public String documentToJson(Document doc) {
@@ -255,7 +248,7 @@ public class KisimFormat {
 
     private JsonNode visitXmlNode(org.w3c.dom.Node node) {
         NodeList nl = node.getChildNodes();
-        
+
         if (node.getNodeType() == org.w3c.dom.Node.TEXT_NODE) {
             if(node.getTextContent().equals("\n") || node.getTextContent().matches(" ")) {
                 return null;

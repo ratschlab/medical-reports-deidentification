@@ -5,13 +5,11 @@ import com.google.common.collect.ImmutableSet;
 import gate.*;
 import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.ratschlab.deidentifier.annotation.TestUtils;
-import org.ratschlab.deidentifier.annotation.features.FeatureKeysGeneral;
 import org.ratschlab.deidentifier.pipelines.testing.PipelineTestSuite;
 import org.ratschlab.deidentifier.pipelines.testing.PipelineTester;
 
@@ -20,6 +18,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PipelinesTest {
     static PipelineTester tester = null;
@@ -106,7 +106,7 @@ public class PipelinesTest {
         try {
             suite = PipelineTestSuite.createTestSuite(ImmutableList.of(doc), ImmutableSet.of("Date"), Collections.emptySet());
         } catch (ResourceInstantiationException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         tester.runSuite(suite);

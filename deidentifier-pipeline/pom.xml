@@ -12,6 +12,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <junitVersion>5.7.2</junitVersion>
     </properties>
     <dependencies>
     <!-- https://mvnrepository.com/artifact/uk.ac.gate/gate-core -->
@@ -33,7 +34,7 @@
         <dependency>
             <groupId>uk.ac.gate</groupId>
             <artifactId>gate-plugin-test-utils</artifactId>
-            <version>8.6.1</version>
+            <version>9.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -43,25 +44,31 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.3.1</version>
+            <version>${junitVersion}</version>
             <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junitVersion}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.3.1</version>
+            <version>${junitVersion}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.1.0</version>
+            <version>1.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-runner</artifactId>
-            <version>1.1.0</version>
+            <version>1.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -75,12 +82,6 @@
             <artifactId>h2</artifactId>
             <version>1.4.200</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>5.3.1</version>
-            <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

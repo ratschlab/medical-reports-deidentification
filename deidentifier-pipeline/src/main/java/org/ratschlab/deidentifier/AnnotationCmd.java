@@ -147,7 +147,7 @@ public class AnnotationCmd extends DbCommands implements Callable<Integer> {
 
                 PipelineWorkflow<File> workflow = new PipelineWorkflow<>(
                         inputFiles.stream(),
-                        f -> GateTools.readDocumentFromFile(f),
+                        org.ratschlab.util.Utils.exceptionWrapper(f -> Optional.of(GateTools.readDocumentFromFile(f))),
                         myController,
                         threads,
                         concerns);
@@ -160,7 +160,7 @@ public class AnnotationCmd extends DbCommands implements Callable<Integer> {
 
                 PipelineWorkflow<Map<String, Object>> workflow = new PipelineWorkflow<>(
                         records,
-                        p -> ImportCmd.kisimDocConversion(p, ks),
+                        org.ratschlab.util.Utils.exceptionWrapper(p -> Optional.of(ImportCmd.kisimDocConversion(p, ks))),
                         myController,
                         threads,
                         concerns);

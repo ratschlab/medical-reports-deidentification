@@ -8,7 +8,6 @@ import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.util.InvalidOffsetException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +15,8 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestAnnotationBlacklist extends AnalyserTestBase{
     private AbstractLanguageAnalyser pr = null;
@@ -71,9 +72,9 @@ public class TestAnnotationBlacklist extends AnalyserTestBase{
 
         AnnotationSet forbidden = as.get("ForbiddenAnnot");
 
-        Assert.assertEquals(2, forbidden.size());
+        assertEquals(2, forbidden.size());
         for (Annotation an : forbidden) {
-            Assert.assertEquals("ANNOTATE_ME_OK", gate.Utils.cleanStringFor(doc, an));
+            assertEquals("ANNOTATE_ME_OK", gate.Utils.cleanStringFor(doc, an));
         }
     }
 }

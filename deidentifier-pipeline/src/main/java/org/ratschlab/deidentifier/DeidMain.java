@@ -2,6 +2,7 @@ package org.ratschlab.deidentifier;
 
 import org.ratschlab.deidentifier.dev.DiagnosticsCmd;
 import org.ratschlab.deidentifier.pipelines.testing.PipelineTesterCmd;
+import org.ratschlab.deidentifier.sources.ConversionCmd;
 import org.ratschlab.deidentifier.sources.ImportCmd;
 import org.ratschlab.deidentifier.substitution.SubstitutionCmd;
 import picocli.CommandLine;
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
                 SubstitutionCmd.class,
                 AnnotationCmd.class,
                 ImportCmd.class,
+                ConversionCmd.class,
                 DiagnosticsCmd.class,
                 PipelineTesterCmd.class
         }
