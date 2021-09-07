@@ -1,0 +1,96 @@
+Phase: Age
+Input: Token Newline // Adding new line s.t. ages are not recognized across lines
+Options:control=appelt
+
+// 0-120
+Macro: POSSIBLE_AGE
+(
+  ({Token.string ==~ "[1-9]*[0-9]"} | {Token.string ==~ "1[0-2][0-9]"})
+  ({Token.string == "."} {Token.string ==~ "[0-9]+"})?
+)
+
+Macro: DASH
+  {Token.string == "-"}
+
+
+/*
+examples:
+ 59-jähriger Patient
+*/
+Rule: AgeRightContextTrigger
+(
+    (POSSIBLE_AGE):age
+    (DASH)?
+    ({Token.string ==~ "jährig|jährige[rnm]?"})
+)
+-->
+:age.Age = {rule = "AgeRightContextTrigger"}
+
+/*
+examples:
+ Alter: 26.1
+*/
+Rule: AgeLeftContextTrigger
+(
+    {Token.string == "Alter"}
+    ({Token.kind == "punctuation"})?
+    (POSSIBLE_AGE):age
+)
+-->
+:age.Age = {rule = "AgeLeftContextTrigger"}
+
+/*
+examples:
+ mit 26 Jahren
+*/
+Rule: AgeLeftRightContext
+(
+    (
+        {Token.string ==~ "mit|Mit"} |
+        ({Token.string == "im"} {Token.string == "Alter"} {Token.string == "von"} )
+    )
+    (POSSIBLE_AGE):age
+    {Token.string ==~ "Jahren|gestorben"}
+)
+-->
+:age.Age = {rule = "AgeLeftRightContext"}
+
+
+/*
+examples:
+ seit dem 24. Lebensjahr
+*/
+Rule: AgeYearOfLife
+(
+    {Token.string == "seit"} {Token.string == "dem"}
+    (POSSIBLE_AGE):age
+    ({Token.string == "."})?
+    {Token.string == "Lebensjahr"}
+)
+-->
+:age.Age = {rule = "AgeYearOfLife"}
+
+/*
+examples:
+  26j
+*/
+Rule: AgeRightContextShort
+(
+    (POSSIBLE_AGE):age
+    {Token.string ==~ "j"}
+)
+-->
+:age.Age = {rule = "AgeRightContextShort"}
+
+// examples: Kinder (2, 5)
+Rule: KidsAge
+(
+   {Token.string == "Kinder"}
+   {Token.string == "("}
+   (
+     (POSSIBLE_AGE):age
+     ({Token.string ==~ "[),jJ]"})
+   )+
+) --> {
+    org.ratschlab.deidentifier.annotation.Utils.addAnnotationSequence(bindings.get("age"), "Age", "KidsAge", outputAS);
+}

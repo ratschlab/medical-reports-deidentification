@@ -1,0 +1,166 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: ProcessVariousFields
+Input: Token OrtDat VisDat Date DisplayName AgeField Newline FieldWithSignature FieldWithAddress Lookup
+Options: control=appelt
+
+Macro: COMMA
+(
+    { Token.string == ","}
+)
+
+Macro: SLASH
+(
+    { Token.string == "/"}
+)
+
+Macro: SEP
+(
+    { Newline } | (COMMA)
+)
+
+Macro: OrtDatToken
+(
+    { Token within OrtDat }
+)
+
+// AMASTER / 02.04.2017
+// 02.04.2017 / AMASTER
+Rule: VisDatProcessing
+(
+    (({Token within VisDat, Token.kind == "word"}):signature):name
+) --> { Utils.addNameAnnotation("VisDatProcessing", "medical staff", "s", bindings, doc, outputAS); }
+
+// zurich, 20.01.2018 / AMUSTER / xyz /MER
+Rule: ProcessOrtDat
+(
+    ((OrtDatToken)+):loc COMMA
+    {Date}
+    (SLASH)? ((OrtDatToken):signature1):name1
+    ((SLASH) ((OrtDatToken):signature2):name2)?
+    ((SLASH) ((OrtDatToken):signature3):name3)?
+    ((SLASH) ((OrtDatToken):signature4):name4)?
+    ((SLASH) ((OrtDatToken):signature5):name5)?
+) --> :loc.Location = { rule = "ProcessOrtDat",  type = "city" },
+      {
+        for(int i = 1; i<=5; i++) {
+            // make sure there is only one signature
+            Map<String, AnnotationSet> filteredBindings = new HashMap<>();
+            for(String s : bindings.keySet()) {
+                if(!s.startsWith("signature") || s.equals("signature" + i)) {
+                    filteredBindings.put(s, bindings.get(s));
+                }
+            }
+
+            Utils.addNameAnnotation("DoctorsLeftContextRole", "medical staff", "s", "name" + i, filteredBindings, doc, outputAS);
+        }
+      }
+
+/*
+Rule: SexAlterProcessing
+(
+    {Token within SexAlter}
+    SLASH
+    (
+        { Token.kind == "number"}
+        ({ Token.string == "."} { Token.kind == "number"})
+        { Token within SexAlter}
+    ):a
+) --> :a.Age = { rule = "SexAlterProcessing" }
+*/
+
+Rule: AgeFieldProcessing
+(
+    { Token.kind == "number", Token within {AgeField}}
+    ({ Token.string == "."} { Token.kind == "number", Token within {AgeField}})?
+):a --> :a.Age = { rule = "AgeFieldProcessing" }
+
+
+Rule: InternalPhoneTrigger
+(
+    (
+      ({ Token.string == "Tel" } ({ Token.string == "." })? { Token.string == "Büro" }) |
+      { Token.string == "Sucher" }
+    )
+    ({Token.kind == "punctuation"})?
+    (({ Token.kind == "number" })[1,2]):tok
+) --> :tok.Contact = { rule = "InternalPhoneTrigger", type = "phone number" }
+
+
+// annotate as date of birth
+Rule: DOBTrigger
+(
+    { Token.string == "geb" } ({Token.string == "."})?
+    ({Date}):date
+) --> :date.Date = { rule = "DOBTrigger", type = "DOB" }
+
+
+// copied from names.jape
+// D., H.P., Ch
+Macro: FIRST_NAME_INITIALS
+(
+    (
+        ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?", Token.string !=~ "Dr|Hr|Fr"} {Token.string == "."}) // first initial
+        ({Token.string == "-"})?
+        ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?"} {Token.string == "."})? // second initial
+    )
+)
+
+Rule: NamesInDisplayName
+(
+    (FIRST_NAME_INITIALS):firstname_NamesInDisplayName
+    (({Token.orth == "upperInitial", Token within DisplayName})+):lastname_NamesInDisplayName
+):name --> { Utils.addNameAnnotation("NamesInDisplayName", "medical staff", "fs l", bindings, doc, outputAS); }
+
+
+Rule: DetectSignatures
+(
+    (({Token.string ==~ "[A-Z]{3,8}", Token within {FieldWithSignature} }):signature):name
+) -->  { Utils.addNameAnnotation("DetectSignatures", "medical staff", "s", bindings, doc, outputAS); },
+:name.Name = { type = "other" }
+
+Rule: DetectSignaturesInTags
+(
+    {Token.string == "<"}
+    (({Token.string =~ "[A-Z]{3,8}"}):signature):name
+    {Token.string == ">"}
+)-->  { Utils.addNameAnnotation("DetectSignaturesInTags", "medical staff", "s", bindings, doc, outputAS); }
+
+Rule: LocationFpZug
+(
+    {Token within Lookup.minorType == "stop", ! Token.string ==~ "in|von|nach"}
+    ({Token.string == "Zug"}):loc
+) --> {
+    Annotation an = bindings.get("loc").iterator().next();
+    gate.Utils.getOverlappingAnnotations(inputAS, an).get("Location").forEach(a -> outputAS.remove(a));
+}
+
+Rule: HospitalUnitInAddress
+(
+    (
+        (
+            ({Token.string ==~ "Interdisziplinäres"})?
+            {Token.string ==~ "Sprechstunde|Klinik|Poliklinik|Institut|Zentrum|Departement"}
+            ({Token.string == "und"} {Token.string == "Poliklinik"})?
+            ({Token.string == "für"})
+        ) |
+        ({Token.string =~ "ologisch[e]?"} {Token.string == "Klinik"})
+    )
+    (
+        {Token within FieldWithAddress}
+        //{Token.string ==~ "und|kl"} | {Token.string ==~ "[,-/&]"} | {Token.orth == "upperInitial"}
+    )[0,8]
+    (
+        {Newline within FieldWithAddress}
+        ({Token within FieldWithAddress})*
+        {Token.string =~ "logie|matik|chirurgie|[kK]lini", Token within FieldWithAddress}
+        ({Token within FieldWithAddress})*
+    )?
+):loc --> :loc.Location = { rule = "HospitalUnitInAddress", type = "organisational unit" }
+
+Rule: AnnotateZH
+(
+    {Token.string == "ZH"} // annotating all canton abbreviations would generate too many false positives
+):loc --> :loc.Location = { rule = "AnnotateZH", type = "region" }

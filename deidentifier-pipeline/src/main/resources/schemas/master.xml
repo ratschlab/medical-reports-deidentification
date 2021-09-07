@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<schema xmlns="http://www.w3.org/2000/10/XMLSchema">
+  <include schemaLocation="name.xml" />
+  <include schemaLocation="date.xml" />
+  <include schemaLocation="location.xml" />
+  <include schemaLocation="address.xml" />
+  <include schemaLocation="contact.xml" />
+  <include schemaLocation="id.xml" />
+  <include schemaLocation="occupation.xml" />
+  <include schemaLocation="age.xml" />
+</schema>

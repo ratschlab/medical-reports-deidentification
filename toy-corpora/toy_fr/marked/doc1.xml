@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GateDocument version="3">
+<!-- The document's features-->
+
+<GateDocumentFeatures>
+<Feature>
+  <Name className="java.lang.String">gate.SourceURL</Name>
+  <Value className="java.lang.String">file:/Users/marc/deidentification/corpora/toy_fr/clean/doc1.xml</Value>
+</Feature>
+<Feature>
+  <Name className="java.lang.String">MimeType</Name>
+  <Value className="java.lang.String">text/xml</Value>
+</Feature>
+</GateDocumentFeatures>
+<!-- The document content area with serialized nodes -->
+
+<TextWithNodes><Node id="0"/>
+  <Node id="3"/>30.12.2015<Node id="13"/>
+  <Node id="16"/>Jean Dupont<Node id="27"/>
+  <Node id="30"/>Monsieur Dupont<Node id="45"/> a été transféré aux <Node id="66"/>Hôpitaux Universitaires de Genève<Node id="99"/> le <Node id="103"/>5 novembre 2012<Node id="118"/>. Suivant une premiere analyse du medecin traitant <Node id="169"/>Dr. Meier<Node id="178"/>:<Node id="179"/>
+  <Node id="182"/>Le patient subit une crise cardiaque... <Node id="222"/>
+<Node id="223"/></TextWithNodes>
+<!-- The default annotation set -->
+
+<AnnotationSet>
+</AnnotationSet>
+
+<!-- Named annotation set -->
+
+<AnnotationSet Name="Original markups">
+<Annotation Id="0" Type="report" StartNode="0" EndNode="223">
+<Feature>
+  <Name className="java.lang.String">id</Name>
+  <Value className="java.lang.String">1</Value>
+</Feature>
+</Annotation>
+<Annotation Id="1" Type="date" StartNode="3" EndNode="13">
+</Annotation>
+<Annotation Id="2" Type="patientname" StartNode="16" EndNode="27">
+</Annotation>
+<Annotation Id="3" Type="textfield" StartNode="30" EndNode="179">
+</Annotation>
+<Annotation Id="4" Type="textfield" StartNode="182" EndNode="222">
+</Annotation>
+</AnnotationSet>
+
+<!-- Named annotation set -->
+
+<AnnotationSet Name="manual">
+<Annotation Id="5" Type="date" StartNode="3" EndNode="13">
+</Annotation>
+<Annotation Id="6" Type="date" StartNode="103" EndNode="118">
+</Annotation>
+<Annotation Id="8" Type="patient" StartNode="16" EndNode="27">
+</Annotation>
+<Annotation Id="9" Type="patient" StartNode="30" EndNode="45">
+</Annotation>
+<Annotation Id="10" Type="hospital" StartNode="66" EndNode="99">
+</Annotation>
+<Annotation Id="11" Type="staff" StartNode="169" EndNode="178">
+</Annotation>
+</AnnotationSet>
+
+</GateDocument>

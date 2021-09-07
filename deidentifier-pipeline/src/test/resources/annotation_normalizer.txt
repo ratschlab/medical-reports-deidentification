@@ -1,0 +1,7 @@
+/FirstLevelOnly; NormalizedField
+SomeField; NormalizedField; ; BlackListedParent
+//Parent/NestedField; NormalizedField;
+//GrandParent/Parent/NestedField2; DifferentNormalizedField
+//Parent2//NestedField; NormalizedField
+//Spread//Constraint; NormalizedField
+[\p{IsAlphabetic}]*Features; NormalizedField; hello=world, this=that

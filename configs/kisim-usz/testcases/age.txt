@@ -1,0 +1,4 @@
+Age; SexAlter, Patienteninformation
+
+<SexAlter>W/<Age>45.3</Age> Jahre</SexAlter> # exclude unit
+<Patienteninformation> bla <Age>34</Age> Jahre </Patienteninformation>

@@ -1,0 +1,4 @@
+Personalien_Patient; Patienteninformation
+Personalien Patient; Patienteninformation
+Address; AddressField
+Adresse; AddressField

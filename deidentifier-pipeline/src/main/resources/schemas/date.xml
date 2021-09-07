@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2000/10/XMLSchema">
+    <element name="Date">
+        <complexType>
+            <attribute name="type" use="optional">
+                <simpleType>
+                    <restriction base="string">
+                        <enumeration value="admission"/>
+                        <enumeration value="discharge"/>
+                        <enumeration value="DOB"/>
+                        <enumeration value="DOD"/>
+                        <enumeration value="other"/>
+                    </restriction>
+                </simpleType>
+            </attribute>
+            <attribute name="rule" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="format" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="year" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="month" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="day" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="confidence" use="optional">
+                <simpleType>
+                    <restriction base="float"/>
+                </simpleType>
+            </attribute>
+        </complexType>
+    </element>
+</schema>

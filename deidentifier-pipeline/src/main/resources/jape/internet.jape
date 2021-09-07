@@ -1,0 +1,73 @@
+Phase: Internet
+Input: Token SpaceToken Lookup
+Options:control=appelt
+
+Macro: DASH
+(
+    {Token.string == "-"}
+)
+
+Macro: URL_PRE
+(   (({Token.string == "http"}   |
+     {Token.string == "ftp"})
+    {Token.string == ":"}
+    {Token.string == "/"}
+         {Token.string == "/"}
+        )
+)
+
+
+Macro: TOP_LEVEL_DOMAIN
+// .com, .ch, .info etc
+(
+    {Token.string == "ch"} | {Token.string == "com"} | {Token.string == "de"} | {Token.string == "fr"} |
+    {Token.string == "info"} | {Token.string == "li"} | {Token.string == "net"} | {Token.string == "org"} |
+    {Token.string == "eu"}
+)
+
+Macro: HOST_TOKEN
+(
+    // weak...
+    {Token.string ==~ "[A-Za-z0-9]+"}
+)
+
+Macro: HOST_NAME_PARTS
+(
+   HOST_TOKEN |
+   (HOST_TOKEN DASH HOST_TOKEN)
+)
+
+Macro: DOMAIN
+(
+  (HOST_NAME_PARTS {Token.string == "."})[2,10]
+  TOP_LEVEL_DOMAIN
+)
+
+Macro: SHORT_DOMAIN
+(
+  (HOST_NAME_PARTS {Token.string == "."})+
+  TOP_LEVEL_DOMAIN
+)
+
+
+// inspired from https://tools.ietf.org/html/rfc822#appendix-D
+Rule: emailaddress
+(
+    ({Token.string ==~ "[A-Za-z0-9-!#$%&'*+-/=?^`{|}~]+"} {Token.string ==~ "[._]" })*
+    {Token.string ==~ "[A-Za-z0-9-!#$%&'*+-/=?^`{|}~]+"}
+    {Token.string == "@"}
+    SHORT_DOMAIN // be more permissive within email addresses
+): emailAddress -->
+  :emailAddress.Contact={type = "email", rule = "emailaddress"}
+
+Rule: url
+(
+    (URL_PRE)?
+    (
+       DOMAIN
+       ({Token.string == "/"} {Token.string ==~ "[A-Za-z0-9&=?_-]+"})* // TODO tweak to conform to standards
+    ): url
+)
+-->
+   :url.Contact = {type = "website", rule = "url"}
+

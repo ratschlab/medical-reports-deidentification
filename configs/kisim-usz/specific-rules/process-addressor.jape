@@ -1,0 +1,36 @@
+Phase: ProcessAddressor
+Input: Token Location Addressor Newline Style
+Options: control=appelt
+
+/*
+Rule: AnnotateClinic
+(
+    (
+        ({Token.string == "Klinik"} | {Token.string == "Institut"} | {Token.string == "Zentrum"})
+        {Token.string == "für"}
+        ({!Location, Token.string != ",", Token within Addressor} | {Newline})+
+    ):loc // assume some Location annotation follows (e.g. a street)
+    ({Newline})?
+    {Location within Addressor}
+) --> :loc.Location = { rule = "AnnotateClinic", type = "organisational unit" }
+*/
+
+Macro: RoleTrigger
+(
+    //{Token.string ==~ "[A-Za-z]*[Aa]rzt"} | {Token.string ==~ "[A-Za-z][Ää]rztin"} | // handled by other rules
+    {Token.string == "Direktor"} | {Token.string == "Direktorin"} |
+    {Token.string == "Koordinator"} |  {Token.string == "Koordinatorin"} |
+    {Token.string ==~ "[A-Za-z]*[Mm]anager"} |  {Token.string ==~ "[A-Za-z]*[Mm]anagerin"} |
+    {Token.string ==~ "Leit[a-z]+"} |
+    {Token.string ==~ "[A-Za-z][Ss]pezialist[in]{2}"}
+)
+
+
+Rule: AnnotateNamesInAddressor
+(
+    ({Newline})?
+    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+", Token within Addressor, !Token within Style})+):name
+    {Newline}
+    ({Token within Addressor})* (RoleTrigger) ({Token within Addressor})*
+    ({Newline})?
+) --> :name.Name = { rule = "AnnotateNamesInAddressor", type = "other" }

@@ -1,0 +1,16 @@
+Phase: LocationsZip
+Input: Token Location PossibleZipCode
+Options:control=appelt
+
+Rule: ZipCodes
+(
+    (
+        ({Token.string == "CH"}): country ({Token.string == "-"})?
+    )?
+    ({PossibleZipCode}):loc
+    ({Token.string == ","})?
+    { Location.type == "city" }
+)
+-->
+:loc.Location = { rule = "ZipCodes", type = "zip" },
+:country.Location = { rule = "ZipCodes", type = "country" }

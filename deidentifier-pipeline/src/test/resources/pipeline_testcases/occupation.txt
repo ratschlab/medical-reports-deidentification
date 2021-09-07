@@ -1,0 +1,19 @@
+Occupation; AnamnesisField
+
+als <Occupation>Maurer</Occupation>
+arbeitet weiterhin als <Occupation>Outofvoc</Occupation>
+als <Occupation>Outofvoc</Occupation> tätig
+als <Occupation>Outofvoc</Occupation> arbeitstätig
+ehemaliger <Occupation>Maurer</Occupation>
+in <Occupation>Outofvoc</Occupation> gearbeitet
+arbeitet als <Occupation>PR Fachmann Firma</Occupation>
+
+
+Beruf: <Occupation>Outofvoc</Occupation>
+Beruf: <Occupation>Outofvoc</Occupation> bei <Occupation>Outofvoc</Occupation>
+von Beruf <Occupation>Outofvoc</Occupation>
+gelernte <Occupation>Malerin</Occupation>
+Lehre als <Occupation>Maler</Occupation>
+vormaliger <Occupation>Maurer</Occupation>
+<Occupation>Pflanzenwissenschaftler</Occupation> oder <Occupation>Pflanzenwissenschaftlerin</Occupation>
+Patient ist Pensionierter <Occupation>Forscher</Occupation>

@@ -1,0 +1,5 @@
+Date; Id, Patienteninformation
+<Date>01.01.2019</Date>
+<Id>some id 01.01.2019</Id> # don't annotate dates within Ids
+geb. <Date>01.01.2019</Date>
+<Patienteninformation>OUTOFVOC Hans, geb. <Date>01.01.1900</Date>, Musterweg 12, 8050 Zürich</Patienteninformation>

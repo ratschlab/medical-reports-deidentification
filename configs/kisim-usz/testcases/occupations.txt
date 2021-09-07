@@ -1,0 +1,26 @@
+Occupation; SozialAnamnese
+
+<SozialAnamnese> Patient arbeitet als <Occupation>Forscher</Occupation> an der ETH.</SozialAnamnese>
+<SozialAnamnese> Patient arbeitet als <Occupation>Forscher</Occupation> bei <Occupation>IBM</Occupation></SozialAnamnese>
+<Anamnese><Occupation>Assistentin</Occupation> bei <Occupation>Outofvoc</Occupation></Anamnese>
+<Anamnese>seit einem Jahr <Occupation>Assistentin</Occupation></Anamnese>
+#<SozialAnamnese> Patient ist <Occupation>Zimmermann</Occupation> bei ...</SozialAnamnese>
+<Anamnese><Occupation>Manager</Occupation></Anamnese>
+#<Anamnese> <Occupation>Zimmermann</Occupation>.</Anamnese> # TODO flaky test
+<Anamnese><Occupation>Zimmermann</Occupation></Anamnese>
+
+<Anamnese>Sozialanamnese: Ausbildung als <Occupation>Fage</Occupation>. Aktuell <Occupation>Hausfrau</Occupation>, 1 Kind</Anamnese>
+Name: Zimmermann
+arbeitet weiterhin als <Occupation>Outofvoc</Occupation>
+im <Occupation>Outofvoc</Occupation> arbeitstätig
+
+<Anamnese>Arbeitgeber: <Occupation>SBB</Occupation></Anamnese>
+
+<Anamnese>Zuweisung per Rettungsdienst</Anamnese>
+<Anamnese><Occupation>Rettungsdienst</Occupation></Anamnese> # annotating, since it is at the beginning of the sentence
+<Anamnese>Patient ist in der <Occupation>Geschäftsführung</Occupation> </Anamnese>
+<Anamnese>als <Occupation>Lehrer</Occupation> für <Occupation>Mathematik</Occupation></Anamnese>
+<Anamnese><Occupation>Mathematiklehrer</Occupation></Anamnese>
+<Anamnese>der 20-jährige <Occupation>Student</Occupation></Anamnese>
+<Anamnese><Occupation>Jus-Student</Occupation></Anamnese>
+<Anamnese>arbeitet die Patientin</Anamnese>

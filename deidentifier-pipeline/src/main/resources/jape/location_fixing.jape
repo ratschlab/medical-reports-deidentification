@@ -1,0 +1,44 @@
+Phase: FixedTerms
+Input: Token Lookup Location Name AddressField
+Options:control=appelt
+
+Rule: RemoveFalsePositiveAnnotation
+(
+        ({Lookup.minorType =~ "false_positives"}):loc
+) --> {
+        Annotation an = bindings.get("loc").iterator().next();
+        String typeRemove = an.getFeatures().getOrDefault("majorType", "").toString();
+        if(!typeRemove.isEmpty()) {
+            gate.Utils.getOverlappingAnnotations(inputAS, an).get(typeRemove).forEach(a -> outputAS.remove(a));
+        }
+}
+
+// remove Location annotation of cities with ambiguous names, e.g. Laufen, Mund etc
+// Note, that a Location annotation might be readded later on in the pipeline by more specialized processing
+Rule: RemoveAmbiguousCityAnnotation
+(
+    ({Lookup.majorType =~ "location", Lookup.minorType =~ "city_ambiguous"}):loc
+
+) --> {
+    Annotation an = bindings.get("loc").iterator().next();
+    gate.Utils.getOverlappingAnnotations(inputAS, an).get("Location").forEach(a -> outputAS.remove(a));
+}
+
+Rule: StreetNamesFromGazetteer
+(
+    {Lookup.majorType =~ "location", Lookup.minorType =~ "street"}
+    (StreetNumber)?
+):loc --> :loc.Location = { rule = "StreetNamesFromGazetteer", type = "street" }
+
+Rule: AddCantonAbbrev
+(
+    {Location} ({ Lookup.majorType =~ "location", Lookup.minorType =~ "cantons_abbrevs" })
+):loc --> :loc.Location = { rule = "AddCantonAbbrev", type = "other" } // TODO: type could be taken from original location
+
+Rule: AddCantonAbbrevName
+(
+    {Name}
+    {Token.string == ","}
+    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "cantons_abbrevs" }):loc
+) --> :loc.Location = { rule = "AddCantonAbbrevName", type = "other" } // TODO: type could be taken from original location
+

@@ -1,0 +1,5 @@
+Contact
+
+<Contact>079 123 4567</Contact>
+<Contact>079 123 45 67</Contact>
+# Eine interne Nummer <Contact>123 199</Contact>

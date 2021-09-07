@@ -1,0 +1,10 @@
+RNOSPOL03,Sprechstundenbericht für Neurologie
+RNOSGAN01,Ganglabor Neurologie
+RALGMED01,Medikationsübersicht
+RNOSAUS03,Austrittsbericht Neurologie
+RALGNOT01,Arzt Notizen
+REZEPTKA2,Repetierrezept unstrukturiert
+REZEPTKA3,Repetierrezept strukturiert
+DRGASS01,Probleme und Diagnosen
+
+ 

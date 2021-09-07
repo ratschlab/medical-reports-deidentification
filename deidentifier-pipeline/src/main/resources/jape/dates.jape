@@ -1,0 +1,457 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: Dates
+Input: Token Newline
+Options:control=appelt
+
+// 1 - 31
+Macro: DAY_IN_MONTH
+(
+    {Token.string ==~ "(0?[1-9])|([1-2][0-9])|30|31"}
+)
+
+//Macro: FOUR_DIGIT
+//({Token.kind == number, Token.length == "4"})
+
+Macro: COMMA
+({Token.string == ","})
+
+Macro: SLASH
+  ({Token.string == "/"})
+
+Macro: DASH
+  {Token.string == "-"}
+
+Macro: SPACE
+({Token.string == " "})
+
+Macro: DOT
+({Token.string == "."})
+
+Macro: MONTH_NAME_LONG
+(
+    {Token.string ==~ "Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|januar|februar|märz|april|mai|juni|juli|august|september|oktober|november|dezember|JANUAR|FEBRUAR|MÄRZ|APRIL|MAI|JUNI|JULI|AUGUST|SEPTEMBER|OKTOBER|NOVEMBER|DEZEMBER|January|February|March|April|May|June|July|August|September|November|December"}
+)
+
+Macro: MONTH_NAME_SHORT
+(
+    {Token.string ==~ "Jan|Feb|Mär|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Dez"}
+)
+
+Macro: MONTH_NAME
+(
+    MONTH_NAME_SHORT | MONTH_NAME_LONG
+)
+
+// numerical months: 1-12 and 01, 02 ... 09
+Macro: DAY_MONTH_NUM
+(
+    {Token.string ==~ "([0]?[1-9])|10|11|12"}
+)
+
+Macro: MONTH
+(
+    MONTH_NAME | DAY_MONTH_NUM
+)
+
+// 1990 - 2019 represented as 2 digit year.
+Macro: TWO_DIGIT_YEAR
+(
+  {Token.string ==~ "(9[0-9])|([0-1][0-9])"}
+)
+
+// covering 1900 - 2019
+Macro: FOUR_DIGIT_YEAR
+(
+    {Token.string ==~ "19[0-9]{2}"} | {Token.string ==~ "20[0-1][0-9]"}
+)
+
+Macro: YEAR
+(
+   FOUR_DIGIT_YEAR | TWO_DIGIT_YEAR
+)
+
+Macro: DATE_PRE
+(
+  {Token.string == "am"} |
+  {Token.string == "bis"} |
+  {Token.string == "den"} |
+  {Token.string == "dem"} |
+  {Token.string == "seit"} |
+  {Token.string == "vom"} |
+  {Token.string == "Erstdiagnose" } | // TODO probably need to generalize this a bit, e.g. *diagnose
+  {Token.string == "ED"} | // Erstdiagnose
+  {Token.string == "EM"} |
+  {Token.string == "ES"} |
+  {Token.string == "Aufenthalt"}
+)
+
+Macro: RANGE_SEPARATOR
+(
+    DASH |
+    {Token.string ==~ "und|bis"} |
+    {Token.string == "+"}
+)
+
+// TODO: move to lookups?
+Macro: UNIT
+(
+    {Token.string ==~ "min|cm|mmol|Grad|Pkt|%|mml|s|Punkte"}
+)
+
+// TODO: expand?
+Macro: NOT_UNIT
+(
+    ({Token.string != "min",  // minute
+    Token.string != "cm",
+    Token.string != "mmol",
+    Token.string != "Grad",
+    Token.string != "Pkt",
+    Token.string != "%"})
+)
+
+Macro: REGULAR_DOT_DATE
+(
+    (DAY_IN_MONTH):day DOT (SPACE)?
+    (DAY_MONTH_NUM):month DOT (SPACE)?
+    (YEAR):year
+)
+
+// e.g. 20.03
+Macro: DATE_NO_YEAR
+(
+    (DAY_IN_MONTH):day DOT (DAY_MONTH_NUM):month
+)
+
+//////////////////////////////////////////////////////////////////
+
+// Date Rules
+
+/*
+examples:
+ 22.01.09
+ 22.01.2009
+*/
+Rule: RegularDotDates
+(
+    (DATE_PRE)?
+    (REGULAR_DOT_DATE) :date
+)
+--> { Utils.addDateAnnotation("RegularDotDates", "other", "dd.MM.yyyy", "", bindings, doc, outputAS); }
+
+
+/*
+examples:
+ 2009-01-22
+*/
+Rule: IsoDates
+(
+    (FOUR_DIGIT_YEAR):year DASH
+    (DAY_MONTH_NUM):month DASH
+    (DAY_IN_MONTH):day
+):date
+--> { Utils.addDateAnnotation("IsoDates", "other", "yyyy-MM-dd", "", bindings, doc, outputAS); }
+
+/*
+examples:
+ 22.01.
+*/
+Rule: DotDatesNoYear
+(
+    (DATE_PRE)?
+    (
+        DATE_NO_YEAR DOT
+    ) :date
+)
+--> { Utils.addDateAnnotation("DotDatesNoYear", "other", "dd.MM.", "", bindings, doc, outputAS); }
+
+// 28.11. 13.45 Uhr
+// would be parsed as RegularDotDates
+Rule: DotDatesNoYearWithTime
+Priority: 1000
+(
+    (DATE_PRE)?
+    (DATE_NO_YEAR DOT):date
+    {Token.string ==~ "[0-9]{2}"}
+    DOT
+    {Token.string ==~ "[0-9]{2}"}
+    {Token.string == "Uhr"}
+) -->  { Utils.addDateAnnotation("DotDatesNoYearWithTime", "other", "dd.MM.", "", bindings, doc, outputAS); }
+
+/*
+examples:
+ am 22.01
+*/
+Rule: DotDatesNoYearTrigger
+(
+    (DATE_PRE)
+    (DATE_NO_YEAR) :date
+    (NOT_UNIT)
+)
+--> { Utils.addDateAnnotation("DotDatesNoYearTrigger", "other", "dd.MM.", "", bindings, doc, outputAS); }
+
+/*
+examples:
+ 22. Januar 09
+ 22. Januar
+*/
+Rule: MonthNameDate
+(
+    (DATE_PRE)?
+    (
+        (DAY_IN_MONTH):day DOT (SPACE)?
+        (MONTH_NAME):month (SPACE)?
+        ((YEAR):year)?
+    ) :date
+)
+--> { Utils.addDateAnnotation("MonthNameDate", "other",  "dd. M yyyy", "", bindings, doc, outputAS); }
+
+
+/*
+examples:
+ 12/2009
+ 10.2018
+*/
+Rule: MonthSlashDate
+(
+    (DATE_PRE)?
+    (
+        (DAY_MONTH_NUM):month (SLASH | DOT) (FOUR_DIGIT_YEAR):year
+    ) :date
+)
+--> { Utils.addDateAnnotation("MonthSlashDate", "other",  "MM/yyyy", "", bindings, doc, outputAS); }
+
+/*
+ 12/09
+ 1/09
+ 01/09
+*/
+Macro: MONTH_SLASH_DATE_TWO_DIGIT_YEAR
+(
+    (DATE_PRE)?
+    (
+        (DAY_MONTH_NUM):month SLASH (TWO_DIGIT_YEAR):year
+    ):date
+)
+
+Rule: MonthSlashDateTrigger
+(
+    MONTH_SLASH_DATE_TWO_DIGIT_YEAR
+)
+--> { Utils.addDateAnnotation("MonthSlashDateTrigger", "other",  "MM/yy", "", bindings, doc, outputAS); }
+
+Rule: MonthSlashDateNegative
+Priority: 100
+(
+    MONTH_SLASH_DATE_TWO_DIGIT_YEAR
+    UNIT
+)
+--> {}
+
+/*
+examples:
+  November 2011
+  November 09
+  Jan. 06
+*/
+Rule: MonthYear
+(
+    (
+       (MONTH_NAME_SHORT (DOT)?) |
+        MONTH_NAME_LONG
+    ):month
+    (YEAR):year
+):date
+--> { Utils.addDateAnnotation("MonthYear", "other",  "M yyyy", "", bindings, doc, outputAS); }
+
+// May 4, 2019
+Rule: EnglishDates
+(
+    (MONTH_NAME):month
+    (DAY_IN_MONTH):day
+    (COMMA)?
+    (FOUR_DIGIT_YEAR):year
+):date
+-->  { Utils.addDateAnnotation("EnglishDates", "other",  "M d yyyy", "", bindings, doc, outputAS); }
+
+
+/*
+examples:
+ im Oktober
+*/
+Rule: MonthNameOnly
+(
+    {Token.string ==~ "Im|im"}
+    (
+        (MONTH_NAME):month
+    ):date
+    {Token.string !=~ "[/0-9]+"}  // don't interfer with MonthYear and ApproximateMonthYear
+)
+--> { Utils.addDateAnnotation("MonthNameOnly", "other",  "M", "", bindings, doc, outputAS); }
+
+/*
+examples:
+  11.2015
+*/
+Rule: MonthYearNumerical
+(
+    (
+        (DAY_MONTH_NUM):month DOT (FOUR_DIGIT_YEAR):year
+    ) :date
+)
+--> { Utils.addDateAnnotation("MonthYearNumerical", "other",  "MM.yyyy", "", bindings, doc, outputAS); }
+
+/*
+examples:
+  ED 1994 # Erstdiagnose
+  ES 1994
+*/
+Rule: SingleYear
+(
+    ((FOUR_DIGIT_YEAR):year):date // if no negative context, annotate.
+)
+--> { Utils.addDateAnnotation("SingleYear", "other",  "yyyy", "", bindings, doc, outputAS); }
+
+Rule: SingleYearNegative
+Priority: 1000
+(
+    (
+        (FOUR_DIGIT_YEAR)
+        {Token.string == "Uhr"} // consume negative context
+    )
+) --> {}
+
+
+/*
+examples:
+    seit 04
+*/
+Rule: SingleYearTwoDigits
+(
+    DATE_PRE
+    ((TWO_DIGIT_YEAR):year) :date
+)
+--> { Utils.addDateAnnotation("SingleYearTwoDigits", "other",  "yy", "", bindings, doc, outputAS); }
+
+/*
+examples:
+    dem 13. Tag
+*/
+Rule: SingleYearTwoDigitsNegative
+Priority: 1000
+(
+    DATE_PRE
+    TWO_DIGIT_YEAR
+    DOT
+)
+--> {}
+
+Rule: BirthYear
+(
+    {Token.string == "Jahrgang"}
+    (
+        ({Token.string ==~ "[0-9]{2}"} | {Token.string ==~ "[1,2][0-9]{3}"}):year
+    ):date
+) --> { Utils.addDateAnnotation("BirthYear", "DOB",  "yyyy", "", bindings, doc, outputAS); }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Approximate Dates
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Oktober/November 2019
+Rule: ApproximateMonthYear
+(
+  (
+    (MONTH_NAME):month1 {Token.string == "/"}
+    (MONTH_NAME):month2
+  )
+
+  (FOUR_DIGIT_YEAR | TWO_DIGIT_YEAR):year2
+): date --> {Utils.addDateAnnotation("ApproximateMonthYear", "other",  "MM", "MM/yyyy", bindings, doc, outputAS); }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DATE RANGES
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+examples:
+   18.01. - 08.02.2018
+   18. - 19.01.2018
+*/
+Rule: DayRange
+(
+    (DATE_PRE)?
+    (
+        (DAY_IN_MONTH):day2 (DOT)?
+        ((DAY_MONTH_NUM (DOT)?): month2)?
+    ):date2
+    (RANGE_SEPARATOR | SLASH)
+    (REGULAR_DOT_DATE):date
+)
+--> { Utils.addDateAnnotation("DayRange", "other",  "dd.MM.yyyy", "", bindings, doc, outputAS); }
+
+// 01.10 - 10.10
+Rule: DayRangeNoYears
+(
+    (DATE_PRE)
+    (
+        ( (DAY_IN_MONTH):day DOT (DAY_MONTH_NUM):month (DOT)?):date
+        RANGE_SEPARATOR
+        ( (DAY_IN_MONTH):day2 DOT (DAY_MONTH_NUM):month2 (DOT)?):date2
+    )
+
+) --> { Utils.addDateAnnotation("DayRangeNoYears", "other",  "dd.MM.", "dd.MM.", bindings, doc, outputAS); }
+
+
+Rule: DayRangeNoYearsNegative
+Priority: 100
+(
+    // negative context
+    ( DAY_IN_MONTH DOT DAY_MONTH_NUM (DOT)?)
+    RANGE_SEPARATOR
+    ( DAY_IN_MONTH DOT DAY_MONTH_NUM (DOT)?)
+    UNIT
+) --> {}
+
+// 01.- 10.10
+Rule: DayRangeNoYearsPartialMonths
+(
+    (DATE_PRE)
+    (
+        ( (DAY_IN_MONTH):day (DOT)?):date
+        RANGE_SEPARATOR
+        ( (DAY_IN_MONTH):day2 DOT (DAY_MONTH_NUM):month2 (DOT)?):date2
+    )
+
+) --> { Utils.addDateAnnotation("DayRangeNoYearsPartialMonths", "other",  "dd.", "dd.MM.", bindings, doc, outputAS); }
+
+
+/*
+examples:
+  10 - 11/2015
+*/
+Rule: YearMonthRange
+(
+    ((DAY_MONTH_NUM):month (SLASH (YEAR):year)?): date
+    RANGE_SEPARATOR
+    ((DAY_MONTH_NUM):month2 SLASH (YEAR):year2): date2
+)
+--> { Utils.addDateAnnotation("YearMonthRange", "other",  "MM", "MM/yyyy", bindings, doc, outputAS); }
+
+/*
+examples:
+  1995-1997
+  2007/2008
+*/
+Rule: YearRange
+(
+    ((FOUR_DIGIT_YEAR): year): date
+    (RANGE_SEPARATOR | SLASH)
+    ((YEAR): year2): date2
+    NOT_UNIT
+)
+--> { Utils.addDateAnnotation("YearRange", "other",  "yyyy", "yyyy", bindings, doc, outputAS); }

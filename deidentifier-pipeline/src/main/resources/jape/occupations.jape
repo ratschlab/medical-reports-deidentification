@@ -1,0 +1,117 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: Occupations
+Input: Token Newline AnamnesisField Lookup OccupationContext
+Options:control=appelt
+
+// TODO: Macro also sued in occupations_anamnesis_start
+Macro: WORKPLACE
+(
+    (
+        {Token.string ==~ "bei|im|für|in"} |
+        ({Token.string ==~ "bei|in|für"} {Token.string ==~ "der|einer|einem|eine"})
+    )?
+    (
+        (
+            ({Token.orth == "upperInitial"})[1,2]
+        ):loc
+    )
+)
+
+Rule: OccupationsFromGazetteerAnamnesisSentenceStart
+(
+    { Token.string == "." }
+    ({ Lookup.majorType == "occupation", Lookup within {AnamnesisField}}): occ
+) --> :occ.Occupation = { rule = "OccupationsFromGazetteerAnamnesisSentenceStart"}
+
+
+Rule: OccupationsFromGazetteerInOccupationContext
+(
+    ({ Lookup.majorType == "occupation", Lookup within {AnamnesisField}, Lookup within {OccupationContext}}): occ
+    (WORKPLACE)?
+) --> :occ.Occupation = { rule = "OccupationsFromGazetteerInOccupationContext"},
+      :loc.Occupation = { rule = "OccupationsFromGazetteerInOccupationContext"}
+
+
+Rule: OccupationsFromGazetteerLeftTrigger
+(
+    (
+        { Token.string ==~ "[Aa]ls|[Zz]uvor|[Ww]ar|([Ee]hemalige[r]?)|[Ff]rühere[r]?|([Ee]hrenamtliche[r]?|[Aa]ktuell|[Gg]erade)"} |
+        ( {Token.string ==~ "[Ss]eit"} ({Token})[1,2] ) |
+        {Token.string ==~ "jährige[r]?"} // xy jähriger Student
+    )
+    (({Lookup.majorType == "occupation"})+):occ
+    (WORKPLACE)?
+) --> :occ.Occupation = { rule = "OccupationsFromGazetteerLeftTrigger"},
+      :loc.Occupation = { rule = "OccupationsFromGazetteerLeftTrigger"}
+
+Rule: OccupationsLeftTriggered
+(
+    (
+        ({Token.string == "von"} {Token.string == "Beruf"}) |
+        ({Token.string ==~ "Beruf|Arbeit"} {Token.string == ":"}) |
+        ({Token.string ==~ "[Gg]elernte[r]?"}) |
+        ({Token.string ==~ "[Pp]ensionierte[r]?"}) |
+        ({Token.string ==~ "Lehre|Ausbildung"} {Token.string ==~ "als|:"})
+    )
+    ({Token.orth == "upperInitial"}):occ
+
+    (WORKPLACE)?
+) --> :occ.Occupation = { rule = "OccupationsLeftTriggered" },
+      :loc.Occupation = { rule = "OccupationsLeftTriggered" }
+
+Rule: OccupationsFromGazetteerWorkTriggered
+(
+
+    { Token.string ==~ "([Aa]rbeitet[e]?)|([Vv]ormalige[r]?)|([Pp]ensionierte[r]?)|([Ee]meritierte[r]?)|[Ss]elbstständige[r]?"}
+    ({Lookup.majorType == "stop"})*
+    (
+      ({Token.orth == "lowercase", !Token within Lookup.majorType == "stop"})? // adjective
+      ({Token.orth ==~ "upperInitial|allCaps", ! Token.string ==~ "Patient(in)?"})+
+    ):occ
+
+    (WORKPLACE)?
+) --> :occ.Occupation = { rule = "OccupationsFromGazetteerWorkTriggered"},
+      :loc.Occupation = { rule = "OccupationsFromGazetteerWorkTriggered"}
+
+
+Rule: OccupationsLeftTriggeredAnamnesis
+(
+     { Token.string ==~ "ehemals"}
+     ( {Token.orth ==~ "upperInitial|allCaps", Token within {AnamnesisField}}):occ
+    (WORKPLACE)?
+) --> :occ.Occupation = { rule = "OccupationsLeftTriggeredAnamnesis" },
+      :loc.Occupation = { rule = "OccupationsLeftTriggeredAnamnesis" }
+
+
+Rule: OccupationsFromGazetteerRightTriggered
+(
+    ({Lookup.majorType == "stop"})+
+    (
+          ({Token.orth == "lowercase", !Token within Lookup.majorType == "stop"})? // adjective
+          ({Token.orth == "upperInitial"})+
+     ):occ
+    { Token.string ==~ "((arbeits)?tätig)|gearbeitet"}
+) --> :occ.Occupation = { rule = "OccupationsFromGazetteerRightTriggered"}
+
+Rule: EmployerFromGazetter
+(
+    ({Lookup.majorType == "occupation", Lookup.minorType == "employer", Lookup within {AnamnesisField}}):lok
+) --> :lok.Occupation = { rule = "EmployerFromGazetter"}
+
+Rule: OccupationPostfixTriggered
+(
+    ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+ftler(in)?"} |
+     {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+(professor|lehrer)(in)?"} |
+     {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+studium"} |
+     {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+student(in)?"} |
+     ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} {Token.string == "-"} {Token.string ==~ "Student(in)?"}) |
+     {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+angestellte(r)?"}
+    ):occ
+    (WORKPLACE)?
+) --> :occ.Occupation = { rule = "OccupationPostfixTriggered" },
+      :loc.Occupation = { rule = "OccupationPostfixTriggered" }
+
+

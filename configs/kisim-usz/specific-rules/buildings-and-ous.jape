@@ -1,0 +1,65 @@
+Phase: Buildings
+Input: Lookup Token Newline
+Options: control=appelt
+
+Macro: BUILDING
+(
+    {Lookup.majorType == "location", Lookup.minorType == "building"} |
+    ({Token.string == "NORD"} {Token.string ==~ "1|2"})
+)
+
+Macro: FLOOR
+(
+    {Token.string ==~ "[A-Z]"}
+)
+
+/*
+ examples:
+  RAE D 22
+HOF B
+HOF B 27
+C NORD1 129
+NORD2 C 129
+*/
+Rule: FindBuilding
+(
+    ({ Token.string == "Station" })?
+    (
+        ((BUILDING) (FLOOR)?) |
+        ((FLOOR) (BUILDING))
+    )
+    ({ Token.string == "Saal" })?
+    ({ Token.string ==~ "[0-9]+" })?
+):loc --> :loc.Location = {rule = "FindBuilding", type = "street"}
+
+
+/*
+ Station F 0
+*/
+Rule: Stations
+(
+    { Token.string == "Station" }
+    { Token.string ==~ "[A-Z]+" }
+    ({ Token.string ==~ "[A-Z]+" })?
+    ({ Token.string ==~ "[A-Z]+" })?
+    ({ Token.string ==~ "[0-9]+" })?
+):loc --> :loc.Location = {rule = "Stations", type = "street"}
+
+Rule: Rooms
+(
+    { Token.string == "Zimmer"}
+    {Token.string ==~ "[0-9]+"}
+):loc --> :loc.Location = {rule = "Rooms", type = "other"}
+
+Rule: Floor
+(
+    { Token.string == "Stockwerk"}
+    (FLOOR)
+):loc --> :loc.Location = {rule = "Floor", type = "other"}
+
+Rule: AnnotateOUs
+(
+    ({Lookup.majorType == "location", Lookup.minorType == "oa_usz"})
+):loc --> :loc.Location = { rule = "AnnotateOUs", type = "street" }
+
+

@@ -1,0 +1,13 @@
+general/general_wordlist_with_uppercased.lst:general:general
+general/stop.lst:stop:stop:german
+general/abbreviations_stop.lst:stop:stop:german
+person_names/firstnames_switzerland_frequent.lst:name:firstname:frequent
+person_names/surnames_usz_frequent.lst:name:surname:frequent
+locations/country.lst:location:country:german
+locations/streetnames.lst:location:street:german
+locations/city_switzerland.lst:location:city:german
+locations/additional_locations.lst:location:city:german
+medical/medical_terms_de.lst:medical:medical
+medical/medical_terms_manual.lst:medical:medical
+locations/location_false_positives.lst:Location:false_positives:german
+person_names/name_false_positives.lst:Name:false_positives:german

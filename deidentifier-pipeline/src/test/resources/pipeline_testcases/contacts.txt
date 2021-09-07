@@ -1,0 +1,35 @@
+Contact
+
+This is just a sentence. and some other sentence
+this is an email address <Contact>hello.world@universe.ch</Contact> and this <Contact>hello@universe.com</Contact>!
+<Contact>www.host.name.com</Contact>
+another example <Contact>someuhost.usz.ch</Contact>
+<Contact>www.haematologie-onkologie.usz.ch</Contact>
+an address <Contact>someuhost.usz.ch/asite/oranother</Contact>
+Vertebroplastie von LWK 1 bei St.n. Deckplattenimpression
+degenerative Veränderungen p.m.
+a phone number <Contact>044 123 45 56</Contact> and another <Contact>0441234556</Contact> <Contact>044 123 4556</Contact>
+a too short swiss number 044 123 45 5 and a too long one 044 123 45 565
+an international one <Contact>0041 79 999 99 99</Contact> and a second <Contact>+41 (0) 79 999 99 99</Contact>
+<Contact>+6 124 454 64 43</Contact>
+<Contact>0044 344 443 323</Contact>
+Tel <Contact>+41 (0)12 345 67 89</Contact>
+swiss number other format <Contact>079 1234567</Contact>
+<Contact>044 - 1234567</Contact>
+yet another format <Contact>079 / 123 45 67</Contact>
+EKG bei Eintritt am xx.xx.2018
+CRP (C-reakt.Prot.) # potential false positive website
+A.dorsalis # potential fp website
+Tel.-Nr.: <Contact>+19341669</Contact>
+<Contact>076-1234-567</Contact>
+<Contact>076-123-4567</Contact>
+<Contact>0848 123 456</Contact>
+<Contact>0800 123 456</Contact>
+<Contact>0800 12 45 67</Contact>
+
+<Contact>xy_sekretariat@some-hospital.ch</Contact>
+<Contact>www.ab-cdef.eu</Contact>
+
+1240594392
+1
+

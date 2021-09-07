@@ -1,0 +1,6 @@
+[submodule "unitex/unitex-lingua"]
+	path = unitex/unitex-lingua
+	url = https://github.com/UnitexGramLab/unitex-lingua
+[submodule "configs/kisim-usz/gazetteer/usz_internal_gazetteers"]
+	path = configs/kisim-usz/gazetteer/usz_internal_gazetteers
+	url = file:////data/deid_data/usz_internal_gazetteers

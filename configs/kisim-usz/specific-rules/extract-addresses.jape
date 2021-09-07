@@ -1,0 +1,89 @@
+Phase: ExtractAddresses
+Input: Token Newline PossibleZipCode Style AddressField
+Options: control=appelt
+
+Macro: SEP
+(
+    { Newline } |
+    { Token.string == ","}
+)
+
+Macro: ADDR_TOKEN
+(
+    { Token within AddressField, Token.string != ","}
+)
+
+Macro: ADDR_BODY
+(
+        (
+            (ADDR_TOKEN)+:oe1
+            SEP
+        )?
+        (
+            (ADDR_TOKEN)+:oe2
+            SEP
+        )?
+        (
+            (ADDR_TOKEN)+:oe3
+            SEP
+        )?
+        (
+            (ADDR_TOKEN)+:oe4
+            SEP
+        )?
+        (ADDR_TOKEN)+: street
+        SEP
+        ({PossibleZipCode within AddressField}): zip
+        (ADDR_TOKEN)+:city
+)
+
+/*
+  Extract the different location parts of an AddressField starting with personal address
+
+  Makes very little assumptions on the structure, but it relies on something looking like a ZIP code and that the different
+  lines of an address are seperated somehow (typically a newline or comma)
+
+  Example: <AddressField>Herr A. Muster\nCalle Magdalena 42\n1234 Musterwilen</AddressField>
+*/
+/*
+Rule: ExtractAddressPartsName
+Priority:100
+(
+    (
+        ({Style within AddressField } (ADDR_TOKEN)+: fullName)
+    )
+    SEP
+    (ADDR_BODY)
+) --> :fullName.Name = { rule = "ExtractAddressPartsName", type = "other"},
+      :oe1.Location =  { rule = "ExtractAddressPartsName", type = "organisational unit" },
+      :oe2.Location =  { rule = "ExtractAddressPartsName", type = "organisational unit" },
+      :oe3.Location =  { rule = "ExtractAddressPartsName", type = "organisational unit" },
+      :oe4.Location =  { rule = "ExtractAddressPartsName", type = "organisational unit" },
+      :street.Location =  { rule = "ExtractAddressPartsName", type = "street" },
+      :zip.Location =  { rule = "ExtractAddressPartsName", type = "zip" },
+      :city.Location =  { rule = "ExtractAddressPartsName", type = "city" }
+*/
+
+/*
+  Extract the different location parts of an AddressField starting with an organisation
+
+  Example: Universitätsspital Zürich,  Klinik für Neurologie, Rämistr 100, 8091 Zürich
+*/
+
+/*
+Rule: ExtractAddressPartsOrganisation
+(
+    (
+        (ADDR_TOKEN)+:organisation
+    )
+    SEP
+    (ADDR_BODY)
+) --> :organisation.Location = { rule = "ExtractAddressPartsOrganisation", type = "organisation" },
+      :oe1.Location =  { rule = "ExtractAddressPartsOrganisation", type = "organisational unit" },
+      :oe2.Location =  { rule = "ExtractAddressPartsOrganisation", type = "organisational unit" },
+      :oe3.Location =  { rule = "ExtractAddressPartsOrganisation", type = "organisational unit" },
+      :oe4.Location =  { rule = "ExtractAddressPartsOrganisation", type = "organisational unit" },
+      :street.Location =  { rule = "ExtractAddressPartsOrganisation", type = "street" },
+      :zip.Location =  { rule = "ExtractAddressPartsOrganisation", type = "zip" },
+      :city.Location =  { rule = "ExtractAddressPartsOrganisation", type = "city" }
+*/

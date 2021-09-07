@@ -1,0 +1,7 @@
+locations/city.lst:location:city:german
+locations/location_key.lst:location:location_key:german
+locations/location_key_suffix.lst:location_suffix:location_key_suffix:german
+locations/location_suffix_exception.lst:location_suffix_exception:location_key_suffix_exception:german
+locations/organization_key.lst:organization:organization_key:german
+general/date_key.lst:date_key:date_key:german
+general/time_key2.lst:time:time_key2:german

@@ -1,0 +1,111 @@
+Name
+
+Dr. <Name type="doctor">Muster</Name>
+Prof. Dr. <Name>Muster</Name>
+Professor <Name>Muster</Name>
+Herr Prof. <Name>Müster</Name>
+untersucht durch Frau Prof <Name>Muster</Name>
+untersucht durch Prof <Name>Muster</Name>
+Herr Prof. Dr. med. <Name>Peter Muster</Name>
+Herr Dr. <Name>Öetker</Name>
+Herr Dr. <Name>Max Öetker</Name>
+Herr Dr. <Name firstname="A" lastname="Öetker">A. Öetker</Name>
+Herr Dr. med. <Name firstname="A" lastname="Öetker">A. Öetker</Name>
+<Name>A. Muster</Name>, Assistenzarzt
+<Name>Ä. Muster</Name> Oberärztin
+pract. med. <Name>A. Muster</Name>, Assistenzarzt
+pract. med. <Name>A. Muster</Name>
+Prof. Dr. med. <Name>H.P. Muster</Name>
+Dr. med. univ. <Name firstname="A" lastname="Muster">A. Muster</Name>, Assistenzarzt
+Dr. med. <Name firstname="A" lastname="Meier">A. Meier Huber</Name>, Assistenzarzt # TODO: proper last name extraction (Meier Huber)
+Dr. med. <Name>Andrea Meier Huber</Name>, Assistenzarzt
+Dr. med. <Name>Andrea Meier-Huber</Name>, Assistenzarzt
+<Name>Andrea Meier</Name>, Unterassistentin
+<Name>Y. Muster Master</Name>, Oberärztin # Visum field
+Dr. sc. nat. <Name>A. Muster</Name>, Oberassistentin
+Dr. med. <Name>Ch. Muster</Name>
+Dr. <Name>Hans-Matthias Muster</Name>
+Dr. <Name>Hans L.X. Muster</Name>
+Dr. <Name>H.-P. Muster</Name>
+Dr. <Name>Hans von Wattenwil</Name>
+Dr. <Name>X. Meier-Huber</Name>
+Dr. <Name>Meier-Outofvoc</Name>
+Prof. Dr. <Name>H. von Wattenwil</Name>
+z.Hd. Dr. <Name>Muster</Name>
+Sehr geehrte Frau Kollegin, sehr geehrter Herr Kollege
+Sehr geehrte Frau <Name format="l">Muster</Name>
+Hr. <Name>Muster</Name> hat...
+Fr. <Name>Muster</Name> hat...
+Neuroimmunologie-Studienvisite <Name>A. Muster</Name>, Assistenzarzt
+<Name>Hans Peter Muster</Name>, Assistenzarzt
+Prof. Dr. med. # nothing to annotate (title field)
+Prof. Dr. med. <Name>Tournesol</Name>
+Dr. med. Dr. sc. nat. <Name>H. Muster</Name>
+PFF <Name>H. Muster</Name>
+<Name>H. Muster</Name>, PFF
+<Name>H. Muster</Name>, Pflegefachfrau
+Untersuchung <Name>Hans Muster</Name>, Pflegefachmann
+<Name>Outofvoc Outofvoc</Name>, dipl. Fachmann OT
+OA <Name>Huber</Name>
+AÄ <Name>Meier</Name>, OA <Name>Huber</Name>
+JA <Name>Hans Meier</Name>
+<Name>Huber</Name>, OA
+von <Name>Hans Meier</Name>, OA
+Beim Bruder, <Name>Hans Meier</Name>, wurde...
+
+Liebe <Name>Maria</Name>, lieber <Name>Hans-Peter</Name>
+
+# Patients / Others
+<Name>AVERYLONGSURNAME Jean</Name> hello world # gazetteer based
+<Name>A. Meier</Name> hat ...
+<Name>A. Meier Muster</Name> hat ...
+<Name>A. Meier-Muster</Name> hat...
+Familie <Name>Muster</Name> hat...
+Ehepaar <Name>Muster</Name> hat...
+Die Patientin  <Name>Vreni Huber-Meier</Name> hat
+<Name>Hans-Peter Muster</Name> hat...
+<Name>Hans Peter Muster</Name>
+<Name>Vreni Huber Meier</Name> hat...
+<Name>Huber Meier Vreni</Name> hat
+<Name>Huber-Meier Vreni</Name>
+<Name>Huber Meier, Vreni</Name> hat
+<Name>Huber Outofvoc Vreni</Name>
+<Name>HUBER-MEIER Vreni Anna</Name> hat
+<Name>HUBER-MEIER Vreni</Name> hat
+<Name>de Meuron Vreni</Name>
+<Name>Vreni Maria de Meuron</Name>
+<Name>DOS SANTOS Anna</Name>
+<Name>Anna-Maria MUSTER DA SILVA</Name> hat...
+<Name>HUBER-MEIER MUSTER Anna Maria</Name>
+<Name>HU Maria</Name> hat...
+<Name>Maria HUBER-MUSTER</Name>
+Fall <Name>Huber-Meier</Name>
+Frau <Name>Huber-Outofvoc</Name>
+Frau <Name>Anna Meier</Name>
+Herr <Name>M. Meier</Name>
+Herr <Name>S.</Name> berichtet...
+und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
+<Name>Anna M. Meier Muster</Name> hat ...
+mit <Name>HP Meier</Name> oder <Name>H. P. Meier</Name> oder <Name>H.-P. Meier</Name>
+<Name>von Wattenwil Hans</Name>
+#Ehemann und Fr. <Name>Muster</Name> TODO
+
+Bitte OA <Name>Meier</Name> informieren.
+wird durch OA <Name>X. Meier</Name> durchgefuehrt
+
+
+Anwesend: <Name>Meier</Name>, <Name>Muster</Name>, <Name>Muster-Huber</Name>, <Name>Huber</Name>
+<Name>Meier</Name> / <Name>Muster</Name> / <Name>Huber</Name>
+
+
+
+i. R. von Dg
+<Name>Maria Veryseldom</Name> hat...
+#<Name>Huber</Name> # Single surnames not supported in general, too many fp
+CH - 8192
+
+
+## False positives
+nach Andersen &amp; Young
+nach Muster
+M.Paget

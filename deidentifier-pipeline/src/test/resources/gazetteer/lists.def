@@ -1,0 +1,16 @@
+city_switzerland.lst:location:city:german
+time_day.lst:day:day:german
+time_hour.lst:time:hour:german
+time_key.lst:time:time_key:german
+time_month.lst:date:month:german
+time_period.lst:date:period:german
+country_german.lst:location:country:german
+country_adjectives_german.lst:location:country_adjective:german
+city_ambiguous.lst:location:city_ambiguous:german
+hospitals.lst:organization:hospital:german
+location_false_positives.lst:location:false_positives:german
+test_surnames.lst:name:surname
+test_firstnames.lst:name:firstname:frequent
+test_general_wordlist.lst:general:general
+test_occupations.lst:occupation:occupation
+test_stopwords.lst:stop:stop

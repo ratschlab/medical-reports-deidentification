@@ -1,0 +1,445 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: Names
+Input: Token Newline Lookup SentenceAdj
+Options:control=appelt
+
+Macro: DASH
+(
+    {Token.string == "-"}
+)
+
+// de Meuron, von Wattenwil etc
+Macro: NAME_PREPOSITIONS
+(
+    {Token.string == "de"} | {Token.string == "von"} | {Token.string == "da"} | {Token.string == "dos"}
+)
+
+Macro: NAME_PREPOSITIONS_UPPER
+(
+    {Token.string == "DE"} | {Token.string == "VON"} | {Token.string == "DA"} | {Token.string == "DOS"}
+)
+
+// D., H.P., H.-P., Ch; HP
+Macro: FIRST_NAME_INITIALS
+(
+    (
+        ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?", Token.string !=~ "Dr|Hr|Fr|Hd"} {Token.string == "."}) // first initial, 'Hd' in z.Hd.
+        ({Token.string == "-"})?
+        ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}?"} {Token.string == "."})? // second initial
+    ) | ({Token.string ==~ "^(?!(OP|DD))\\p{javaUpperCase}[\\p{javaUpperCase}&&[^AÄ]]"}) // Allowing for HP initials, but excluding OA, OÄ etc (triggers) in a crude way
+)
+
+// e.g. "Hello".
+// not the same as {Token.orth == "upperInitial"}, since we don't want "Hello-"
+Macro: UPPER_INITIAL_TOKEN
+(
+    {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"}
+)
+
+Macro: SURNAME_TOKEN_UPPER_SEQ
+(
+    ((NAME_PREPOSITIONS_UPPER)? {Token.string ==~ "[\\p{javaUpperCase}]{2,}", !Lookup.majorType == "medical"})
+    (
+        (DASH)? ((NAME_PREPOSITIONS_UPPER)? {Token.string ==~ "[\\p{javaUpperCase}]{2,}", !Lookup.majorType == "medical"})
+    )*
+)
+
+Macro: SURNAME_LOOKUP
+(
+    {Lookup.majorType =~ "name", Lookup.minorType =~ "surname|suffixed", !Lookup.minorType =~ "stop"}
+)
+
+Macro: SURNAME_TOKEN_SEQ
+(
+    SURNAME_LOOKUP
+    (
+        ({Token.string == "-"})? SURNAME_LOOKUP
+    )*
+)
+
+Macro: FIRSTNAME_LOOKUP
+(
+    {Lookup.majorType =~ "name", Lookup.minorType =~ "firstname", !Lookup.minorType =~ "stop"}
+)
+
+
+Macro: DOUBLE_NAME
+(
+    (UPPER_INITIAL_TOKEN) (DASH) (UPPER_INITIAL_TOKEN)
+)
+
+// example: Andrea Muster, Andrea-Maria Muster, Andrea M. Muster, Andrea Muster-Meier
+Macro: NAME_SURNAME
+(
+    (
+        (UPPER_INITIAL_TOKEN) | // just "Andrea"
+        (DOUBLE_NAME) // "Andrea-Maria"
+    ):firstname_name_surname
+    (
+        (FIRST_NAME_INITIALS)? // M.
+        (NAME_PREPOSITIONS)? // de Meuron, von Wattenwil
+        (
+            (UPPER_INITIAL_TOKEN) | (DOUBLE_NAME)
+        )
+    ):lastname_NAME_SURNAME
+)
+
+// example: A. Muster, H.P. Muster, Ch. Muster, Z. Muster Master
+Macro: SHORT_NAME
+(
+    (FIRST_NAME_INITIALS):firstname_SHORT_NAME
+    (
+        (NAME_PREPOSITIONS)? // de Meuron, von Wattenwil
+        {Token.orth == "upperInitial"} // surname
+        ((DASH)? (NAME_PREPOSITIONS)? {Token.orth == "upperInitial"})? // second surname
+    ):lastname_SHORT_NAME
+)
+
+Macro: CIVIL_STYLE
+(
+    ({Token.string == "Herr"} |
+    {Token.string == "Herrn"} |
+    ({Token.string == "Hr"} ({Token.string == "."})?) |
+    ({Token.string == "Fr"} ({Token.string == "."})?) |
+    {Token.string == "Frau"} |
+    {Token.string == "Ehepaar"}  |
+    {Token.string == "Familie"}
+    )
+)
+
+Macro: STYLE
+(
+    (CIVIL_STYLE)?
+    (
+        ({Token.string == "Prof"} ({Token.string == "."})? ) |
+        ({Token.string == "PD"}) |
+        ({Token.string == "Dr"} ({Token.string == "."})?) |
+        ({Token.string == "pract"} ({Token.string == "."})?) |
+        ({Token.string == "Professor"})
+    )+
+    ({Token.string ==~ "[a-z]{2,}"} {Token.string == "."})[0,2] // e.g: "med. dent.", or "sc. nat."
+)
+
+Macro: ABBREV_ROLES
+(
+    // Oberarzt, Assistenzarzt, Unterassistent
+    {Token.string == "OA"} | {Token.string == "AA"} |  {Token.string == "UA"} |
+    {Token.string == "OÄ"} | {Token.string == "AÄ"} | {Token.string == "JA"}
+)
+
+
+// DOCTORS
+
+/*
+ academic titles may or may not be followed by a '.'
+ */
+Rule: DoctorsLeftContext
+Priority: 100 //overruling SimpleDetectPatient
+(
+    (
+        (STYLE | ABBREV_ROLES): style
+    )
+    (SHORT_NAME | NAME_SURNAME | (DOUBLE_NAME):lastname_DoctorsLeftContext | ({Token.orth == "upperInitial", Token.string != "Dr", !Token within Lookup.majorType == "organization"})+): name
+)
+--> { Utils.addNameAnnotation("DoctorsLeftContext", "doctor", "", bindings, doc, outputAS); },
+:style.Style = { rule = "DoctorsLeftContext"}
+
+
+Rule: DoctorsRightContext
+(
+    (
+        (SHORT_NAME) |
+        ((UPPER_INITIAL_TOKEN)+)
+    ):name
+    ({Token.string == ","})
+    (
+        (
+            {Token.string == "Oberarzt"} | {Token.string == "Oberärztin"} |
+            {Token.string == "Assistenzarzt"} | {Token.string == "Assistenzärztin"} |
+            {Token.string == "Oberassistent"} | {Token.string == "Oberassistentin"} |
+            {Token.string == "Unterassistent"} | {Token.string == "Unterassistentin"}
+        ) | (ABBREV_ROLES)
+    )
+)
+--> { Utils.addNameAnnotation("DoctorsRightContext", "doctor", "", bindings, doc, outputAS); }
+
+Rule: DoctorsLeftContextRole
+(
+    (ABBREV_ROLES)
+    (({Token.orth == "upperInitial"}):lastname_DoctorsLeftContextRole): name
+)
+--> { Utils.addNameAnnotation("DoctorsLeftContextRole", "doctor", "l", bindings, doc, outputAS); }
+
+
+// MEDICAL STAFF
+
+Rule: NursingStaffLeftContext
+(
+    {Token.string == "PFF"}
+    (NAME_SURNAME | SHORT_NAME):name
+) --> { Utils.addNameAnnotation("NursingStaffLeftContext", "medical staff", "", bindings, doc, outputAS); }
+
+Rule: NursingStaffRightContext
+(
+    (
+        (SHORT_NAME) |
+        (UPPER_INITIAL_TOKEN)[2] // only taken two tokens (e.g. firstname lastname). Longer names should be picked up by other rules
+    ):name
+    ({Token.string == ","})?
+    ({Token.string == "Pflegefachfrau"} | {Token.string == "Pflegefachmann"} | {Token.string ==~ "[Dd]ipl"} | {Token.string == "PFF"} | {Token.string == "MPA"} )
+) --> { Utils.addNameAnnotation("NursingStaffRightContext", "medical staff", "", bindings, doc, outputAS); }
+
+// ex: Huber / Meier
+Rule: StaffSurnameEnumeration
+(
+    ({Token within {Lookup.minorType =~ "surname|suffixed"}}):first_tok
+    (
+        {Token.string ==~ "[/]"}
+        ((NAME_PREPOSITIONS)? {Token within {Lookup.minorType =~ "surname|suffixed"}}):remaining_toks
+    )+
+) --> {
+    // filtering tokens in general or medical, annotate remaining_toks
+    Utils.addDoctorEnumeration(inputAS, outputAS, bindings, "StaffSurnameEnumeration", true, doc);
+}
+
+Rule: StaffSurnameEnumerationTriggered
+(
+    {Token.string ==~ "Anwesend[e]?"}
+    ({Token})?
+    ((NAME_PREPOSITIONS)? UPPER_INITIAL_TOKEN | DOUBLE_NAME):first_tok
+
+        (
+            {Token.string ==~ "[,/]"}
+            ((NAME_PREPOSITIONS)? UPPER_INITIAL_TOKEN | DOUBLE_NAME):remaining_toks
+        )+
+) --> {
+    // filtering tokens in general or medical, annotate remaining_toks
+    Utils.addDoctorEnumeration(inputAS, outputAS, bindings, "StaffSurnameEnumerationTriggered", false, doc);
+}
+
+
+// PATIENTS
+
+// matching names from Gazetteers
+// examples
+//    * Hans Muster
+//    * Vreni Muster
+//    * Vreni Muster Huber
+//    * Vreni Muster-Huber
+//    * Huber hat gesagt...
+//    * but not firstname on its own: Vreni bla...
+Rule: FirstNameLastNameFromGazetteers
+(
+    (
+        (
+            FIRSTNAME_LOOKUP
+            (FIRSTNAME_LOOKUP | (DASH FIRSTNAME_LOOKUP) )*
+            (FIRST_NAME_INITIALS)?
+        ):firstname_FirstNameLastNameFromGazetteers
+        (
+            (NAME_PREPOSITIONS)?
+            (SURNAME_LOOKUP)
+            (NAME_PREPOSITIONS)?
+            ((SURNAME_LOOKUP) | (DASH))*
+        ):lastname_FirstNameLastNameFromGazetteers
+    ):name
+    ({Newline})?
+) --> { Utils.addNameAnnotation("FirstNameLastNameFromGazetteers", "other", "f l", bindings, doc, outputAS); }
+
+
+// matching names from Gazetteers
+// examples
+//    * Hans MUSTER
+Rule: FirstNameLastNameUpper
+(
+    (
+        (
+            (FIRSTNAME_LOOKUP)
+            (FIRSTNAME_LOOKUP | (DASH FIRSTNAME_LOOKUP) )*
+        ):firstname_FirstNameLastNameUpper
+        (SURNAME_TOKEN_UPPER_SEQ):lastname_FirstNameLastNameUpper
+    ):name
+    ({Newline})?
+) --> { Utils.addNameAnnotation("FirstNameLastNameUpper", "other", "f L", bindings, doc, outputAS); }
+
+
+// matching names from Gazetteers
+// examples
+//    * Muster Hans
+//    * Muster-Huber Vreni
+Rule: LastNameFirstNameFromGazetteers
+(
+    (
+        (
+            (SURNAME_LOOKUP)
+            ((UPPER_INITIAL_TOKEN) | (DASH))*
+        ):lastname_LastNameFirstNameFromGazetteers
+        ({ Token.string == "," })?
+        ((FIRSTNAME_LOOKUP)+):firstname_LastNameFirstNameFromGazetteers
+
+    ):name
+) --> { Utils.addNameAnnotation("FirstNameLastNameUpper", "other", "l f", bindings, doc, outputAS); }
+
+
+// matching names from Gazetteers
+// examples
+//    * MUSTER Hans
+//    * MUSTER HUBER Vreni
+Rule: UpperLastNameFirstNameFromGazetteers
+Priority: 100
+(
+    (
+        (
+            (NAME_PREPOSITIONS_UPPER)?
+            (SURNAME_TOKEN_UPPER_SEQ)
+        ):lastname_UpperLastNameFirstNameFromGazetteers
+        ((FIRSTNAME_LOOKUP)+):firstname_UpperLastNameFirstNameFromGazetteers
+
+    ):name
+) -->  { Utils.addNameAnnotation("UpperLastNameFirstNameFromGazetteers", "other", "L f", bindings, doc, outputAS); }
+
+// A. Meier (Meier in Gazetteer)
+Rule: ShortNameWithGazetteer
+Priority: 200
+(
+    (FIRST_NAME_INITIALS):firstname_ShortNameWithGazetteer
+    (SURNAME_TOKEN_SEQ):lastname_ShortNameWithGazetteer
+):name --> { Utils.addNameAnnotation("ShortNameWithGazetteer", "other", "fs l", bindings, doc, outputAS); }
+
+
+// firstname followed by an out of voc term (assuming fairly complete list of first names)
+//    * Hans Veryseldom (out of voc)
+Rule: NameOutOfVoc
+(
+    (
+        (({Lookup.majorType =~ "name", Lookup.minorType =~ "firstname", !Lookup.minorType =~ "stop|medical", Lookup.language == "frequent"})+):firstname_NameOutOfVoc
+        (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+", !Token within Lookup, !Token contains Lookup})+):lastname_NameOutOfVoc
+    ):name
+) --> { Utils.addNameAnnotation("NameOutOfVoc", "other", "f l", bindings, doc, outputAS); }
+
+/*
+Rule: FirstNamesPos
+(
+    (
+        ({Token.category == "NE", Token within Lookup.minorType =~ "firstname", !Token within Lookup.majorType =~ "medical|stop"
+        })+
+    ):tok
+) --> :tok.Name = { rule = "FirstNamesPos", type = "other" }
+*/
+
+Rule: UniqueNameOrSurname
+Priority: 0
+(
+    ({Token within {Lookup.majorType ==~ "name"}, Token within {Lookup.language == "frequent"}, !Token within {Lookup.majorType ==~ "medical|general|stop"}})+:name
+) --> { Utils.addNameAnnotation("UniqueNameOrSurname", "other", "", bindings, doc, outputAS); }
+
+
+Rule: UniqueDoubleName
+(
+    (
+        ({Token within {Lookup.majorType ==~ "name"}})
+        DASH
+        ({Token within {Lookup.majorType ==~ "name"}})
+    )
+):name --> { Utils.addNameAnnotation("UniqueDoubleName", "other", "", bindings, doc, outputAS); }
+
+// example: Herr Muster, but not "Herr Kollege"
+Rule: SimpleDetectPatient
+Priority: 0
+(
+    (CIVIL_STYLE): style
+    (
+        ({Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"})+ |
+        ({Token.string ==~ "[A-Z]"} {Token.string == "."}):lastname_SimpleDetectPatient |
+        (SHORT_NAME)
+    ):name
+) --> { Utils.addNameAnnotation("SimpleDetectPatient", "patient", "l", bindings, doc, outputAS); },
+      :style.Style = { rule = "SimpleDetectPatient"}
+
+Rule: DoubleNameLeftTriggered
+(
+    ({Token.string ==~ "Herr|Frau|Hr|Fr"}):style
+    (
+        (
+            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"}
+            DASH
+            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"}
+        ) |
+        (
+            {Token.orth == "upperInitial", !Token.string =~ "Kollege|Kollegin"}
+            {Token within {Lookup.majorType ==~ "name"}}
+        )
+    ):name
+) --> { Utils.addNameAnnotation("DoubleNameLeftTriggered", "patient", "l", bindings, doc, outputAS); },
+       :style.Style = { rule = "DoubleNameLeftTriggered"}
+
+
+// example: Liebe Maria
+Rule: FirstNameInSalutation
+Priority: 100
+(
+    {Token.string ==~ "[Ll]iebe[r]?"}
+    (
+      (({Lookup.minorType =~ "firstname"} | (DASH)?)+):firstname_FirstNameInSalutation
+    ) :name
+) --> { Utils.addNameAnnotation("FirstNameInSalutation", "other", "f", bindings, doc, outputAS); }
+
+
+// negative contexts
+
+// nach Anderson & Young
+Rule: ConsumeMethodAuthorsLeftTrigger
+Priority: 1000
+(
+    {Token.string == "nach"}
+    UPPER_INITIAL_TOKEN
+    {Token.string ==~ "(&|und)"}
+    UPPER_INITIAL_TOKEN
+    (
+        ({Token.string == ","})?
+        ({Token.string ==~ "1[0-9]{3}"} | {Token.string ==~ "2[0-1][0-9]{2}"})
+    )?
+) --> {}
+
+// Anderson & Young, 2010
+Rule: ConsumeMethodAuthorsRightTrigger
+Priority: 1000
+(
+    UPPER_INITIAL_TOKEN
+    {Token.string ==~ "(&|und)"}
+    UPPER_INITIAL_TOKEN
+    (
+        ({Token.string == ","})?
+        ({Token.string ==~ "1[0-9]{3}"} | {Token.string ==~ "2[0-1][0-9]{2}"})
+    )?
+) --> {}
+
+// Brands
+// ex: nach Lichtenstein
+Rule: ConsumeMethodSingleAuthor
+Priority: 1000
+(
+    {Token.string == "nach"}
+    {Lookup.minorType == "surname"}
+) --> {}
+
+// Brands
+// ex: Sapphire II
+Rule: ConsumeBrand
+Priority: 1000
+(
+    UPPER_INITIAL_TOKEN
+    {Token.string ==~ "[I]+"}
+) --> {}
+
+// Meier et al.
+Rule: ConsumeCitations
+Priority: 1000
+(
+    (UPPER_INITIAL_TOKEN | DOUBLE_NAME | FIRST_NAME_INITIALS)[1,2]
+    {Token.string == "et"}
+    {Token.string == "al"}
+) --> {}

@@ -1,0 +1,9 @@
+Phase: CopyAddress
+Input: AddressField
+Options: control=appelt
+
+Rule: CopyAddressRule
+(
+    ({AddressField}):addr
+) --> :addr.Address = { rule = "CopyAddressRule", type = "other" }
+

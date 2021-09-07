@@ -1,0 +1,73 @@
+Phase: Contacts
+Input: Token Lookup Newline
+Options:control=appelt
+
+Macro: PHONE_COUNTRYCODE
+// +44, +1, +391, 0044
+(
+    ({Token.string == "+"} {Token.string ==~ "[1-9][0-9]{0,2}"}) |
+    ({Token.string ==~ "00[1-9][0-9]{0,2}"})
+)
+
+Rule: SwissNumber
+Priority: 100
+(
+        // prefix (optionally country code and prefix)
+        (
+            (
+
+                   ({Token.string == "0041"} | ({Token.string == "+"} {Token.string == "41"}))
+                   ({Token.string == "("} {Token.string == "0"} {Token.string == ")"})?
+                   {Token.string ==~ "[1-9]{2}"}
+
+             ) |
+             ({Token.string ==~ "0[1-9][0-9]{1,2}"})
+        )
+        ({Token.string ==~ "[/-]"})?
+        // extension
+        (
+            ({Token.kind == number, Token.length == 3 } ({Token.string == "-"})?  {Token.kind == number, Token.length == 2 } ({Token.string == "-"})? {Token.kind == number, Token.length == 2 }) |
+            // old format
+            ({Token.kind == number, Token.length == 2 } ({Token.string == "-"})?  {Token.kind == number, Token.length == 2 } ({Token.string == "-"})? {Token.kind == number, Token.length == 2 }) |
+            ({Token.kind == number, Token.length == 3 } ({Token.string == "-"})?  {Token.kind == number, Token.length == 4 }) |
+            ({Token.kind == number, Token.length == 4 } ({Token.string == "-"})? {Token.kind == number, Token.length == 3 }) |
+            ({Token.kind == number, Token.length == 3 } ({Token.string == "-"})? {Token.kind == number, Token.length == 3 }) |
+            {Token.kind == number, Token.length == 7 }
+
+        )+
+):phone -->
+ :phone.Contact={type = "phone number", rule = "SwissNumber"}
+
+
+Rule: SwissNumberNoSpaces
+(
+    {Token.string ==~ "0[0-9]{9}"} |
+    ({Token.string == "+"} {Token.string ==~ "41[0-9]{10}"}) |
+    {Token.string ==~ "0041[0-9]{10}"}
+): phone -->
+  :phone.Contact={type = "phone number", rule = "SwissNumberNoSpaces"}
+
+
+Rule: InternationalNumber
+(
+    PHONE_COUNTRYCODE
+    ({Token.kind == number})[3,7]
+):phone -->
+ :phone.Contact={type = "phone number", rule = "InternationalNumber"}
+
+
+Rule: PhoneNumberLeftTrigger
+(
+    (
+        {Token.string ==~ "Tel|Fax|Telefax|Sekretariat"} ({Token.string == "."})?
+        ({Token.string == "-"})?
+        ({Token.string == "Nr"})?
+        ({Token.string == "."})?
+        ({Token.string == ":"})?
+    )
+    (
+        ({Token.string == "+"})?
+        {Token.kind == number}
+        ({Token.kind == number} | {Token.string ==~ "[-()/]"}) [0,7]
+    ):phone
+) --> :phone.Contact={type = "phone number", rule = "PhoneNumberLeftTrigger"}

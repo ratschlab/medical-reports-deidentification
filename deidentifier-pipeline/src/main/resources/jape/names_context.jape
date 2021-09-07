@@ -1,0 +1,12 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: NamesContext
+Input: Token Newline Lookup NameContext
+Options:control=appelt
+
+Rule: SingleNameOrSurnameInNameContext
+(
+    ({Token within {Lookup.minorType ==~ "firstname"}, Token within NameContext, !Token within {Lookup.majorType ==~ "stop"}})+:name
+) --> { Utils.addNameAnnotation("SingleNameOrSurnameInNameContext", "other", "", bindings, doc, outputAS); }

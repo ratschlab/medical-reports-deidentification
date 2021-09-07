@@ -1,0 +1,133 @@
+Name; Patienteninformation, FieldWithSignature, Addressor, OrtDat, VisDat, DisplayName, Visum, DateSmallCapsSignField, SomePrefixVisDat, Vis
+
+# gazetteer annotation
+hello <Name>Luigi D'Ambrosio</Name> oder <Name>Vreni Meier Huber</Name> oder auch <Name>Vreni Meier-Huber</Name>, <Name>Hans Meier</Name>
+<Name>Min Xu</Name>, aber der Vorname Min soll nicht annotiert werden
+
+<Name>HUBER-MEIER Vreni</Name> hat
+Dr. <Name>Meier-Outofvoc</Name> ...
+
+
+Liebe <Name>Yvonne</Name>
+
+# testing metadata extraction
+<Patienteninformation><Name>OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name>OUTOFVOC Jean</Name>, geb. 01.01.1900, Musterstr. 21, 1234 Musterwilen ZH</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name>OUTOFVOC MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name>OUTOFVOC-MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21a, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name>OUTOFVOC-MEIER Jeanne</Name>, geb. 01.01.1900, Musterstrasse 21a, 1234 Musterwilen</Patienteninformation> der Name <Name>Outofvoc</Name> im Fliesstext
+<Patienteninformation><Name>OUTOFVOC-D'XYZ Jeanne Marie</Name>, geb. 01.01.1900\r\n am Musterstrasse 21a, CH-1234 Musterwilen</Patienteninformation>
+<Patienteninformation><Name>OUTOFVOC-D'XYZ Jeanne Marie</Name>, <Name>Elisaxy</Name>, geb. 01.01.1900\r\n am Musterstrasse 21a, CH-1234 Musterwilen</Patienteninformation>
+
+<Name>Hans Peter Muster</Name>, Assistenzarzt
+und Fr. <Name>Outofvoc</Name> (freiwillige Helferin): Ehemann
+
+# signature field
+<FieldWithSignature><Name>AMUSTER</Name> sig. Dr. <Name>A. Muster</Name>, Oberarzt</FieldWithSignature>
+<FieldWithSignature><Name>AMUSTER</Name> sig.\npract. med. <Name>A. Muster</Name>, Assistenzarzt</FieldWithSignature>
+<FieldWithSignature><Name>AMASTER</Name></FieldWithSignature>
+<Visum><Name signature="ABCD">ABCD</Name></Visum>
+<Visum><Name>ABCD</Name> / 01.03.2003</Visum>
+<Visum>01.13.2003 <Name>ABCD</Name></Visum>
+<Visum>01.03.2003 (<Name>ABCD</Name>)</Visum>
+
+# OrtDat field
+<OrtDat>Zürich, 20.01.2018 / <Name>AMUSTER</Name> </OrtDat>
+<OrtDat>Zürich, 20.01.2018 / <Name>AMUSTER</Name> / <Name>amaster</Name></OrtDat>
+<OrtDat>Zürich, 20.01.2018 <Name>AMUSTER</Name> / <Name>amaster</Name></OrtDat>
+
+# VisDat field
+<VisDat><Name>AMASTER</Name> / 02.04.2017 14:23:12</VisDat>
+
+<Addressor> <SomePrefixVisDat>hello <Name>AMASTER</Name> / 02.04.2017</SomePrefixVisDat> </Addressor>
+
+<Vis><Addressor>hello <Name>AMASTER</Name> / 02.04.2017</Addressor></Vis>
+
+# DateSmallCapsSignField
+<DateSmallCapsSignField> 20.11. <Name>abcde</Name>  </DateSmallCapsSignField>
+<DateSmallCapsSignField> <Name>abcde</Name> 20.11  </DateSmallCapsSignField>
+<DateSmallCapsSignField> Upper 20.11  </DateSmallCapsSignField>
+<DateSmallCapsSignField> 20.11.2013 ohne </DateSmallCapsSignField>
+
+# Signatures at the end of a sentence in RKGDECKB01
+<SignatureSmallCapsEndSentenceField> hello world <Name>abcde</Name>\n</SignatureSmallCapsEndSentenceField>
+<SignatureSmallCapsEndSentenceField> hello world (<Name>abcde</Name>)\n</SignatureSmallCapsEndSentenceField>
+
+# addressor field
+<Addressor><Name>Hans Muster</Name>\nLeitung Pflege\n<Name>Johanna Outofvoc</Name>\nInstitutsmanagerin</Addressor> # name annotation without trigger
+<Addressor>Dr. <Name>Hans Muster</Name>\nLeitung Pflege</Addressor> # name annotation trigger (should exclude style)
+
+
+# DisplayName field
+<DisplayName><Name>D. Veryseldom</Name></DisplayName>
+
+<Name>Yvonne</Name> darf heute nach Hause gehen. # Yvonne exclusively appears as name in Gazetteer
+Iris darf heute nach Hause gehen. # POS Tag based, but don't annotate since it is also a medical term
+stammen die Töchter <Name>Beatrice</Name> und <Name>Kathrin</Name>. Die Diagnose...
+<Name>Marius Veryseldmopoulos</Name> oder <Name>Anna Macovic</Name>
+
+Anwesende: <Name>Huber</Name>, <Name>Meier</Name>, <Name>Zwygart</Name>
+
+
+# false positives
+<Name>Andreas Neuhaus</Name> # false positive location
+
+# TODO: annotate <Name>Bruder, Hans</Name> . could POS tagging help? Alternatively, only allow COMMA if tokens followed by a date
+#Beim Bruder, <Name>Hans Meier</Name> wurde...
+
+Seit gestern...
+En-Bloc-Mobi Beta-Trace-Protein Robin-Virchow-Raume, Robin-Virchow
+Lambert-Eaton-Syndrom
+Neo Mercazole
+
+Geo Sentinel
+
+# Abkürzungen/Signaturen
+
+# TODO add support for signatures in free text?
+#Zuweisung bei <Name>HMUSTR</Name> am 01.01.2019
+#Hallo <Name>HMUSTR</Name> willkommen!
+#Ein wirklich recht langer Satz HMUSTR und geht weither
+#VLDL_Chol_Triglycerin
+#Some UPPER CASE in a long field. short 02.04.2017 14:23:12<Name>ABCDE</Name>.
+&lt; <Name>HMUSTR</Name> &gt;
+
+
+# fp
+Sapphire II
+Forrest I
+Meier et al. Shumway-Cook et al
+Wrisley &amp; Kumar, 2010
+#nach Anderson &amp; D'Agostini TODO
+En-Bloc-Mobi
+Beta-HCF
+NKBS Ed
+Dr. Wild &amp; Co
+E. Coli multiresistent
+E.Coli im Rachen
+# Morgen Mittag Abend Nacht # TODO as special rule?
+Hals, Kopf, Rippen
+I.V. Antibiosetherapie
+Nadir Uppercase
+ASAHI Sion Blue
+ASAHI Gaia
+Tachykardes Vorhofflimmern ED
+
+Endo-Button
+Ko
+CT Schädel
+Doppler Untersuchung
+Dr. <Name>Hans Doppler</Name>
+chronic
+
+<Name>Lisa Schlatter</Name> \n\n
+#Salem
+ISHLT Ax
+
+OP Auge
+DD Angst
+Red Flags
+
+nach Lichtenstein
+nach Savary und Miller
+Kumar S. et al

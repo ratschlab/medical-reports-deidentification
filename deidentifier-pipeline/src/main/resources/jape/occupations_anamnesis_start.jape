@@ -1,0 +1,30 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: OccupationsAnamnesisStart
+Input: Token Newline AnamnesisField Lookup
+Options:control=appelt
+
+Macro: WORKPLACE
+(
+    (
+        {Token.string ==~ "bei|im|für|in"} |
+        ({Token.string ==~ "bei|in|für"} {Token.string ==~ "der|einer|einem|eine"})
+    )?
+    (
+        (
+            ({Token.orth == "upperInitial"})[1,2]
+        ):loc
+    )
+)
+
+Rule: OccupationsFromGazetteerAnamnesisSentenceAnnotationStart
+(
+    ({ Lookup.majorType == "occupation", Lookup within {AnamnesisField}}): occ
+    (WORKPLACE)?
+)--> :loc.Occupation = { rule = "OccupationsFromGazetteerAnamnesisSentenceAnnotationStart"},
+    {
+        Annotation an = bindings.get("occ").iterator().next();
+        org.ratschlab.deidentifier.annotation.Utils.annotateIfBeginningOfSentence(inputAS, an, "Occupation", "OccupationsFromGazetteerAnamnesisSentenceAnnotationStart", outputAS);
+    }

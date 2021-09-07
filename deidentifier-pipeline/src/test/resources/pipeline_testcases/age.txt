@@ -1,0 +1,15 @@
+Age
+
+eine <Age>58</Age>-jährige Patientin, ein <Age>119</Age>-jähriger Rechtshänder
+eine <Age>58</Age> jähriger Patient
+einen <Age>71</Age> jährigen Patienten
+Alter: <Age>25.9</Age>
+im Alter von <Age>72</Age> Jahren
+mit <Age>72</Age> gestorben
+<Age>33</Age> jährig oder <Age>33</Age>-jährig
+Mit <Age>26</Age> Jahren oder mit <Age>26</Age> Jahren oder mit <Age>26</Age> j
+seit dem <Age>15</Age> Lebensjahr, seit dem <Age>18</Age>. Lebensjahr
+Kinder (<Age>2</Age>, <Age>4</Age>)
+Kinder (<Age>2</Age>J, <Age>4</Age>j)
+Kinder (2 Söhne)
+34\nJ

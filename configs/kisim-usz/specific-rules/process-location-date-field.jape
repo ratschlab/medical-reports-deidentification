@@ -1,0 +1,18 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: ProcessLocationDateField
+Input: Token Date LocationDateField
+Options: control=appelt
+
+// Zurich, 01.01.2010/AMUST
+// Zurich, den 01.01.2010/AMUST
+Rule: AnnotateLocationDateField
+(
+    ({Token within LocationDateField}):loc {Token.string == ","}
+    ({Token.string == "den"})?
+    {Date} {Token.string == "/"}
+    (({Token.orth == "allCaps"}):signature_AnnotateLocationDateField):name
+) --> :loc.Location = { rule = "AnnotateLocationDateField", type = "city" },
+      { { Utils.addNameAnnotation("AnnotateLocationDateField", "medical staff", "s", bindings, doc, outputAS); } }

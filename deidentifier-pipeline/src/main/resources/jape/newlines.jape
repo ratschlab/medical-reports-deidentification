@@ -1,0 +1,13 @@
+Phase: Newlines
+Input: SpaceToken Token
+Options:control=appelt
+
+Rule: FindNewlines
+(
+ (
+    { SpaceToken.string == "\n"} |
+    { SpaceToken.string == "\r\n"} |
+    ({ Token.string == "\\"} { Token.string == "r"}  { SpaceToken.string == "\n"}) |      // TODO: newline behaviour OS dependent?
+    ({ Token.string == "\\"} { Token.string == "r"}  { Token.string == "\\"} { Token.string == "n"})
+ ):tok
+) --> :tok.Newline = { rule = "FindNewlines"}

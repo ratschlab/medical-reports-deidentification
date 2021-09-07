@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<CREOLE-DIRECTORY>
+
+    <!-- plugins can require other plugins.
+    For example to require ANNIE you would include the following:
+    <REQUIRES GROUP="uk.ac.gate.plugins" ARTIFACT="annie" VERSION="8.5-SNAPSHOT"/>
+    -->
+
+    <CREOLE>
+        <!-- Documents -->
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.AnnotationNormalizer</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.AddStructuredFieldInfo</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.AdjustSentenceBoundaries</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.AnnotationBlacklist</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.AnnotationCleanup</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.MetadataAnnotator</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.RemoveOverlappingAnnotations</CLASS>
+        </RESOURCE>
+
+        <RESOURCE>
+            <CLASS>org.ratschlab.deidentifier.annotation.HighConfidenceStringAnnotator</CLASS>
+        </RESOURCE>
+    </CREOLE>
+</CREOLE-DIRECTORY>

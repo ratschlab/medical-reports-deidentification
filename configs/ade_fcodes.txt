@@ -1,0 +1,33 @@
+RALGKB01,Kurzbericht
+RASTAUS02,Austrittsbericht
+RAUGAUS02,Austrittsbericht Ophthalmologie
+RAUGSAUS02,Austrittsbericht orthoptische Abteilung
+RCHIHERAB3,Austrittsbericht Herz- und Gefässchirurgie
+RCHIVIA02,Austrittsbericht Viszeralchirurgie
+RCHIWIDAB2,Austrittsbericht Plastische Chirurgie und Handchirurgie
+RDERAUS02,Austrittsbericht Dermatologie
+RGYNAUB01,Kombinierter Operations- & Austrittsbericht Gynäkologie
+RGYNAUS02,Austrittsbericht Gynäkologie
+RHAEAUS01,Austrittsbericht Stammzell-Transplantationsstation
+RHAEAUS02,Austrittsbericht Hämatologie
+RHGTAUS02,Austrittsbericht
+RIMOAUS02,Austrittsbericht
+RIPSAUSB02,IPS Austrittsbericht Brandverletzte
+RIPSAUSH02,IPS Austrittsbericht Herz- und Gefässchirurgie
+RIPSAUSI02,IPS Austrittsbericht Innere Medizin
+RIPSAUSN02,IPS Austrittsbericht Neurochirurgie
+RIPSAUSV02,IPS Austrittsbericht Viszeralchirurgie
+RKARAUS01,Austrittsbericht Kardiologie
+RKIEAUS02,Austrittsbericht Mund-, Kiefer- und Gesichtschirurgie
+RNCHAUS02,Austritt Neurochirurgie
+RNEOAUW02,Austrittsbericht Wochenbettstation Neonatologie
+RNOSAUS03,Austrittsbericht Neurologie
+RNOTAUS01,Austrittsbericht Institut für Notfallmedizin
+RNRAAUS01,Austrittsbericht Neuroradiologie
+RNUKAUS02,Austrittsbericht NUK
+RONKAUS03,Austrittsbericht Onkologie
+RORLAUS01,Austrittsbericht ORL
+RPSYAUS01,Austrittsbericht
+RRAOAUS01,Austrittsbericht Radioonkologie
+RRUZAUS02,Austrittsbericht Rheumatologie
+RTHOAUS03,Austrittsbericht Thoraxchirurgie

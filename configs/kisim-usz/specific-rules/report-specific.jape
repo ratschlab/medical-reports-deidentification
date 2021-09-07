@@ -1,0 +1,48 @@
+Imports: {
+    import org.ratschlab.deidentifier.annotation.Utils;
+}
+
+Phase: ReportSpecficFields
+Input: Token Date DateSmallCapsSignField Newline Lookup SignatureSmallCapsEndSentenceField
+Options: control=appelt
+
+Macro: SIGNATURE_TOKEN
+(
+    {Token.string ==~ "[A-Za-z]{4,7}", Token.orth ==~ "lowercase|allCaps", Token within DateSmallCapsSignField,  !Token within Lookup.minorType == "stop"}
+)
+
+// SFALINFO, RVISVRL01
+Rule: ProcessDateSmallCapsSignField
+(
+     // already regonized date or some date like '20.11' without a dot
+     ({Date} | ( {Token.kind == "number"} {Token.string == "."} {Token.kind == "number"})):d
+    (SIGNATURE_TOKEN):first_tok
+    (
+                {Token.string ==~ "[,/]"}
+                (SIGNATURE_TOKEN):remaining_toks
+    )*
+)
+--> {
+    // filtering tokens in general or medical, annotate remaining_toks
+    Utils.addDoctorEnumeration(inputAS, outputAS, bindings, "ProcessDateSmallCapsSignField", false, doc);
+},
+:d.Date = { rule = "ProcessDateSmallCapsSignField", type = "other" }
+
+Rule: ProcessDateSmallCapsSignFieldInv
+(
+     (SIGNATURE_TOKEN):sig
+     // already regonized date or some date like '20.11' without a dot
+     ({Date} | ( {Token.kind == "number"} {Token.string == "."} {Token.kind == "number"})):d
+
+) -->
+:d.Date = { rule = "ProcessDateSmallCapsSignFieldInv", type = "other" },
+:sig.Name = {rule = "ProcessDateSmallCapsSignFieldInv", type = "medical staff" }
+
+// RKGDECKB01, SFALINFO01
+Rule: ProcessSignatureSmallCapsEndSentenceField
+(
+    ({Token.string == "("})?
+    ({Token.string ==~ "[a-z]{5}", Token within SignatureSmallCapsEndSentenceField}):sig
+    ({Token.string == ")"})?
+    {Newline}
+) --> :sig.Name = {rule = "ProcessSignatureSmallCapsEndSentenceField", type = "medical staff" }

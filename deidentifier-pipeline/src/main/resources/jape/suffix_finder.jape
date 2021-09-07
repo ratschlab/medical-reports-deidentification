@@ -1,0 +1,29 @@
+Phase: SuffixFinder
+Input: Token
+Options:control=appelt
+
+// taken from https://gate.ac.uk/wiki/jape-repository/gazetteer.html#section-1.
+Rule: CheckSuffix
+(
+{Token}
+):tag
+-->
+{
+    gate.AnnotationSet tagSet = (gate.AnnotationSet)bindings.get("tag");
+    gate.Annotation tagAnn = (gate.Annotation)tagSet.iterator().next();
+
+    // create a temporary variable for the Lookup value we want to check
+    gate.FeatureMap suffixFM = gate.Factory.newFeatureMap();
+    suffixFM.put("minorType", "suffix");
+
+    AnnotationSet suffixes = inputAS.get(tagAnn.getStartNode().getOffset(), tagAnn.getEndNode().getOffset()).get("Lookup", suffixFM);
+    for(Annotation an : suffixes) {
+        // check if it is really a suffix
+        if(an.getEndNode().getOffset() == tagAnn.getEndNode().getOffset() && gate.Utils.stringFor(doc, tagAnn).matches("\\p{javaUpperCase}.+")) {
+            gate.FeatureMap features = Factory.newFeatureMap();
+            features.put("majorType", an.getFeatures().getOrDefault("majorType", ""));
+            features.put("minorType", "suffixed");
+            outputAS.add(tagAnn.getStartNode(),tagAnn.getEndNode(), "Lookup", features);
+        }
+    }
+}

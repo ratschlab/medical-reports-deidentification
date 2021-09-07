@@ -1,0 +1,88 @@
+Date
+
+am <Date day="11" month="1" year="2016" format="dd.MM.yyyy">11.01.2016</Date> zur klinischen Kontrolle in unserer
+seit <Date>22.01.10</Date>:
+seit <Date>5.1.2009</Date>
+<Date day="1" month="10" year="2015">01.10.15</Date>
+Sturz am <Date day="20" month="Oktober" year="2012" format="dd. M yyyy">20. Oktober 2012</Date>
+BV-gesteuerte Infiltration ISG bds. mit je 40mg Kenacort und Lidocain 1% <Date month="12" year="2009" format="MM/yyyy">12/2009</Date>
+Lidocain 1% <Date>01/09</Date>
+Lidocain 1% <Date>1/09</Date>
+Lidocain 1% <Date month="Januar" year="2009" format="M yyyy">Januar 09</Date>
+Lidocain 1% 13/12 # not a date...
+seit <Date>November 2011</Date> unter Fumarsauere
+<Date>10.2018</Date>
+(ES <Date>1994</Date> ED <Date>1994</Date>)
+seit <Date>2001</Date>
+Schub <Date>10/08</Date> <Date>3/09</Date>
+Sturz am <Date>20. Oktober</Date> # how to know year?? take previous and next years?
+es wurde am <Date>13.08</Date> ein MRI durchgefuehrt
+MRI Halsgefässe <Date>27.11.</Date> konnte
+#(nach Lublin et al. 2013) # TODO: citation, technically don't need to deidentifiy
+bis <Date>10.12</Date> weiter
+<Date>29. Februar</Date>
+voraussichtlich im <Date>Oktober/November 2016</Date>
+
+seit <Date>04</Date> 100% IV
+
+reactivate schwerer Tagesschläfrigkeit (ESS 13/24 Pt; <Date>09/06</Date>: 11/24 Pkt.) # TODO: hard to distinguish in a more general case
+Name wird nicht erinnert, seit <Date>Jan.06</Date> "schwächeres Präparat"
+
+ein Datum <Date>2018-12-01</Date>
+Untersuchung des Muskelbiopsates von <Date>1994</Date> erbrachte leider keine Diagnosesicherung
+- Erstdiagnose <Date>2001</Date> - Embolisation <Date>12/2001</Date> # enumeration (new line)
+Dosiserhöhung auf 50-75mg je nach Wirkung
+langsam aufdosieren in 100mg-Schritten, bis 1800-3600mg per diem
+<Date>1992</Date> Pankreatitis. <Date>1995</Date> Schleimbeutel-Bursitis linkes Knie. <Date>1996</Date> und <Date>2001</Date> Pankreatitis # Personliche Anamnese
+<Date>2002</Date> in Frankreich Diagnose einer Arteritis.
+
+Einschlaflatenz von 6.2 min, Einschlaflatenz von 6.2min
+unter Tags mit einer Einschlaflatenz von 11.1 bzw. 9.22min.
+TEMPERATUR von 38.9 Grad Celsius, von 31.3 Grad Celsius
+
+um 2000 Uhr # fp date
+am <Date>22.2</Date> wurde ein Wert von 22.2 mm gemessen
+ein Wert von 0.5 bla
+am <Date>28.11.</Date> 13.45 Uhr # (date annotated 28.11. 13) TODO
+Gastroskopie <Date>11.2015</Date> #(only 2015 annotated)
+ab dem 13. postoperativen Tag
+im <Date>Juli</Date>, Im <Date>Juli</Date>,
+im <Date>Dezember 2018</Date> wurde
+
+seit <Date>04/2015</Date> - <Date>02.04.2016</Date> Tysabri
+# Stationärer Aufenthalt <Date>02</Date> # TODO?
+
+## English Dates
+
+on <Date>March 22, 2013</Date>
+
+
+## Ranges
+
+<Date day="18" month="1" year="2018" format="dd.MM.">18.01.</Date> - <Date day="8" month="2" year="2018" format="dd.MM.yyyy">08.02.2018</Date>
+Kontrolle am <Date>28.</Date> und <Date>29.04.2018</Date> durch den Hausarzt
+<Date year="1995" format="yyyy">1995</Date> - <Date year="1997" format="yyyy">1997</Date> Betaferon s.c. darunter ein Schwerer Schub
+<Date>1995</Date>-<Date>1997</Date>
+<Date month="10" year="2015" format="MM">10</Date>-<Date month="11" year="2015" format="MM/yyyy">11/2015</Date> # (how to handle this?)
+vom <Date day="16" month="3" format="dd.MM.">16.3.</Date>-<Date day="20" month="3" format="dd.MM.">20.03</Date>
+<Date>05</Date>/<Date>06.10.18</Date>
+Aufenthalt <Date>03.</Date>-<Date>15.09.</Date>
+<Date>05</Date>+<Date>06/18</Date> Zytoskopie
+
+<Date>2006</Date>/<Date>07</Date> und weiter...
+#<Date>April</Date>/<Date>Mai 2018</Date> weiter # TODO: consider?
+
+
+
+
+## Ranges FP
+
+Werte von 4.5 - 8.5 mml/l
+in einem Bereich von 90 - 99%
+Rippenseriefraktur Th 8 - 11 drosolateral rechts
+Sinemet CR 50/200 6.00-11.00-17.00 Uhr, # TODO: how to add exception?
+
+
+## Jahr
+Jahrgang <Date>56</Date>
+Jahrgang <Date>1953</Date>

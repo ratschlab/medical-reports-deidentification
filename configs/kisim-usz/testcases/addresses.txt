@@ -1,0 +1,17 @@
+Location; AddressField
+
+# TODO: reactivate tests after fine grain tuning of location
+#<AddressField>Herr A. Muster\n<Location>Calle Magdalena 42</Location>\n<Location>1234</Location> <Location>Musterwilen</Location></AddressField>
+#<AddressField>Herr Max Muster, <Location>Calle Magdalena 42</Location>, <Location>1234</Location> <Location>Musterwilen ZH</Location></AddressField>
+#<AddressField>Herr Max Muster, <Location>Calle Magdalena 42</Location>, <Location>1234</Location> <Location>Musterwilen</Location></AddressField>
+
+# TODO: flaky test
+#<AddressField>Herr Dr. Max Muster, <Location>Allgemeine Innere Medizin</Location>, <Location>Calle Magdalena 42</Location>, <Location>1234</Location> <Location>Laufen</Location></AddressField>
+
+#<AddressField><Location>Universitätsspital Zürich</Location>, Herr Dr. med. Max Muster, <Location>Chefarzt</Location>, <Location>Rämistrasse 100</Location>, <Location>8091</Location> <Location>Zürich</Location></AddressField>
+
+#<AddressField><Location>Universitätsspital Zürich</Location>, <Location>Rämistrase 100</Location>, <Location>8091</Location> <Location>Zürich</Location></AddressField>
+#<AddressField><Location>Universitätsspital Zürich</Location>, <Location>Rämistrasse 100</Location>, CH-<Location>8091</Location> <Location>Zürich</Location></AddressField>
+#<AddressField><Location>Universitätsspital Zürich</Location>, <Location>Klinik für Neurologie</Location>, <Location>Rämistrase 100</Location>, <Location>8091</Location> <Location>Zürich</Location></AddressField>
+#<AddressField><Location>Universitätsspital Zürich</Location>, <Location>Klinik für Neurologie</Location>, <Location>Gruppe XY</Location>, <Location>Rämistrase 100</Location>, <Location>8091</Location> <Location>Zürich</Location></AddressField>
+#<AddressField><Location>Universitätsspital Zürich</Location>, <Location>Postfach</Location>, <Location>8000</Location> <Location>Zürich</Location></AddressField>

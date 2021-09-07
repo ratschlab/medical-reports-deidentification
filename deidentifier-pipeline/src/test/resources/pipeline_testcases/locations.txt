@@ -1,0 +1,55 @@
+Location
+
+Städte: <Location>Bern</Location>, <Location>Zürich</Location>
+andere Orte: <Location>Wil</Location>, <Location>Wetzikon</Location> <Location>Rüschlikon</Location> <Location>Hinwil</Location>
+Strassennamen: <Location>Bahnhofstrasse</Location>, <Location>Bahnhofplatz</Location>, <Location>Bahnhofstr 1</Location>
+<Location>Rämistr. 100</Location> <Location>Musterweg 132</Location> <Location>Musterweg 42a</Location>
+<Location>Baumallee 12</Location> <Location>Hohlegasse 12</Location>
+<Location>Via Grande 13</Location> <Location>Rue Mouffetard 34a</Location>
+<Location>Gottfried-Meier-Strasse 23</Location>
+<Location>Hermann-Outofvocstr. 2</Location>
+Dies ist eine Adresse: Peter Muster, <Location>Bahnhofstrasse 42</Location>, <Location>9999</Location> <Location>Wil</Location>
+in <Location>CH</Location>-<Location>9999</Location> <Location>Wil</Location>
+<Location>Postfach</Location> oder <Location>Postfach 123</Location>
+in <Location>8006</Location> <Location>Zürich</Location>
+Datum und Ort 01.01.2009 <Location>Zürich</Location>
+in der <Location>Schweiz</Location> und in <Location>Italien</Location>
+<Location>schweizerischer</Location> Herkunft. <Location>italienische</Location> Familie
+# TODO verheiratet mit <Location>Schweizer</Location>, verheiratet mit <Location>Schweizerin</Location>
+<Location>Klinik für Neurologie</Location>
+<Location>Klinik für Innere Medizin</Location> # needs dictionary
+<Location>Klinik für Xologie und Yologie</Location>\nnext line
+<Location>Xwilspital</Location>
+
+im <Location>Spital Musterhausen</Location>
+im <Location>UniversitätsSpital Zürich</Location> oder im <Location>Universitätsspital Zürich</Location> oder im <Location>USZ</Location>
+im <Location>Spital St. Gallen</Location>  <Location>KS Aarau</Location>
+# TODO KS Baden treat from ambigous location
+im <Location>Hausärzte Zentrum Bern</Location>
+an der Haltestelle <Location>Hardbrücke</Location> ausgestiegen
+
+<Location>Gemeinschaftspraxis Werdgesund</Location>
+<Location>Praxisgemeinschaft am Helvetiaplatz</Location>
+<Location>Altersheim Xheim</Location>
+des <Location>Altersheims Xheim</Location>
+<Location>Altersheim "Xheim"</Location>
+# TODOD <Location>Altersheim \"Xheim\"</Location>
+<Location>Seniorenheim am See</Location>
+<Location>Bellevue-Praxis</Location>
+<Location>Outofvoc-Klinik</Location>
+
+Firma <Location>Outofvoc</Location>
+<Location>Stiftung Outofvoc Outofvocother</Location>
+<Location>Outofvoc-Outofvoc-Stiftung</Location>
+
+Elektrobehandlung (chinesische Medizin) # potential false positive
+beim langsamen Laufen # false positiv location
+# TODO Hans Neuhaus # false positiv location
+gibt es klinisch keinen Anhalt # false positive Location
+in <Location>St. Moritz</Location> or in <Location>Pfäffikon ZH</Location>
+
+<Location>russischsprachige</Location> Patientin. <Location>türkischsprachiger</Location> Patient.
+sprachigmore
+
+durchweg
+aus der Entzugsklinik austreten

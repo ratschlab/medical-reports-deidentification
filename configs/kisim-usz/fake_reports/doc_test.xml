@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report id="2">
+  <Patienteninformation>DUPONT-MEIER Vreni Gisela, geb. 27.02.1933&#13;Musterstrase 42, CH-1234 Musterhausen&#13;</Patienteninformation>
+  <Personalien_Patient>DUPONT-MEIER Vreni, Gisela, 27.02.1933, Musterstrasse 42, 1234 Musterhausen</Personalien_Patient>
+  <addressor>PD Dr. med. K. Weber, Leitender Arzt, UniversitätsSpital Zürich</addressor>
+  <PATNAME>Lisa Meier</PATNAME>
+  <textfield>Herr Dupont stellt sich am 11.01.2016 zur klinischen Kontrolle in unserer Poliklinik vor. Die Beschwerden sind aktuell stationär, der Patient hat keine Beeinträchtigungen. Die MRI-Bilder von HWS und BWS zeigen das Bild einer transerven Myelitis. ... Im Falle pathologischer Befunde im MRI oder bieten wir Herrn Dupont direkt wieder auf.</textfield>
+  <diagnosen> Friedreich-Ataxie (FRDA), fremdanamnestisch. Abnahme Kommunikationsfähigkeit. Rollstuhlpflichtigkeit seit 25. LJ, Skollose. Schwere zentrale Schlafapnoe vom Cheyne-Stokes-Typ.
+  </diagnosen>
+  <Adressat><AddressList><Name>Meier-Huber</Name></AddressList></Adressat>
+  <text>
+    Textfragmente
+
+    Vreni Huber-Meier
+
+    in der Klinik für Neurologie hat....
+
+      Oberer Graben 12 oder Oberer Graben
+
+      Pallasklinik
+
+    <DisplayName>D. Veryseldom</DisplayName>
+    <DisplayName>D. Veryseldom, MPA</DisplayName>
+    Maria Veryseldom hat.
+
+    Gemeinschaftspraxis Werdgesund
+
+    <Visum>01.03.2003 XZYW</Visum>
+    <Visum>01.03.2003 (ABCD)</Visum>
+
+    <NAME>Hellosedlom</NAME>
+
+    im RAE D 22
+
+    Hans Meier hello
+
+    En-Bloc-Mobi
+
+  </text>
+</report>

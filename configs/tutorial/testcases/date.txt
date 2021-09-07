@@ -1,0 +1,3 @@
+Date; Id, Patienteninformation
+
+<Date>01.01.2019</Date> # ex 1

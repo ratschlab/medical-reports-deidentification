@@ -1,0 +1,12 @@
+# exclude Date annotations from Id fields
+Id; Date, Contact
+ID; Date, Contact
+Icode; Date, Contact
+//Beurteilung//Icode; Date
+//Medis//oName|Text|ProdID|ATC ; Name, Location
+#//Medis//Bemerkung.*; Name
+#//Medis//oName; Name
+#//Medis//Text; Name
+Markenname; Name
+Versandart; Name
+//DiagnList//CodeList//Version; Date

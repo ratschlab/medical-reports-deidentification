@@ -1,0 +1,256 @@
+Phase: Locations
+Input: Token Lookup Date Newline
+Options:control=appelt
+
+
+Macro: StreetNumber
+(
+    ({Token.string ==~ "[0-9]+"} ({Token.string ==~ "[A-Za-z]"})?)
+)
+
+Macro: SwissZipCode
+(
+    // checking that it is not within a date, to avoid false positive like 01.01.2000 Zürich
+    { Token.string ==~ "[1-9][0-9]{3}", ! Token within Date}
+)
+
+Rule: LocationLeftTrigger
+(
+    {Token.string == "Haltestelle"}
+    ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"}):loc
+) --> :loc.Location = { rule = "LocationLeftTrigger", type = "other" }
+
+Rule: CityLookup
+(
+   ({ Lookup.majorType =~ "location", Lookup.minorType =~ "city" }):loc
+)
+--> :loc.Location = { rule = "CityLookup", type = "city" }
+
+Rule: RegionLookup
+(
+   ({ Lookup.majorType =~ "location", Lookup.minorType ==~ "region|cantons" }):loc
+)
+--> :loc.Location = { rule = "RegionLookup", type = "region" }
+
+Rule: CityAndCanton
+(
+    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "city" })[1,3]
+    ({Token.string ==~ "[(,/]"})?
+    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "cantons_abbrevs" })
+    ({Token.string == ")"})?
+):loc --> :loc.Location = { rule = "CityAndCanton", type = "city" }
+
+
+Rule: GenericStreetNames
+(
+    (
+        {Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+(allee|gasse|platz|strasse|weg)"}  |
+        ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+str"} ({Token.string ==~ "."})? )
+    )
+    (StreetNumber)?
+): loc
+--> :loc.Location = { rule = "GenericStreetNames", type = "street" }
+
+Rule: GenericStreetNamesLeftTrigger
+(
+    {Token.string ==~ "Rue|Via"}
+    ({Token.string ==~ "des|du|la"})?
+    ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"})+
+    (StreetNumber)?
+):loc --> :loc.Location = { rule = "GenericStreetNamesLeftTrigger", type = "street" }
+
+Rule: StreetsNamedAfterPeople
+(
+    ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} ({Token.string == "-"})?)+
+    {Token.string ==~ "Strasse|Str|(\\p{javaUpperCase}\\p{javaLowerCase}+str)|(\\p{javaUpperCase}\\p{javaLowerCase}+strasse)"}
+    ({Token.string == "."})?
+    (StreetNumber)?
+):loc --> :loc.Location = { rule = "StreetsNamedAfterPeople", type = "street"} // overwrite name annotations
+
+
+Rule: PostalBox
+(
+    {Token.string == "Postfach"}
+    ({Token.kind == "number"})?
+):loc --> :loc.Location = { rule = "PostalBox", type = "street" }
+
+Rule: ZipCodeAndCityWithCountry
+(
+    ({Lookup.majorType =~ "location", Lookup.minorType =~ "country_code"}):country
+    ({Token.string == "-"})?
+    ({Token.string ==~ "[0-9]{4,}"}):zip
+    (({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} | { Lookup.majorType =~ "location"}):city)?
+):loc --> :country.Location = { rule = "ZipCodeAndCityWithCountry", type = "country" },
+          :zip.Location = { rule = "ZipCodeAndCityWithCountry", type = "zip" },
+          :city.Location = { rule = "ZipCodeAndCityWithCountry", type = "city" }
+
+Rule: CountriesLookup
+(
+     ({ Lookup.majorType =~ "location", Lookup.minorType ==~ "country" }):loc
+)
+--> :loc.Location = { rule = "CountriesLookup", type = "country" }
+
+
+Rule: CountryAdjectivesLookup
+(
+     ({ Lookup.majorType =~ "location", Lookup.minorType =~ "country_adjective|citizenship" }):loc
+)
+--> :loc.Location = { rule = "CountryAdjectivesLookup", type = "geographical adjective" }
+
+Rule: LanguagesFromGazetteer
+(
+    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "language" })
+):loc --> :loc.Location = { rule = "LanguagesFromGazetteer", type = "other" }
+
+Rule: CopyLocationOther
+(
+    ({ Lookup.majorType =~ "location", Lookup.minorType =~ "other" }):loc
+) --> :loc.Location = { rule = "CopyLocationOther", type = "other" }
+
+Rule: PossibleZipCode
+(
+    (SwissZipCode): zip
+) --> :zip.PossibleZipCode = {rule = "PossibleZipCode" }
+
+
+Rule: HospitalLocation
+(
+    (
+        // prefix by Spital
+        ({Token.string ==~ "(\\p{javaUpperCase}?\\p{javaLowerCase}*[Ss]pital(s|es)?|Sanatorium|Pathologie|Reha|Krankenhaus|UniversitätsSpitals)"})
+        ({Token.string =~"[.-]"})?
+        ({Lookup.majorType == "location"} | {Token.orth == "upperInitial"}) // location could consist of several tokens
+    ) |
+    (
+        // weaker triggers (Kantonsspital, Regionalspital), require location
+        {Token.string ==~ "KS|RS"}
+        {Lookup.majorType == "location"}
+    )
+):loc --> :loc.Location = { rule = "HospitalLocation", type = "organisation" }
+
+
+
+Rule: HospitalPostfix
+(
+    { Token.string =~ "spital[s]?$" }
+):loc --> :loc.Location = { rule = "HospitalPostfix", type = "organisation" }
+
+
+
+Rule: HospitalUnit
+(
+    (
+            {Token.string ==~ "Sprechstunde|Klinik|Institut|Zentrum|Departement|Abteilung"}
+            ({Token.string == "und"} {Token.string == "Poliklinik"})?
+            {Token.string == "für"}
+    )
+    {Token.orth == "upperInitial"}
+    (
+        ({Token.orth == "upperInitial"})
+        |
+        // enumeration
+        (
+          ({Token.string == "-"})?
+          ({Token.string ==~ "und|kl"} | {Token.string ==~ "[,/&]"}) ({Newline})?
+          {Token.orth == "upperInitial"}
+        )[0,4]
+    )
+):loc --> :loc.Location = { rule = "HospitalUnit", type = "organisational unit" }
+
+
+Rule: HospitalUnitRightTriggered
+(
+    {Token.string =~ "ologisch[e]?"} {Token.string == "Klinik"}
+):loc --> :loc.Location = { rule = "HospitalUnitRightTriggered", type = "organisational unit" }
+
+Rule: HospitalUnitPostfix
+(
+    ({Token.string == "Universitäres"})?
+    {Token.string =~ "\\p{javaUpperCase}\\p{javaLowerCase}+(klinik|institut|zentrum[s]?|departement)"}
+    ({Token.string =~ "\\p{javaUpperCase}\\p{javaLowerCase}+"} | {Lookup.major == "location"})?
+):loc --> :loc.Location = { rule = "HospitalUnitPostfix", type = "organisational unit" }
+
+
+Rule: HealthcareOrSocialInstitutions
+(
+    (
+        (
+            {Token.string =~ "[Pp]raxis"} |
+            {Token.string == "Hausärzte"} |
+            {Token.string ==~ "Ärztehaus|Aerztehaus|Arzthaus"} |
+            {Token.string == "Permanence"} |
+            {Token.string == "Ärztezentrum"} | {Token.string == "Aerztezentrum"} |
+            {Token.string == "Homecare"} | {Token.string == "Sozialzentrum"} |
+            (({Token.string == "Alters"} {Token.string == "-"})?
+            {Token.string ==~ "(Altersheim|Altenheim|Altersresidenz|Alterssiedlung|Alterswohnheim|Alterszentrum|Heim|Pflegheim|Pflegeheim|Pflegewohngruppe|Pflegzentrum|Pflegezentrum|Residenz|Seniorenheim|Seniorenzentrum|Übergangspflegheim|Übergangspflegeheim)[s]?"}) |
+            {Token.string ==~ "APH|PZ"} |
+            ({Token.string == "Praxisgemeinschaft|Beratungsstelle"}) |
+            {Token.string ==~ "Salem|Spitex|Tertianum|Klinik|Kliniken|Klinikum|Rehabilitationsklinik|Sanatorium|RehaZentrum"}
+        )
+        ({Token.string == "\\\""})?
+        ({Token.kind == "punctuation", !Token.string ==~ "[.,:]"})?
+        ({Token.string ==~ "am|im"})?
+        ({Token.orth == "upperInitial", Token.string != ","} | {Token.string ==~ "[&]"})+
+        ({Token.string == "AG"})?
+        ({Token.string ==~ "[\\\\]?\""})?
+    ):loc
+) --> :loc.Location = { rule = "HealthcareOrSocialInstitutions", type = "organisation" }
+
+
+Rule: HealthcareOrSocialInstitutionsRightTriggered
+(
+    ({ Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+[Pp]raxis" })
+    |
+    (
+        {Token.orth == "upperInitial"}
+        ({Token.string ==~ "-"})
+        {Token.string ==~ "Praxis|Klinik|Rehaklinik|Wohnheim|Ärztezentrum"}
+    )
+):loc --> :loc.Location = { rule = "HealthcareOrSocialInstitutionsRightTriggered", type = "organisation" }
+
+
+Rule: CopyHospitalsFromGazetteer
+(
+    ({Lookup.majorType =~ "organization", Lookup.minorType =~ "hospital"}): loc
+) --> :loc.Location = { rule = "CopyHospitalsFromGazetteer", type = "organisation", confidence = "high" }
+
+
+Rule: CopyInstitutionsFromGazetteer
+(
+    ({Lookup.majorType =~ "organization", Lookup.minorType =~ "organization"}): loc
+) --> :loc.Location = { rule = "CopyInstitutionsFromGazetteer", type = "organisation" }
+
+
+Rule: CompanyLeftTriggered
+(
+    {Token.string == "Firma"}
+    ({Token.orth == "upperInitial" }):loc
+) --> :loc.Location = { rule = "CompanyLeftTriggered", type = "organisation" }
+
+Rule: Foundations
+(
+    ({Token.string == "Stiftung"} ({Token.orth == "upperInitial"})[1,3])
+):loc --> :loc.Location = { rule = "Foundations", type = "organisation" }
+
+Rule: FoundationsRightTriggered
+(
+    ({Token.string ==~ "\\p{javaUpperCase}\\p{javaLowerCase}+stiftung"} ({Token.orth == "upperInitial"} ({Token.string == "-"})?)[0,3]) |
+    (({Token.orth == "upperInitial"} ({Token.string == "-"})?)[1,3]  {Token.string == "Stiftung"})
+):loc --> :loc.Location = { rule = "FoundationsRightTriggered", type = "organisation" }
+
+
+// russischsprachig ...
+Rule: DetectLanguages
+(
+    (
+        ({Token.string ==~ "[Ss]chweizerdeutsch[e]?"}) |
+        ({Token.string =~ "sprachig$|sprachige[rnm]?$"})
+    ):lang
+)--> :lang.Location = { rule = "DetectLanguages", type = "geographical adjective" }
+
+// false positives: Entzugsklinik, Tagesklinik if not followed by a name
+Rule: ConsumeKlinik
+(
+    {Token.string =~ "\\p{javaUpperCase}\\p{javaLowerCase}+(klinik)", !Token within Lookup}
+    {Token.orth == "lowercase"}
+) --> {}

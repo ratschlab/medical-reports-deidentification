@@ -1,0 +1,26 @@
+# stripping away the following fields for the reports for ADE
+AddrLine
+Addressor
+Adressat
+Adressliste
+Anrede
+EMail
+FREMDNR
+Fachtitel
+Fax
+Institution
+Klinik
+Land
+Ort
+PLZ
+PatAdr
+Sozialanamnese
+Tel
+VISUM
+Vorname
+//Operateur//Name
+//Operateur//DisplayName
+//SigVis[0-9]/DisplayName
+Patpersonalien
+PatPersonalien
+PatInfo

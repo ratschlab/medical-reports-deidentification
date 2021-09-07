@@ -1,0 +1,178 @@
+{
+    "UntersuchEKG": {
+        "Text": "normokarder    Sinusrhythmus \tmit einer Frequenz von 70/min, Indifferenztyp, Zeitindices normwertig, regelrechte Repolarization.",
+        "Beilage": "1",
+        "Datum": "21.01.2016"
+    },
+    "UntersuchLabor": {
+        "Beilage": "1",
+        "Datum": "21.01.2016"
+    },
+    "Version2": "1",
+    "ErgometrieSpiroFahrrad": {
+        "Titel": "Spiroergometrie Fahrrad"
+    },
+    "Systemanamnese": {
+        "Titel2": "kardiovaskuläre Risikofaktoren",
+        "Titel": "Systemanamnese und"
+    },
+    "StatusAnderes": {
+        "Titel": "Weitere Organsysteme"
+    },
+    "Anrede": "Sehr geehrter Herr Dr. Weber",
+    "StatusArterien": {
+        "Titel": "Arterien"
+    },
+    "Berichtstitel": {
+        "TextTitle": "Kardiologie ambulante Untersuchung",
+        "Datum": "21.01.2016"
+    },
+    "Medis": {
+        "List": [
+            {
+                "Ab": "0",
+                "ATC": "B01AC06",
+                "oWirkstoff": "Acetylsalicylsäure",
+                "Mo": "1",
+                "Mi": "0",
+                "BemerkungEinnahme": "Stk p.o.",
+                "RecordVersion": "5",
+                "Applcode": "p.o.",
+                "ProdID": "GL01525443",
+                "Wirkstoff": "Acetylsalicylsäure Filmtabletten 100mg",
+                "Markenname": "Aspirin Cardio (Filmtabl 100 mg)",
+                "Unit": "Stk",
+                "oName": "Aspirin Cardio Bayer"
+            },
+            {
+                "Ab": "0",
+                "ATC": "C09CA06",
+                "oWirkstoff": "Candesartan",
+                "Mo": "1",
+                "Mi": "0",
+                "BemerkungEinnahme": "Stk p.o.",
+                "RecordVersion": "5",
+                "Applcode": "p.o.",
+                "ProdID": "GL01954747",
+                "Wirkstoff": "Candesartan Tabletten 16mg",
+                "Markenname": "Atacand (Tabl 16 mg)",
+                "Unit": "Stk",
+                "oName": "Atacand AstraZeneca"
+            },
+            {
+                "Ab": "0",
+                "ATC": "N06AB10",
+                "oWirkstoff": "Escitalopram",
+                "Mo": "2",
+                "Mi": "0",
+                "BemerkungEinnahme": "Stk p.o.",
+                "RecordVersion": "5",
+                "Applcode": "p.o.",
+                "ProdID": "GL04404987",
+                "Wirkstoff": "Escitalopram Filmtabletten",
+                "Markenname": "Cipralex (Filmtabl 20 mg)",
+                "Unit": "Stk",
+                "oName": "Cipralex Lundbeck"
+            },
+            {
+                "Ab": "0",
+                "ATC": "C10AA07",
+                "oWirkstoff": "Rosuvastatin",
+                "Mo": "1",
+                "Mi": "0",
+                "BemerkungEinnahme": "Stk p.o.",
+                "RecordVersion": "5",
+                "Applcode": "p.o.",
+                "ProdID": "GL03266017",
+                "Wirkstoff": "Rosuvastatin Filmtabletten 10mg",
+                "Markenname": "Crestor (Filmtabl 10 mg)",
+                "Unit": "Stk",
+                "oName": "Crestor AstraZeneca"
+            },
+            {
+                "Ab": "22",
+                "ATC": "A10AE06",
+                "oWirkstoff": "Insulin degludec",
+                "Mo": "0",
+                "Mi": "0",
+                "BemerkungEinnahme": "U.I. s.c.",
+                "RecordVersion": "5",
+                "Applcode": "s.c.",
+                "ProdID": "GL05565244",
+                "Wirkstoff": "Insulin degludec Injektionslösung [ml]",
+                "Markenname": "Tresiba FlexTouch (Inj Lös 100 E/ml) Fertpen",
+                "Unit": "U.I.",
+                "oName": "Tresiba Novo Nordisk FlexTouch"
+            },
+            {
+                "ATC": "A10AB05",
+                "oWirkstoff": "Insulin aspart",
+                "BemerkungEinnahme": "gem. NSS",
+                "RecordVersion": "3",
+                "Bemerkung0": "gem. NSS",
+                "Wirkstoff": "Insulin aspart Injektionslösung",
+                "Markenname": "Insulin NovoRapid FlexTouch (Inj Lös) Fertpen",
+                "ProdID": "GL05136218",
+                "oName": "Insulin NovoRapid FlexTouch"
+            }
+        ]
+    },
+    "Bericht": {
+        "7": {
+            "CONTENT": "",
+            "TYPE": "AbschnittNeu"
+        },
+        "Diagnose": {
+            "Diagnose": {
+                "DiagnList": [
+                    {
+                        "CodeList": "",
+                        "Titel": "Herzinsuffizienz bei erhaltener systolischer Pumpfunktion (HFpEF), ED 01/2016",
+                        "OrphaCodes": "",
+                        "Text": "·\tAktuell: erste kardiologische Standortbestimmung\n·\t02.01.2016 NT-proBNP 2598 ng/l\n",
+                        "TherapyRelevant": "",
+                        "DRGHauptDiagn": "",
+                        "TakeInReport": "1",
+                        "Inited": "1",
+                        "DermaCodes": "",
+                        "ID": "9446d8-94019"
+                    },
+                    {
+                        "CodeList": [
+                            {
+                                "Visum": "NA",
+                                "Code": "R55.0",
+                                "DisplayName": "Lymphknotenvergrößerung, umschrieben",
+                                "Name": "Umschriebene Lymphknotenvergrößerung",
+                                "TumorActivity": "",
+                                "Billable": "1",
+                                "ID": "7400-4322-abe4",
+                                "Dat": "14.01.2016 12:32",
+                                "State": "3",
+                                "Version": "ICD-10-GM 2016",
+                                "Context": "238",
+                                "Kat": "ICD10",
+                                "Modifier": "",
+                                "Type": "",
+                                "Side": ""
+                            }
+                        ],
+                        "Titel": "Indeterminierte pulmonale Noduli bis maximal 7 mm in verschiedenen Lungenlappen, ED 02/2015",
+                        "OrphaCodes": "",
+                        "Text": "·\tEx-Nikotinkonsum von kumulativ 50 py, sistiert 2011\n",
+                        "TherapyRelevant": "",
+                        "DRGHauptDiagn": "",
+                        "TakeInReport": "1",
+                        "Inited": "1",
+                        "DermaCodes": "",
+                        "ID": "ae2d"
+                    }
+               ]
+            },
+            "Titel": "Diagnosen"
+        },
+    "SigVis2": {
+        "SigVis": "vis."
+    }
+  }
+}

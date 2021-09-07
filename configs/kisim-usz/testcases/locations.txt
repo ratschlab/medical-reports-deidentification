@@ -1,0 +1,89 @@
+Location; Addressor, Patienteninformation
+
+
+<Location>Bahnhofsstrasse 1</Location> <Location>DE</Location>-<Location>12345</Location> <Location>Einhausen</Location>
+
+#<Location>Wangen</Location>
+#<Location>Wangen ZH</Location>
+
+# Addressor field
+#<Addressor>Hallo <Location>Klinik für Transplantationschirurgie</Location>\n<Location>Rämistrasse 100</Location>\n<Location>8091</Location> <Location>Zürich</Location></Addressor> # TODO new lines
+#<Location>Klinik für Transplantationschirurgie</Location> <Location>Klinik für Herz und Gefässchirurgie</Location> <Location>Departement Chirurgie</Location> # TODO new line
+<Location>Rheumaklinik</Location>
+<Location>Herzzentrum</Location>
+<Location>Klinik Musterwil</Location>
+<Location>Neurologische Klinik</Location>
+<Location>Klinik für Ohren-, Nasen-, Hals- und Gesichtschirurgie</Location>
+<Location>Klinik für Ohren-, Nasen-,\n Hals- und Gesichtschirurgie</Location>
+<Location>Klinik für Viszeral- und Transplantationschirurgie</Location>
+
+in <Location>Domat-Ems</Location>, <Location>St. Moritz</Location>
+US und UK und Ger # don't annotate as location
+VAC-Wechsel US-Stumpf links # (fp US)
+Konz: 20000 # fp location
+schon groessere Mengen #(fp location)
+bewegt die Hände in kleinem ROM # fp location ROM
+Port-a-Cath # (fp Port)
+Port a Cath # fp
+Bristol-Myers Squibb # fp location Bristol
+<Location>Spital Lachen</Location> <Location>Triemli Spital</Location> <Location>KS Aarau</Location> hello
+... im <Location>Spital Einsiedeln</Location>. Beim Entritt wurde...
+<Location>Seniorenstiftung Outofvoc</Location>
+<Location>Oberer Graben 12</Location> oder <Location>Oberer Graben</Location>
+<Location>Gottfried-Meier-Strasse 23</Location>
+<Location>Gottfried Meier Strasse 23</Location>
+<Location>Outofvoc-Outofvocstr 12</Location>
+<Location>Outofvoc-Outofvocstrasse 12</Location>
+<Location>Würzburg</Location> <Location>Tel Aviv</Location> # testing gazetteer
+<Location>Graubünden</Location>
+<Location>schweizerdeutsch</Location>  <Location>rätoromanisch</Location>
+<Location>Tunis</Location>
+Dr. Gabbs, <Location>GE</Location>
+
+## Buildings
+<Location>RAE D 22</Location> <Location>HOF B</Location> <Location>HOF B 27</Location> <Location>C NORD1 129</Location> <Location>NORD2 C 129</Location> <Location>AUFN B Saal 1</Location>
+<Location>B Sued 25</Location> <Location>B Süd 1</Location> <Location>NORD 1</Location>
+<Location>Station F 1</Location>
+
+<Location>Stockwerk E</Location>
+<Location>Zimmer 123</Location>
+
+## Organisations
+<Location>Pallasklinik</Location>
+<Location>Sozialdienst</Location>
+
+## Organisational Units
+durch die Kollegen von <Location>PSY</Location>
+
+
+## Patient address
+<Patienteninformation>Frau Vreni Muster, <Location>Am Platz</Location>, <Location>A-12234</Location> <Location>Musterwilen</Location></Patienteninformation>
+<Patienteninformation>Herr Hans Muster, <Location>Appartment 123, 32</Location>, <Location>A-12234</Location> <Location>Musterwilen</Location></Patienteninformation>
+<Patienteninformation>Herr Hans Muster, <Location>XY street 123</Location>, <Location>GB-EC1A1BB</Location> <Location>Testcity</Location></Patienteninformation>
+<Patienteninformation>OUTOFVOC-D'XYZ Jeanne Marie, geb. 01.01.1900\r\n <Location>am Musterstrasse 21a</Location>, <Location>CH-1234</Location> <Location>Musterwilen</Location></Patienteninformation>
+<Patienteninformation>OUTOFVOC-D'XYZ Jeanne Marie, Elisa, geb. 01.01.1900\r\n <Location>10, Rue Mouffetard</Location>, <Location>CH-1234</Location> <Location>Musterwilen</Location></Patienteninformation>
+
+
+## Various Locations
+Patient stammt aus der <Location>Lavaux</Location>
+<Location>St. Gallen</Location>
+<Location>St.Gallen</Location>
+<Location>Kantonsspital St.Gallen</Location> <Location>Kantonsspital St. Gallen</Location>
+<Location>Bad Säckingen</Location>
+<Location>Serbokroatische</Location>
+<Location>Südtiroler</Location>
+
+## Nationalitities and Languages
+Der Patient ist <Location>Grieche</Location>.
+
+in <Location>ZH</Location>
+<List><Medis><Text>ZH</Text></Medis></List>
+
+# False Positives
+mit dem Zug nach <Location>Bern</Location>
+T-Zell
+T Zell
+T - Zell
+B - Zell
+NHL-B-Zell-Lymphom
+

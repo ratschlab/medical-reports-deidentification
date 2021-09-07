@@ -1,0 +1,104 @@
+# DATE OF BIRTH
+Patient/GebDat; Date; type=DOB
+
+# (PATIENT) NAME
+//Patient//Name; Name; type=patient
+/PatName; Name; type=patient
+//Bericht//PatName; Name; type=patient
+//Bilder//PatName; Name; type=patient
+PATNAME; Name; type=patient
+//Patient//Vorname; Name; type=patient, format=f
+//Adressat//Name; Name; type=other, confidence=90, format=l
+//Adressat//Vorname; Name; type=other, format=f
+//AddressList//Vorname; Name; type=other, format=f
+//AddressList//Name; Name; type=other; Kostentraeger
+#Medis/oName; Name; type=doctor # TODO follow up
+//Stammkopie//Name; Name; type=other
+//Personalien//Name; Name; type=patient
+//Personalien//Name2; Name; type=patient
+PatVName; Name; type=patient
+Bezugsperson; Name; type=other
+//Stammkopie//Vorname; Name; type=other
+//Stammkopie//Name; Name; type=other
+VORNAME; Name; type=patient, format=f
+PatVorname; Name; type=patient, format=f
+/NAME; Name; type=patient # annotate NAME element at document root
+/PatLink//NAME[0-9]*; Name; type=patient, format=l
+/PH___95---NAM; Name; type=patient, format=l f # NAM (sic!)
+
+
+# ADDRESSES
+PLZ; Location; type=zip
+ShortAddress; Location; type=street
+Ort; Location; type=street; BlutdruckEins, BlutdruckZwei, BlutdruckDrei, Label
+PatStra; Location; type=street
+PatOrt; Location; type=city
+PatPLZ; Location; type=zip
+PatNat; Location; type=country
+Land; Location; type=country
+Sprache; Location; type=country
+Strasse; Location; type=street
+//Adressat//Zusatz; Location; type=other
+/Adressliste//Zusatz; Location; type=other
+//Address//Zusatz; Location; type=other
+//AddressList//Zusatz; Location; type=other
+
+ZIMMER; Location; type=address
+
+# ORGANISATION
+//Klinik//NAME; Location; type=organisational unit
+/Header/Klinik; Location; type=organisational unit
+Clinic; Location; type=organisational unit
+#Institution; Location; type=organisation
+
+# DOCTORS/STAFF
+#DisplayName; Name; type=doctor; CodeList
+#Operateur/Name; Name; type=medical staff
+#Instrumentierung/Name; Name; type=medical staff
+#Untersucher/Name; Name; type=doctor
+#VerantwChirurg/Name; Name; type=doctor
+#Assistenz/Name; Name; type=doctor
+#Assistent/Name; Name; type=doctor
+#Pflegefachpersonen/Name; Name; type=medical staff
+#Anästhesist/Name; Name; type=doctor
+#Anaesthesist/Name; Name; type=doctor
+#Verfasserin/Name; Name; type=medical staff
+#Verfasser; Name; type=medical staff
+#ArztName; Name; type=doctor
+#Teilnehmer/Name; Name; type=medical staff
+//Operateur//Key; Name; type=medical staff
+
+#Fachtitel; Location; type=organisational unit
+Sprechstunde; Location; type=organisational unit
+Team; Location; type=organisational unit
+
+# VISUM/SIGNATURE
+#SigVis1/Visum; Name; type=doctor
+#SigVis2/Visum; Name; type=doctor
+#SigVis3/Visum; Name; type=doctor
+#Vis/tot; Name; type=doctor
+#Vis/User; Name; type=doctor
+#Vis1; Name; type=doctor
+#Diagnose/Visum; Name; type=doctor
+#Adressliste/Visum; Name; type=doctor
+#Verlaufseintrag/Visum; Name; type=doctor
+
+# CONTACTS
+Tel; Contact; type=phone number
+EMail; Contact; type=email
+Fax; Contact; type=phone number
+
+# IDs
+PatNr; ID; type=patient ID
+PATNR; ID; type=patient ID
+REPORTFALLNR; ID; type=case ID
+REPORTNR; ID; type=other
+FallNr; ID; type=case ID
+FALLNR; ID; type=case ID
+KGNummer;  ID; type=case ID
+FREMDNR; ID; type=other
+UnfallNr; ID; type=other
+VERSNR; ID; type=medical insurance number
+VersNr; ID; type=medical insurance number
+TERMNR; ID; type=other
+ORDERNR; ID; type=other

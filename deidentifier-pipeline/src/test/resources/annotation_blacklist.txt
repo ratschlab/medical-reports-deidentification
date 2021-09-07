@@ -1,0 +1,4 @@
+# don't want ForbiddenAnnot within any Id element
+Id; ForbiddenAnnot
+# don't want ForbiddenAnnot within any Parent/Nested element
+//Parent//Nested; ForbiddenAnnot

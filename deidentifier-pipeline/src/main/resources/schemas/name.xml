@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2000/10/XMLSchema">
+    <element name="Name">
+        <complexType>
+            <!-- use value for default -->
+            <attribute name="type" use="optional" value="patient">
+                <simpleType>
+                    <restriction base="string">
+                        <enumeration value="patient"/>
+                        <enumeration value="relative of patient"/>
+                        <enumeration value="guardian of patient"/>
+                        <enumeration value="medical staff"/>
+                        <enumeration value="doctor"/>
+                        <enumeration value="other"/>
+                    </restriction>
+                </simpleType>
+            </attribute>
+            <attribute name="rule" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="confidence" use="optional">
+                <simpleType>
+                    <restriction base="float"/>
+                </simpleType>
+            </attribute>
+            <attribute name="format" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="firstname" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="lastname" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+            <attribute name="signature" use="optional">
+                <simpleType>
+                    <restriction base="string"/>
+                </simpleType>
+            </attribute>
+        </complexType>
+    </element>
+</schema>

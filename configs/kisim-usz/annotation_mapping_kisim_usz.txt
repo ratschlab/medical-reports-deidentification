@@ -1,0 +1,67 @@
+PatPersonalien; Patienteninformation
+Patpersonalien; Patienteninformation
+//PatInfo//Text; Patienteninformation
+AddrLine; AddressField
+Address; AddressField
+Adresse; AddressField
+PostalAddress; AddressField
+#SigVis1; SignatureField
+#SigVis2; SignatureField
+#SigVis3; SignatureField
+#SigVis4; SignatureField
+DAT1; LocationDateField
+AlterBeiListing; AgeField
+PatAlter; AgeField
+//Patient/Alter/Val; AgeField
+//Patient/Alter/Display; AgeField
+Alter; AgeField
+SexAlter; AgeField
+
+# handling Signatures
+VISUM; FieldWithSignature
+[\\p{IsAlphabetic}]*VisDat; VisDat
+[\p{IsAlphabetic}]*Dat; FieldWithSignature
+[\p{IsAlphabetic}]*DAT; FieldWithSignature
+[\p{IsAlphabetic}]*Vis; FieldWithSignature
+[\p{javaUpperCase}]*VIS; FieldWithSignature
+[\p{IsAlphabetic}]*Ampel; FieldWithSignature
+[\p{IsAlphabetic}]*Visum; FieldWithSignature
+Vis[1-9]*; FieldWithSignature
+SigVis[1-9]; FieldWithSignature
+OrtDatum; FieldWithSignature
+#//Operateur//Name; FieldWithSignature
+User; FieldWithSignature
+TeMut; FieldWithSignature
+Verordner; FieldWithSignature
+VisumDateTime; FieldWithSignature
+UDTOrtDatum; FieldWithSignature
+//(Teilnehmer|Instrumentierung|Anästhesist|VerantwChirurg|Anaesthesist|Assistenz|Untersucher|AufnehmendeAerzte|Pflegefachpersonen|Verfasserin|ArztName|Assistent|Aerzte|ZuStatArzt|ZuStatOberArzt)//Key; FieldWithSignature
+//InterneZus//RKey; FieldWithSignature
+
+
+# Occupation/AnamneseField
+[\p{IsAlphabetic}]*[Aa]namnese; AnamnesisField
+[\p{IsAlphabetic}]*[Bb]eruf; AnamnesisField
+/NOTE; AnamnesisField
+SOZAN; AnamnesisField
+SOZAN___95.*; AnamnesisField
+Subjektiv; AnamnesisField
+JetzigesLeiden; AnamnesisField
+BERUF; AnamnesisField
+Eintrittsbefund; AnamnesisField
+Konsilien; AnamnesisField
+
+# Address
+
+#Addressor; FieldWithAddress
+AddrLine; FieldWithAddress
+Klinik; FieldWithAddress
+PostalAddress; FieldWithAddress
+Institution; FieldWithAddress
+//Header/ListName; FieldWithAddress
+
+# ReportSpecific
+//Info/Bemerk/Text; DateSmallCapsSignField
+//Bericht/Verlauf/Text; DateSmallCapsSignField
+/Bemerkungen; SignatureSmallCapsEndSentenceField
+/Info/Bemerk/Text; SignatureSmallCapsEndSentenceField

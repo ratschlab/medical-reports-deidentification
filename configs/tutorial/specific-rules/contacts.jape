@@ -1,0 +1,23 @@
+Phase: Contacts
+Input: Lookup Token Newline
+Options: control=appelt
+
+// copied and adapted from generic rules.
+// recognizes numbers like
+//   079 123 45 67
+//   079-123-45-67
+//   079 123 4567
+Rule: SwissNumberSimplified
+(
+        // prefix
+        (
+             ({Token.string ==~ "0[1-9][0-9]{1,2}"})
+        )
+        // extension
+        (
+            ({Token.kind == number, Token.length == 3 } ({Token.string == "-"})?  {Token.kind == number, Token.length == 2 } ({Token.string == "-"})? {Token.kind == number, Token.length == 2 }) |
+            ({Token.kind == number, Token.length == 3 } ({Token.string == "-"})?  {Token.kind == number, Token.length == 4 })
+        )
+):phone -->
+ :phone.Contact={type = "phone number", rule = "SwissNumberSimplified"}
+
