@@ -4,7 +4,7 @@ general/stop.lst:stop:stop:german
 general/abbreviations_stop.lst:stop:stop:german
 person_names/firstnames_switzerland_frequent.lst:name:firstname:frequent
 person_names/firstnames_switzerland_seldom.lst:name:firstname
-person_names/firstnames_usz_frequent.lst:name:firstname:frequent
+usz_internal_gazetteers/firstnames_usz_frequent.lst:name:firstname:frequent
 usz_internal_gazetteers/firstnames_usz_seldom.lst:name:firstname
 person_names/surnames_usz_frequent.lst:name:surname:frequent
 usz_internal_gazetteers/surnames_usz_seldom.lst:name:surname:german
