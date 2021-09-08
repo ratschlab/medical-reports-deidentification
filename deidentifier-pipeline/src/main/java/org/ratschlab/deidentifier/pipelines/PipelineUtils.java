@@ -103,14 +103,6 @@ public class PipelineUtils {
         return getPr("gate.creole.gazetteer.DefaultGazetteer", options);
     }
 
-    public static ProcessingResource getPosTagger(String modelFile) throws GateException {
-        Gate.getCreoleRegister().registerPlugin(new Plugin.Maven("uk.ac.gate.plugins", "stanford-corenlp", "8.5.1")); // TODO parametrize version
-
-        return getPr("gate.stanford.Tagger",
-                ImmutableMap.of("modelFile", modelFile));
-
-    }
-
     public static ProcessingResource getTransducer(String japeRulesUrl, String inputAsName, String outputAsName) {
         japeRulesUrl = resolvePath(japeRulesUrl);
 
