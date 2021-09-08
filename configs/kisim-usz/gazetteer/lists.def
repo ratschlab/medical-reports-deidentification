@@ -38,7 +38,7 @@ medical/medical_terms_manual.lst:medical:medical
 medical/drugs_usz.lst:medical:medical
 occupations/generic_occupations.lst:occupation:occupation
 occupations/company_list_ch.lst:occupation:employer
-usz_internal_gazetteers/manual_input/additional_companies.txt:occupation:employer:german
+usz_internal_gazetteers/additional_companies_manual.txt:occupation:employer:german
 usz_internal_gazetteers/occupations_usz.lst:occupation:occupation
 usz/hospitals.lst:organization:hospital:german
 usz/institutions.lst:organization:organization:german
