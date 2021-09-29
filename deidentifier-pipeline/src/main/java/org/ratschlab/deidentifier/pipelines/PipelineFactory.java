@@ -25,7 +25,6 @@ public class PipelineFactory {
 
     public static SerialAnalyserController getRuleBasedPipeline(Config conf) throws GateException {
 
-        Optional<String> posTaggerModel = ConfigUtils.getOptionalString(conf, PipelineConfigKeys.POS_TAGGER_MODEL);
         Optional<String> annotationMappingUrl = ConfigUtils.getOptionalString(conf, PipelineConfigKeys.ANNOTATION_MAPPING);
         Optional<String> structuredFieldsUrl = ConfigUtils.getOptionalString(conf, PipelineConfigKeys.STRUCTURED_FIELD_MAPPING);
         Optional<String> specificTransducer = ConfigUtils.getOptionalString(conf, PipelineConfigKeys.SPECIFIC_TRANSDUCER);
@@ -39,7 +38,6 @@ public class PipelineFactory {
                 conf.getString(PipelineConfigKeys.TOKENIZER_RULES),
                 conf.getString(PipelineConfigKeys.SENTENCE_SPLITTER_GAZETTEER),
                 conf.getString(PipelineConfigKeys.SENTENCE_SPLITTER_RULES),
-                posTaggerModel,
                 gazetteerUrl,
                 suffixGazeteerUrl,
                 contextTriggersUrl,
@@ -57,7 +55,6 @@ public class PipelineFactory {
     public static SerialAnalyserController getRuleBasedPipeline(String tokenizerRulesUrl,
                                                                 String sentenceSplitterGazetteerUrl,
                                                                 String sentenceSplitterTransducerUrl,
-                                                                Optional<String> posTaggerModelUrl,
                                                                 Optional<String> gazetteerUrl,
                                                                 Optional<String> suffixGazetteerUrl,
                                                                 Optional<String> contextTriggersUrl,
@@ -86,14 +83,6 @@ public class PipelineFactory {
                 ImmutableMap.of("inputASName", "",
                         "outputASName", ""
                 )));
-
-        posTaggerModelUrl.ifPresent(posTaggerModel -> {
-            try {
-                controller.add(PipelineUtils.getPosTagger(posTaggerModel));
-            } catch (GateException e) {
-                e.printStackTrace();
-            }
-        });
 
         gazetteerUrl.ifPresent(url -> controller.add(PipelineUtils.getGazetteer(url, true, true)));
 

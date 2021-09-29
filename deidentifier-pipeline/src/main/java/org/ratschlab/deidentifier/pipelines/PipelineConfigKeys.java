@@ -8,7 +8,6 @@ public class PipelineConfigKeys {
     public static final String ANNOTATION_TYPES = "pipeline.annotationTypes";
     public static final String SENTENCE_SPLITTER_GAZETTEER = "pipeline.sentenceSplitterGazetteer";
     public static final String SENTENCE_SPLITTER_RULES = "pipeline.sentenceSplitterRules";
-    public static final String POS_TAGGER_MODEL ="pipeline.posTaggerModel";
     public static final String GAZETTEER = "pipeline.gazetteer";
     public static final String SUFFIX_GAZETTEER = "pipeline.suffixGazetteer";
     public static final String GENERIC_TRANSDUCER = "pipeline.genericTransducer";
