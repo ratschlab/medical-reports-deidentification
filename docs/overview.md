@@ -1,4 +1,4 @@
-# Overview and Scope
+# Overview
 
 The deidentification tool consists of a collection of command line applications written in Java.
 The applications is based on the [GATE framework](https://gate.ac.uk/)
@@ -8,19 +8,18 @@ represents a different command described in the following sections.
 
 ![System overview](figs/system_overview.png)
 
+## Document Import
 
-## import
-
-The `import` command imports reports typically from a database, converts them to
-a GATE compatible representation and stores a batch of documents into a GATE
-corpus (which is a directory on a filesystem).
+The deidentifier tool imports JSON reports typically from a database (json reports on the filesystem are also supported) and converts them to
+a GATE compatible representation. The `annotate` command can read directly from the appropriate source. The `import` command
+only does the import and conversion step and stores a batch of documents into a GATE corpus (which is a directory on a filesystem).
 
 It is assumed that the documents are stored in a database table or view, one row
 per document. The actual report content is encoded as JSON string in one of the columns. Other
-required columns denote the document type (`FCODE`) as well as the report id. 
+required columns denote the document type (`FCODE`) as well as the report id.
 
 The tree like structure of the JSON documents is preserved during the conversion
-to the GATE compatible representation . This can be exploited during the
+to the GATE compatible representation. This can be exploited during the
 annotation.
 
 ## annotate
@@ -35,39 +34,48 @@ example: "Mr. Muster, born 01.01.1964 in Aarau" could have 3 annotations related
 to deidentification: one for 'Muster' (Name), another for '01.01.1964' (Date,
 with the additional information that it is a birthdate) and 'Aarau' (Location).
 
-The annotation pipeline consists of basically of the following consecutive steps:
-* **Tokenization**: splitting the text into units of characters ('words'), for
-  example 'Mr. Muster' would be split into 3 tokens 'Mr', '.' and 'Muster'
-* **Sentence Splitting*: Grouping consecutive tokens together into sentences
-* **Lookups*: Annotating tokens using dictionaries ("Gazetteers"). For instance, the tokens
-  'Universitätsspital Zürich' could be annotated as "organsation" and the token
-  "Zürich" as "location"
-* **Structured Annotation*: annotate entire fields known to consist of
-  information to be deidentified. For example the content of a field `Tel` denoting a phone
-  number could immediately be annotated without having to apply any further processing.
-* **JAPE rules*: annotate tokens which need to be deidentified. This is based on
-  the structure or content of tokens (e.g. a specific trigger word such as "Dr"
-  or being a number) as well as  previous annotations from dictionaries from the
-  previous step. Note, that rules can also exploit the tree-like structure of
-  the document, for example a rule may only apply if the token in a field is
-  part of the section of the document related to patient information.
-* **Clean up*: resolve overlapping or conflicting annotations.
-
 Currently, the following entities are annotated:
 * Age
-* Address
 * Contact (distinguishing phone numbers, email and websites)
 * Date (if possible determining birth date, admission date, discharge date)
-* ID (patient or case ID, social security or insurance numbers)  
+* ID (patient or case ID, social security or insurance numbers)
 * Name (if possible distinguishing patient from staff)
 * Location (broad category containing geographical locations as well as
   organizations)
 * Occupation
 
-The implementation can effectively exploit the presence of several CPU cores to speed up the
-annotation process by annotating documents in parallel. 
+The annotation pipeline consists basically of the following consecutive steps:
+
+![Pipeline steps](figs/pipeline_overview.png)
+
+1. **Tokenization**: splitting the text into units of characters ('words'), for
+  example 'Mr. Muster' would be split into 3 tokens 'Mr', '.' and 'Muster'
+2. **Sentence Splitting**: Grouping tokens together into sentences
+3. **Lookups**: Annotating tokens using dictionaries/lexica (called "Gazetteers" in GATE). For instance, the tokens
+  'Universitätsspital Zürich' could be annotated as "organsation" and the token
+  "Zürich" as "location"
+4. **Field Normalization**: Renaming some fields in the report to a common name to simplify downstream steps. E.g.
+   `AddrLine`, `Address`, `Adresse` could all be renamed to `AddressField`.
+5. **Structured Annotation**: annotate entire fields known to contain
+  information to be deidentified. For example, the content of a field `Tel` denoting a phone
+  number could immediately be annotated without having to apply any further processing.
+6. **Context Annotation**: annotate a window (of tokens) around some trigger token with a [context annotation](components.md#context-annotations).
+   like `NameContext` or `OccupationContext` to help JAPE rules to disambiguate between e.g. surnames and professions.
+7. **JAPE rules**: annotate tokens based on a regular expression-like language. This is based on
+  the structure or content of tokens (e.g. a specific trigger word such as "Dr"
+  or being a number) as well as previous annotations from dictionaries from the
+  previous step. Note, that rules can also exploit the tree-like structure of
+  the document, for example a rule may only apply if the token in a field is
+  part of the section of the document related to patient information.
+8. **High Confidence String Annotator**: Some JAPE rules in the previous step can be marked as `high confidence`, that is,
+   whatever these rules annotate, we have high confidence that it is correct. The `HighConfidenceStringAnnotator` then checks
+   what tokens were annotated by a high confidence rule and then annotates the same tokens in the remaining document.
+9. **Clean up**: resolve overlapping or conflicting annotations using heuristics.
+
+
 
 ### JAPE Example
+<a id="jape_example"/>
 
 Here an example of a JAPE rule. We are interested in recognizing ages in a very
 specific pattern, namely the age followed by "jährige", "jähriger" or
@@ -119,6 +127,7 @@ then be saved back to a database table or to JSON files on a drive one per
 report.
 
 ### Substitution Policies
+<a id="subst_policies"/>
 
 There are several policies implemented on how annotated tokens should be
 replaced:
@@ -132,12 +141,12 @@ replaced:
   downstream application which takes care of the actual deidentification. For
   that purpose entities are replaced by 'tags' which contain as much information as
   possible from the annotation pipeline. For example a text like "Dr. P. Muster empfiehlt"
-  could be replaced by 
+  could be replaced by
   `Dr. [[[Name;P. Muster;firstname=P;lastname=Muster;type=medical staff]]] empfiehlt`
   that is, the original value is preserved and the downstream application can
   decide how to replace the name most appropriately.
-  
-There exist also an option, where a list of field names can be provided which
+
+There exist also the `--fields-blacklist` option, where a list of field names can be provided which
 are completely erased from the document. This can be useful for fields with are
-notoriously hard to deidentify but contain no relevant information for
-a downstream application. 
+notoriously hard to deidentify, but contain no relevant information for
+a downstream application.
