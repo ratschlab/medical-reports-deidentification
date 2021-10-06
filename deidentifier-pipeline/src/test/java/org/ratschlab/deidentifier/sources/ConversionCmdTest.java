@@ -27,9 +27,6 @@ class ConversionCmdTest {
 
     @Test
     public void testConvertKisimJsonsToGateCorpus(@TempDir File tmpDir) {
-
-        // TODO empty directory.
-        // add same report twice
         File output = new File(tmpDir, "mycorpus");
 
         try {
@@ -40,7 +37,6 @@ class ConversionCmdTest {
         } catch (GateException|IOException e) {
             fail(e);
         }
-
     }
 
     @Test

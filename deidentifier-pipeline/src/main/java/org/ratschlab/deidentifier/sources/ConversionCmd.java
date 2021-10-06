@@ -69,16 +69,11 @@ public class ConversionCmd implements Callable<Integer> {
 
         int nrDocs = 0;
         for (Document doc : documents) {
-            // TODO: get all anntations and prefix them accordingly.
-
             List<String> allAnnotations = new ArrayList<>(doc.getAnnotationSetNames());
             allAnnotations.add("");
 
             final Map<String, Collection<Annotation>> merged = allAnnotations.stream().flatMap(annotationName -> {
                 String annotationLabelPrefix = getAnnotationSetPrefix(annotationName);
-
-                new ArrayList(doc.getAnnotations(annotationName));
-
 
                 return doc.getAnnotations(annotationName).stream().
                     collect(
