@@ -27,8 +27,10 @@ public class DeidMain implements Callable<Integer> {
     }
 
     public static void main(String[] args) {
-        org.ratschlab.util.Utils.tieSystemOutAndErrToLog();
-        int exitCode = CommandLine.call(new DeidMain(), args);
+        Integer exitCode = CommandLine.call(new DeidMain(), args);
+        if(exitCode == null) {
+            System.exit(2);
+        }
         System.exit(exitCode);
     }
 }

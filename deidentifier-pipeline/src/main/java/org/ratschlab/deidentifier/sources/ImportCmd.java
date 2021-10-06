@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Import reports from database", name = "import")
-public class ImportCmd extends DbCommands implements Callable<Integer> {
+public class ImportCmd extends DbCommands {
 
     private static final Logger log = LoggerFactory.getLogger(ImportCmd.class);
 
@@ -46,6 +46,8 @@ public class ImportCmd extends DbCommands implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        super.call();
+
         try {
             Gate.init();
 

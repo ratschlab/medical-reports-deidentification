@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @CommandLine.Command(mixinStandardHelpOptions = true, description = "Roundtrip test between JSON <--> GATE format", name = "conversioncheck")
-public class ConversionCheckCmd extends DbCommands implements Callable<Integer> {
+public class ConversionCheckCmd extends DbCommands {
 
     private static final Logger log = LoggerFactory.getLogger(ConversionCheckCmd.class);
 
@@ -30,6 +30,8 @@ public class ConversionCheckCmd extends DbCommands implements Callable<Integer> 
 
     @Override
     public Integer call() {
+        super.call();
+
         try {
             Gate.init();
 

@@ -4,6 +4,7 @@ import gate.*;
 import gate.corpora.DocumentJsonUtils;
 import gate.util.GateException;
 import org.apache.commons.lang.NotImplementedException;
+import org.ratschlab.DeidCmd;
 import org.ratschlab.gate.GateTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Convert reports into different formats", name = "convert")
-public class ConversionCmd implements Callable<Integer> {
+public class ConversionCmd extends DeidCmd {
     private static final Logger log = LoggerFactory.getLogger(ConversionCmd.class);
 
     @CommandLine.Option(names = {"-i"}, description = "Input dir", required = true)
@@ -90,6 +91,7 @@ public class ConversionCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        super.call();
         try {
             Gate.init();
 

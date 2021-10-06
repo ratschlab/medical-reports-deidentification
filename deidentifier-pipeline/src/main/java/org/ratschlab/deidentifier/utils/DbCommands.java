@@ -1,10 +1,11 @@
 package org.ratschlab.deidentifier.utils;
 
+import org.ratschlab.DeidCmd;
 import picocli.CommandLine;
 
 import java.util.stream.Stream;
 
-public class DbCommands {
+public class DbCommands extends DeidCmd {
     @CommandLine.Option(names = {"-d"}, description = "DB config path")
     protected String databaseConfigPath = "";
 

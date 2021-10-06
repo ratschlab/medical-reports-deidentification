@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Annotate Corpus", name = "annotate")
-public class AnnotationCmd extends DbCommands implements Callable<Integer> {
+public class AnnotationCmd extends DbCommands {
     private static final Logger log = LoggerFactory.getLogger(AnnotationCmd.class);
 
     @CommandLine.Option(names = {"-i"}, description = "Input corpus dir")
@@ -106,6 +106,8 @@ public class AnnotationCmd extends DbCommands implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        super.call();
+
         if(corpusInputDirPath == null && databaseConfigPath == null) {
             System.err.println("Need at least -i or -d");
             return 1;

@@ -2,16 +2,16 @@ package org.ratschlab.deidentifier.pipelines.testing;
 
 import gate.Gate;
 import gate.util.GateException;
+import org.ratschlab.DeidCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Callable;
 
 @CommandLine.Command(description = "Tests a pipeline", name = "test")
-public class PipelineTesterCmd implements Callable<Integer> {
+public class PipelineTesterCmd extends DeidCmd {
     private static final Logger log = LoggerFactory.getLogger(PipelineTesterCmd.class);
 
     @CommandLine.Parameters(index = "0", description = "Pipeline Configuration File")
@@ -29,6 +29,8 @@ public class PipelineTesterCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        super.call();
+
         try {
             Gate.init();
 

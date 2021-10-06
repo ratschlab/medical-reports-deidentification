@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import gate.*;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
+import org.ratschlab.DeidCmd;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysDate;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.sources.KisimFormat;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Apply Substitution to Annotated Corpus", name = "substitute")
-public class SubstitutionCmd implements Callable<Integer> {
+public class SubstitutionCmd extends DeidCmd {
     private static final Logger log = LoggerFactory.getLogger(SubstitutionCmd.class);
 
     @CommandLine.Parameters(index = "0", description = "Corpus Dir")
@@ -102,7 +103,8 @@ public class SubstitutionCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        // TODO: really?
+        super.call();
+
         if(outputDir != null && outputDir.exists()) {
             try {
                 Files.delete(outputDir.toPath());
