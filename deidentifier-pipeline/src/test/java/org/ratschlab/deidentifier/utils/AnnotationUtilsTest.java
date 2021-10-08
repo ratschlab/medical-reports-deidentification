@@ -8,11 +8,15 @@ import gate.Factory;
 import gate.Gate;
 import gate.util.GateException;
 import gate.util.InvalidOffsetException;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.ratschlab.gate.GateTools;
 
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+;
 
 public class AnnotationUtilsTest {
 
@@ -35,12 +39,12 @@ public class AnnotationUtilsTest {
                 try {
                     as.add(r.lowerEndpoint(), r.upperEndpoint(), "dummy", Factory.newFeatureMap());
                 } catch (InvalidOffsetException e) {
-                    Assert.fail(e.getMessage());
+                    fail(e.getMessage());
                 }
             });
             return as;
         } catch (GateException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         return null;
@@ -49,27 +53,27 @@ public class AnnotationUtilsTest {
     @Test
     public void testAnnotationRanges() {
         Set<Range<Long>> simpleRange = ImmutableSet.of(Range.closedOpen(3L, 5L));
-        Assert.assertEquals(simpleRange, AnnotationUtils.annotationRanges(createAnnotationSet(simpleRange)));
+        assertEquals(simpleRange, AnnotationUtils.annotationRanges(createAnnotationSet(simpleRange)));
 
         Set<Range<Long>> doubleRange = ImmutableSet.of(Range.closedOpen(3L, 5L),
             Range.closedOpen(10L, 15L));
 
-        Assert.assertEquals(doubleRange, AnnotationUtils.annotationRanges(createAnnotationSet(doubleRange)));
+        assertEquals(doubleRange, AnnotationUtils.annotationRanges(createAnnotationSet(doubleRange)));
 
         Set<Range<Long>> overlappingRange = ImmutableSet.of(Range.closedOpen(3L, 7L),
             Range.closedOpen(5L, 6L),
             Range.closedOpen(4L, 15L));
-        Assert.assertEquals(ImmutableSet.of(Range.closedOpen(3L, 15L)), AnnotationUtils.annotationRanges(createAnnotationSet(overlappingRange)));
+        assertEquals(ImmutableSet.of(Range.closedOpen(3L, 15L)), AnnotationUtils.annotationRanges(createAnnotationSet(overlappingRange)));
 
         Set<Range<Long>> touchingRange = ImmutableSet.of(Range.closedOpen(3L, 5L),
                 Range.closedOpen(5L, 6L));
-        Assert.assertEquals(ImmutableSet.of(Range.closedOpen(3L, 6L)), AnnotationUtils.annotationRanges(createAnnotationSet(touchingRange)));
+        assertEquals(ImmutableSet.of(Range.closedOpen(3L, 6L)), AnnotationUtils.annotationRanges(createAnnotationSet(touchingRange)));
 
         Set<Range<Long>> touchingRangeNeighbor = ImmutableSet.of(Range.closedOpen(3L, 5L),
                 Range.closedOpen(6L, 7L));
-        Assert.assertEquals(touchingRangeNeighbor, AnnotationUtils.annotationRanges(createAnnotationSet(touchingRangeNeighbor)));
+        assertEquals(touchingRangeNeighbor, AnnotationUtils.annotationRanges(createAnnotationSet(touchingRangeNeighbor)));
 
-        Assert.assertEquals(ImmutableSet.of(Range.closedOpen(3L, 7L)),
+        assertEquals(ImmutableSet.of(Range.closedOpen(3L, 7L)),
                 AnnotationUtils.annotationRanges(createAnnotationSet(touchingRangeNeighbor), ImmutableSet.of(Range.closedOpen(5L,6L))));
     }
 }

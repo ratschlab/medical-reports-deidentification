@@ -25,23 +25,14 @@ import java.util.stream.Stream;
 public class GateTools {
     private static final Logger log = LoggerFactory.getLogger(GateTools.class);
 
-    public static Optional<Document> readDocumentFromFile(File f)  {
-        try {
-            Document doc = Factory.newDocument(f.toURI().toURL(), "UTF-8");
+    public static Document readDocumentFromFile(File f) throws MalformedURLException, ResourceInstantiationException {
+        Document doc = Factory.newDocument(f.toURI().toURL(), "UTF-8");
 
-            doc.setMarkupAware(true);
-            doc.setPreserveOriginalContent(true);
+        doc.setMarkupAware(true);
+        doc.setPreserveOriginalContent(true);
 
-            return Optional.of(doc);
-        } catch (ResourceInstantiationException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch(RuntimeException re) {
-            re.printStackTrace();
-        }
+        return doc;
 
-        return Optional.empty();
     }
 
     public static Document documentFromXmlString(String s) throws GateException {

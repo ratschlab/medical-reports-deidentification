@@ -5,7 +5,6 @@ import gate.*;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -13,6 +12,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestRemoveOverlappingAnnotations extends AnalyserTestBase {
     private AbstractLanguageAnalyser pr = null;
@@ -43,17 +45,17 @@ public class TestRemoveOverlappingAnnotations extends AnalyserTestBase {
             try {
                 a.addToAnnotationSet(as);
             } catch (Exception e){
-                Assert.fail();
+                fail();
             }
         });
 
         AnnotationSet out = runTest();
-        Assert.assertEquals(1, out.size());
+        assertEquals(1, out.size());
 
         Annotation an = out.iterator().next();
-        Assert.assertEquals(expected.getStart(), an.getStartNode().getOffset().intValue());
-        Assert.assertEquals(expected.getEnd(), an.getEndNode().getOffset().intValue());
-        Assert.assertEquals(expected.getTag(), an.getType());
+        assertEquals(expected.getStart(), an.getStartNode().getOffset().intValue());
+        assertEquals(expected.getEnd(), an.getEndNode().getOffset().intValue());
+        assertEquals(expected.getTag(), an.getType());
     }
 
     static Stream<Arguments> testMergingParameters() {

@@ -2,6 +2,7 @@ package org.ratschlab.deidentifier;
 
 import org.ratschlab.deidentifier.dev.DiagnosticsCmd;
 import org.ratschlab.deidentifier.pipelines.testing.PipelineTesterCmd;
+import org.ratschlab.deidentifier.sources.ConversionCmd;
 import org.ratschlab.deidentifier.sources.ImportCmd;
 import org.ratschlab.deidentifier.substitution.SubstitutionCmd;
 import picocli.CommandLine;
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
                 SubstitutionCmd.class,
                 AnnotationCmd.class,
                 ImportCmd.class,
+                ConversionCmd.class,
                 DiagnosticsCmd.class,
                 PipelineTesterCmd.class
         }
@@ -25,8 +27,10 @@ public class DeidMain implements Callable<Integer> {
     }
 
     public static void main(String[] args) {
-        org.ratschlab.util.Utils.tieSystemOutAndErrToLog();
-        int exitCode = CommandLine.call(new DeidMain(), args);
+        Integer exitCode = CommandLine.call(new DeidMain(), args);
+        if(exitCode == null) {
+            System.exit(2);
+        }
         System.exit(exitCode);
     }
 }

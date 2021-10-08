@@ -3,6 +3,7 @@ package org.ratschlab.deidentifier.sources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gate.Document;
 import gate.Gate;
+import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ratschlab.deidentifier.utils.DbCommands;
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @CommandLine.Command(mixinStandardHelpOptions = true, description = "Roundtrip test between JSON <--> GATE format", name = "conversioncheck")
-public class ConversionCheckCmd extends DbCommands implements Callable<Integer> {
+public class ConversionCheckCmd extends DbCommands {
 
     private static final Logger log = LoggerFactory.getLogger(ConversionCheckCmd.class);
 
@@ -29,6 +30,8 @@ public class ConversionCheckCmd extends DbCommands implements Callable<Integer> 
 
     @Override
     public Integer call() {
+        super.call();
+
         try {
             Gate.init();
 
@@ -47,9 +50,8 @@ public class ConversionCheckCmd extends DbCommands implements Callable<Integer> 
                     }
 
                     return !checkConversion(p.getLeft(), p.getRight(), out);
-                } catch (IOException e) {
-                    log.error("Exception thrown", e);
-                    return true;
+                } catch (IOException|ResourceInstantiationException e) {
+                    throw new RuntimeException(e);
                 }
             }).count();
 
@@ -62,7 +64,7 @@ public class ConversionCheckCmd extends DbCommands implements Callable<Integer> 
         return 0;
     }
 
-    public static boolean checkConversion(String docId, String kisimJson, PrintStream out) throws IOException {
+    public static boolean checkConversion(String docId, String kisimJson, PrintStream out) throws IOException, ResourceInstantiationException {
         ObjectMapper om = new ObjectMapper();
         // parse and emit string again to not have to deal with formatting issues during assert
         String jsonStr = om.writeValueAsString(om.reader().readTree(kisimJson));

@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import gate.*;
 import gate.util.GateException;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,6 +21,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class DeidentificationSubstitutionTest {
@@ -47,10 +48,10 @@ public class DeidentificationSubstitutionTest {
 
         AnnotationSet dateAnnots = substDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME).get("TheDate");
 
-        Assert.assertEquals(2, dateAnnots.size());
+        assertEquals(2, dateAnnots.size());
 
         for (Annotation an : dateAnnots) {
-            Assert.assertEquals("DATE", gate.Utils.stringFor(substDoc, an));
+            assertEquals("DATE", gate.Utils.stringFor(substDoc, an));
         }
     }
 
@@ -61,7 +62,7 @@ public class DeidentificationSubstitutionTest {
         DeidentificationSubstitution subst = new DeidentificationSubstitution(phiAnnotationName, d -> new ReplacementTagsSubstitution(), false, Collections.emptyList());
         Document substDoc = subst.substitute(doc);
 
-        Assert.assertTrue(ReplacementTagsSubstitution.replacementTagsValid(substDoc.getContent().toString()));
+        assertTrue(ReplacementTagsSubstitution.replacementTagsValid(substDoc.getContent().toString()));
     }
 
     private static Stream<Arguments> substitutionTestCases() {
@@ -94,7 +95,7 @@ public class DeidentificationSubstitutionTest {
 
         String substCont = substDoc.getContent().toString();
 
-        Assert.assertTrue(ReplacementTagsSubstitution.replacementTagsValid(substCont));
+        assertTrue(ReplacementTagsSubstitution.replacementTagsValid(substCont));
     }
 
     @Test
@@ -111,8 +112,8 @@ public class DeidentificationSubstitutionTest {
 
         AnnotationSet origMarkupsSubst = substDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
-        Assert.assertEquals("LOCATION", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("Markup1").iterator().next()));
-        Assert.assertEquals("LOCATION", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("Markup2").iterator().next()));
+        assertEquals("LOCATION", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("Markup1").iterator().next()));
+        assertEquals("LOCATION", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("Markup2").iterator().next()));
     }
 
     private Document addressDoc = dummyDocumentWithAnnotation(ImmutableList.of(
@@ -131,7 +132,7 @@ public class DeidentificationSubstitutionTest {
         AnnotationSet origMarkupsSubst = substDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
         // the PostalAddress markup tag should be replaced with "ADDRESS" string
-        Assert.assertEquals("ADDRESS", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("PostalAddress").iterator().next()));
+        assertEquals("ADDRESS", gate.Utils.stringFor(substDoc, origMarkupsSubst.get("PostalAddress").iterator().next()));
     }
 
     @Test
@@ -141,8 +142,8 @@ public class DeidentificationSubstitutionTest {
 
         // don't substitute Address annotation, just replace Location annotation within Address annotation
         String substDocContent = substDoc.getContent().toString();
-        Assert.assertTrue(substDocContent.contains("LOCATION"));
-        Assert.assertFalse(substDocContent.contains("ADDRESS"));
+        assertTrue(substDocContent.contains("LOCATION"));
+        assertFalse(substDocContent.contains("ADDRESS"));
     }
 
     @Test
@@ -160,10 +161,10 @@ public class DeidentificationSubstitutionTest {
 
         String substContent = substDoc.getContent().toString();
 
-        Assert.assertFalse(substContent.contains("NAME"));
+        assertFalse(substContent.contains("NAME"));
 
         AnnotationSet dateAnnots = substDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME).get(tag);
-        Assert.assertEquals(0, dateAnnots.size());
+        assertEquals(0, dateAnnots.size());
     }
 
     @Test
@@ -184,11 +185,11 @@ public class DeidentificationSubstitutionTest {
 
         String substContent = substDoc.getContent().toString();
 
-        Assert.assertFalse(substContent.contains("NAME")); // should be filtered
-        Assert.assertTrue(substContent.contains("LOCATION")); // not filtered, hence normally subsituted
+        assertFalse(substContent.contains("NAME")); // should be filtered
+        assertTrue(substContent.contains("LOCATION")); // not filtered, hence normally subsituted
 
         AnnotationSet dateAnnots = substDoc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME).get(tag);
-        Assert.assertEquals(1, dateAnnots.size());
+        assertEquals(1, dateAnnots.size());
     }
 
     @ParameterizedTest
@@ -202,9 +203,9 @@ public class DeidentificationSubstitutionTest {
 
         AnnotationSet as = doc.getAnnotations(phiAnnotationName);
 
-        Assert.assertTrue(AnnotationUtils.hasOverlappingAnnotations(as));
+        assertTrue(AnnotationUtils.hasOverlappingAnnotations(as));
         AnnotationUtils.removeRedundantAnnotations(as);
-        Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
+        assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
     }
 
     @ParameterizedTest
@@ -217,7 +218,7 @@ public class DeidentificationSubstitutionTest {
 
         DeidentificationSubstitution.splitAnnotationsAcrossMarkupBoundaries(as, markups);
 
-        Assert.assertTrue(AnnotationUtils.checkAnnotationCoverage(origAnnots, as.stream().collect(Collectors.toList()), markups));
+        assertTrue(AnnotationUtils.checkAnnotationCoverage(origAnnots, as.stream().collect(Collectors.toList()), markups));
     }
 
     private static Stream<Arguments> testSplitAnnotationsAcrossMarkupBoundariesTestCases() {
@@ -238,7 +239,7 @@ public class DeidentificationSubstitutionTest {
 
             return args;
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
             return Stream.empty();
         }
     }
@@ -252,8 +253,8 @@ public class DeidentificationSubstitutionTest {
 
         DeidentificationSubstitution.splitOverlappingAnnotations(as);
 
-        Assert.assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
-        Assert.assertTrue(AnnotationUtils.checkAnnotationCoverage(origAnnotations,
+        assertFalse(AnnotationUtils.hasOverlappingAnnotations(as));
+        assertTrue(AnnotationUtils.checkAnnotationCoverage(origAnnotations,
                 as.stream().collect(Collectors.toList()),
                 doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME)));
     }
@@ -302,7 +303,7 @@ public class DeidentificationSubstitutionTest {
 
             return doc;
         } catch (GateException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
         return null;
     }
@@ -328,7 +329,7 @@ public class DeidentificationSubstitutionTest {
 
             return doc;
         } catch (GateException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
             return null;
         }
     }

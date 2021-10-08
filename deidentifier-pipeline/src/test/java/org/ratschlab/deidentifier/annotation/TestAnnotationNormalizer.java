@@ -4,12 +4,13 @@ import gate.*;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestAnnotationNormalizer extends AnalyserTestBase {
     private AbstractLanguageAnalyser pr = null;
@@ -43,10 +44,10 @@ public class TestAnnotationNormalizer extends AnalyserTestBase {
         AnnotationSet original = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME).get("SomeField");
         AnnotationSet normalized = doc.getAnnotations().get("NormalizedField");
 
-        Assert.assertEquals(original.size(), normalized.size());
+        assertEquals(original.size(), normalized.size());
 
         for (Annotation an : normalized) {
-            Assert.assertEquals(normalizeText, gate.Utils.cleanStringFor(doc, an));
+            assertEquals(normalizeText, gate.Utils.cleanStringFor(doc, an));
         }
     }
 
@@ -76,12 +77,12 @@ public class TestAnnotationNormalizer extends AnalyserTestBase {
 
         for (Annotation an : normalized) {
             String s = gate.Utils.cleanStringFor(doc, an);
-            Assert.assertEquals(normalizeText, gate.Utils.cleanStringFor(doc, an));
+            assertEquals(normalizeText, gate.Utils.cleanStringFor(doc, an));
         }
 
-        Assert.assertEquals(5, normalized.size());
+        assertEquals(5, normalized.size());
 
-        Assert.assertEquals(1, doc.getAnnotations().get("DifferentNormalizedField").size());
+        assertEquals(1, doc.getAnnotations().get("DifferentNormalizedField").size());
     }
 
     @Test
@@ -94,17 +95,17 @@ public class TestAnnotationNormalizer extends AnalyserTestBase {
         AnnotationSet original = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME).get("WithFeatures");
         AnnotationSet normalized = doc.getAnnotations().get("NormalizedField");
 
-        Assert.assertEquals(original.size(), normalized.size());
+        assertEquals(original.size(), normalized.size());
 
         for (Annotation an : normalized) {
-            Assert.assertEquals(normalizeText, gate.Utils.cleanStringFor(doc, an));
+            assertEquals(normalizeText, gate.Utils.cleanStringFor(doc, an));
         }
 
         FeatureMap features = normalized.iterator().next().getFeatures();
-        Assert.assertEquals(3, features.size());
-        Assert.assertTrue(features.containsKey("hello"));
-        Assert.assertEquals("world", features.get("hello"));
-        Assert.assertTrue(features.containsKey("rule"));
+        assertEquals(3, features.size());
+        assertTrue(features.containsKey("hello"));
+        assertEquals("world", features.get("hello"));
+        assertTrue(features.containsKey("rule"));
     }
 
     @Test
@@ -114,10 +115,10 @@ public class TestAnnotationNormalizer extends AnalyserTestBase {
         try {
             pr.setParameterValue("leavesOnly", Boolean.TRUE);
         } catch (ResourceInstantiationException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         Document doc = TestUtils.runTest(text, pr);
-        Assert.assertTrue(doc.getAnnotations().get("NormalizedField").isEmpty());
+        assertTrue(doc.getAnnotations().get("NormalizedField").isEmpty());
     }
 }

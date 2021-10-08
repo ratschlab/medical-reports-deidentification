@@ -29,7 +29,7 @@ public class WriteToSerializedCorpus extends DefaultWorkflowConcern {
             FileUtils.deleteDirectory(corpusOutputDir);
         }
 
-        workerTmpDir = new File(corpusOutputDir.getParentFile() + File.separator +  corpusOutputDir.getName() + "_tmp");
+        workerTmpDir = new File(corpusOutputDir.getAbsoluteFile().getParentFile() + File.separator +  corpusOutputDir.getName() + "_tmp");
 
         // every parallel instance of the GATE pipeline has its own output corpus (for performance reasons)
         corpusDirs = IntStream.range(0, threads).

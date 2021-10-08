@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typesafe.config.Config;
 import gate.Document;
 import gate.Gate;
+import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -51,22 +52,15 @@ public class EndToEndSubstonlyCmd {
 
         PipelineWorkflow<Pair<String, String>> workflow = new PipelineWorkflow<>(
                 records,
-                p -> {
-                    try {
-                        ObjectMapper om = new ObjectMapper();
-                        // parse and emit string again to not have to deal with formatting issues during assert
-                        String jsonStr = om.writeValueAsString(om.reader().readTree(p.getRight()));
+                org.ratschlab.util.Utils.exceptionWrapper(p -> {
+                    ObjectMapper om = new ObjectMapper();
+                    // parse and emit string again to not have to deal with formatting issues during assert
+                    String jsonStr = om.writeValueAsString(om.reader().readTree(p.getRight()));
 
-                        //System.out.println(p.getLeft());
-                        Files.write(new File(String.format("/home/marczim/data/deid_poc/sets/kisim/kisim_json/%s.json", p.getLeft())).toPath(), jsonStr.getBytes(StandardCharsets.UTF_8));
+                    Files.write(new File(String.format("/home/marczim/data/deid_poc/sets/kisim/kisim_json/%s.json", p.getLeft())).toPath(), jsonStr.getBytes(StandardCharsets.UTF_8));
 
-                        return Optional.of(checkConversion(p.getRight(), myController));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    return Optional.empty();
-                },
+                    return Optional.of(checkConversion(p.getRight(), myController));
+                }),
                 PipelineFactory.NoOpController(),
                 threads,
                 new ArrayList<>());
@@ -75,7 +69,7 @@ public class EndToEndSubstonlyCmd {
 
     }
 
-    public static Document checkConversion(String kisimJson, SerialAnalyserController myController) throws IOException {
+    public static Document checkConversion(String kisimJson, SerialAnalyserController myController) throws IOException, ResourceInstantiationException {
         ObjectMapper om = new ObjectMapper();
         // parse and emit string again to not have to deal with formatting issues during assert
         String jsonStr = om.writeValueAsString(om.reader().readTree(kisimJson));

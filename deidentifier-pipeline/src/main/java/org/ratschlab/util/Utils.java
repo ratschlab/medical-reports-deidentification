@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class Utils {
     public static Optional<Integer> maybeParseInt(String str) {
@@ -47,5 +48,17 @@ public class Utils {
         }
 
         return new File(urlOrPath); //fallback
+    }
+
+    // taken from https://www.oreilly.com/content/handling-checked-exceptions-in-java-streams/
+    public static <T, R, E extends Exception>
+    Function<T, R> exceptionWrapper(FunctionWithException<T, R, E> fe) {
+        return arg -> {
+            try {
+                return fe.apply(arg);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 }

@@ -12,6 +12,7 @@ import gate.util.Benchmark;
 import gate.util.GateException;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.sources.ImportCmd;
+import org.ratschlab.deidentifier.sources.KisimFormat;
 import org.ratschlab.deidentifier.sources.KisimSource;
 import org.ratschlab.deidentifier.utils.DbCommands;
 import org.ratschlab.deidentifier.utils.paths.PathConstraint;
@@ -28,11 +29,14 @@ import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 @CommandLine.Command(description = "Annotate Corpus", name = "annotate")
-public class AnnotationCmd extends DbCommands implements Callable<Integer> {
+public class AnnotationCmd extends DbCommands {
     private static final Logger log = LoggerFactory.getLogger(AnnotationCmd.class);
 
     @CommandLine.Option(names = {"-i"}, description = "Input corpus dir")
     private String corpusInputDirPath = null;
+
+    @CommandLine.Option(names = {"--json-input"}, description = "Assumes input dir consists of json files, one per report")
+    private boolean jsonInput = false;
 
     @CommandLine.Option(names = {"--xml-input"}, description = "Assumes input dir consists of xml files, one per report (testing purposes)")
     private boolean xmlInput = false;
@@ -62,8 +66,48 @@ public class AnnotationCmd extends DbCommands implements Callable<Integer> {
         System.exit(CommandLine.call(new AnnotationCmd(), args));
     }
 
+    private PipelineWorkflow<?> readFromFiles(List<WorkflowConcern> concerns, SerialAnalyserController controller) throws Exception {
+        if(!xmlInput && !jsonInput) {
+            return new PipelineWorkflow<>(
+                GateTools.readDocsInCorpus(new File(corpusInputDirPath)),
+                d -> d,
+                controller,
+                threads,
+                concerns);
+        }
+
+        if(xmlInput) {
+            List<File> inputFiles = Lists.newArrayList(new File(corpusInputDirPath).listFiles());
+
+            return new PipelineWorkflow<>(
+                docsLimiting(inputFiles.stream()),
+                org.ratschlab.util.Utils.exceptionWrapper(f -> Optional.of(GateTools.readDocumentFromFile(f))),
+                controller,
+                threads,
+                concerns);
+        }
+
+        List<File> files = Lists.newArrayList(new File(corpusInputDirPath).listFiles());
+
+        KisimFormat ksf = new KisimFormat();
+        return new PipelineWorkflow<>(
+            docsLimiting(files.stream()),
+            org.ratschlab.util.Utils.exceptionWrapper(f -> {
+                Document doc = ksf.jsonToDocument(f);
+
+                doc.setName(f.getName().replaceAll(".json", ""));
+                doc.getFeatures().put("reportnr", f.getName().replaceAll(".json", ""));
+                return Optional.of(doc);
+            }),
+            controller,
+            threads,
+            concerns);
+    }
+
     @Override
     public Integer call() {
+        super.call();
+
         if(corpusInputDirPath == null && databaseConfigPath == null) {
             System.err.println("Need at least -i or -d");
             return 1;
@@ -128,45 +172,24 @@ public class AnnotationCmd extends DbCommands implements Callable<Integer> {
                 concerns.add(new EvaluateCorpus(String.format("%s-manual", PipelineFactory.finalASName), PipelineFactory.finalASName, PipelineFactory.annotationTypes, corpusOutputDir, reportOutput));
             }
 
-            if(corpusInputDirPath != null && !xmlInput) {
-                PipelineWorkflow<Optional<Document>> workflow = new PipelineWorkflow<>(
-                        GateTools.readDocsInCorpus(new File(corpusInputDirPath)),
-                        d -> d,
-                        myController,
-                        threads,
-                        concerns);
-
-                workflow.run();
-            }
-            else if(corpusInputDirPath != null) {
-                List<File> inputFiles = Lists.newArrayList(new File(corpusInputDirPath).listFiles());
-
-                if(maxDocs > 0 && inputFiles.size() > maxDocs) {
-                    inputFiles = inputFiles.subList(0, maxDocs);
-                }
-
-                PipelineWorkflow<File> workflow = new PipelineWorkflow<>(
-                        inputFiles.stream(),
-                        f -> GateTools.readDocumentFromFile(f),
-                        myController,
-                        threads,
-                        concerns);
-
-                workflow.run();
+            PipelineWorkflow<?> workflow;
+            if (corpusInputDirPath != null) {
+                workflow = readFromFiles(concerns, myController);
             } else {
                 KisimSource ks = new KisimSource(new File(databaseConfigPath));
                 Stream<Map<String, Object>> records = docsLimiting(ImportCmd.documentRecordsStream(ks, Optional.ofNullable(docTypeFilterPath),
                         Optional.ofNullable(docIdFilterPath)));
 
-                PipelineWorkflow<Map<String, Object>> workflow = new PipelineWorkflow<>(
+                workflow = new PipelineWorkflow<>(
                         records,
-                        p -> ImportCmd.kisimDocConversion(p, ks),
+                        org.ratschlab.util.Utils.exceptionWrapper(p -> Optional.of(ImportCmd.kisimDocConversion(p, ks))),
                         myController,
                         threads,
                         concerns);
-
-                workflow.run();
             }
+
+            workflow.run();
+
         } catch (GateException e) {
             e.printStackTrace();
             return 1;

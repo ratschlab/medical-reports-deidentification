@@ -8,12 +8,14 @@ import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.util.InvalidOffsetException;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysName;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestAnnotationCleanup extends AnalyserTestBase {
     private AbstractLanguageAnalyser pr = null;
@@ -72,14 +74,14 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
 
             AnnotationSet oas = runTest();
 
-            Assert.assertEquals(1, oas.size());
+            assertEquals(1, oas.size());
 
             Annotation mergedAn = oas.inDocumentOrder().get(0);
             long longestAnnotationExp = annotationList.stream().mapToLong(p -> p.getRight() - p.getLeft()).max().getAsLong();
 
-            Assert.assertEquals(longestAnnotationExp,  mergedAn.getEndNode().getOffset() - mergedAn.getStartNode().getOffset());
+            assertEquals(longestAnnotationExp,  mergedAn.getEndNode().getOffset() - mergedAn.getStartNode().getOffset());
 
-            Assert.assertEquals(someMap, mergedAn.getFeatures());
+            assertEquals(someMap, mergedAn.getFeatures());
         }
     }
 
@@ -96,13 +98,13 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
         as.add(0L, 1L, TYPE, otherMap);
 
         AnnotationSet oas = runTest();
-        Assert.assertEquals(1, oas.size());
+        assertEquals(1, oas.size());
 
         FeatureMap expected = Factory.newFeatureMap();
         expected.put(commonField, "b,a");
         expected.put("type", "example_type");
         expected.put("rule", "someRule");
-        Assert.assertEquals(expected, oas.inDocumentOrder().get(0).getFeatures());
+        assertEquals(expected, oas.inDocumentOrder().get(0).getFeatures());
     }
 
     @Test
@@ -115,12 +117,12 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
         as.add(0L, 1L, TYPE, otherMap);
 
         AnnotationSet oas = runTest();
-        Assert.assertEquals(1, oas.size());
+        assertEquals(1, oas.size());
 
         FeatureMap expected = Factory.newFeatureMap();
         expected.put("type", "example_type");
         expected.put("rule", "someRule");
-        Assert.assertEquals(expected, oas.inDocumentOrder().get(0).getFeatures());
+        assertEquals(expected, oas.inDocumentOrder().get(0).getFeatures());
     }
 
     @Test
@@ -133,12 +135,12 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
         as.add(0L, 1L, TYPE, otherMap);
 
         AnnotationSet oas = runTest();
-        Assert.assertEquals(1, oas.size());
+        assertEquals(1, oas.size());
 
         FeatureMap expected = Factory.newFeatureMap();
         expected.put("type", "example_type");
         expected.put("rule", "otherRule,someRule");
-        Assert.assertEquals(expected, oas.inDocumentOrder().get(0).getFeatures());
+        assertEquals(expected, oas.inDocumentOrder().get(0).getFeatures());
     }
 
     @Test
@@ -154,7 +156,7 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
         as.add(7L, 8L, TYPE, someMap);
 
         AnnotationSet oas = runTest();
-        Assert.assertEquals(as, oas); // shouldn't touch.
+        assertEquals(as, oas); // shouldn't touch.
     }
 
     @Test
@@ -163,7 +165,7 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
         FeatureMap b = Factory.newFeatureMap();
 
         FeatureMap ret = AnnotationCleanup.mergeFeatureMaps(a, b);
-        Assert.assertTrue("Merging empty maps should give an empty map", ret.isEmpty());
+        assertTrue(ret.isEmpty(), "Merging empty maps should give an empty map");
 
         String akey = "akey";
         a.put(akey, "hello");
@@ -176,12 +178,12 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
         a.put("x", "");
 
         ret = AnnotationCleanup.mergeFeatureMaps(a, b);
-        Assert.assertEquals(4, ret.size());
-        Assert.assertEquals("hello,world", ret.get(akey));
-        Assert.assertEquals("x", ret.get("x"));
+        assertEquals(4, ret.size());
+        assertEquals("hello,world", ret.get(akey));
+        assertEquals("x", ret.get("x"));
 
-        Assert.assertEquals("a", a.get("a"));
-        Assert.assertEquals("b", b.get("b"));
+        assertEquals("a", a.get("a"));
+        assertEquals("b", b.get("b"));
     }
 
     @Test
@@ -189,49 +191,49 @@ public class TestAnnotationCleanup extends AnalyserTestBase {
         // test on empty feature map
         FeatureMap fm = gate.Factory.newFeatureMap();
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
-        Assert.assertEquals(0, fm.size());
+        assertEquals(0, fm.size());
 
         fm = gate.Factory.newFeatureMap();
         fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, ll ff");
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
 
-        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+        assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
 
         fm = gate.Factory.newFeatureMap();
         fm.put(FeatureKeysName.NAME_FORMAT, "ll ff");
         fm.put(FeatureKeysName.FIRSTNAME, "Hans");
         fm.put(FeatureKeysName.LASTNAME, "MUSTER");
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
-        Assert.assertEquals("LL ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+        assertEquals("LL ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
 
         fm = gate.Factory.newFeatureMap();
         fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, LL ff");
         fm.put(FeatureKeysName.FIRSTNAME, "Hans");
         fm.put(FeatureKeysName.LASTNAME, "MUSTER");
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
-        Assert.assertEquals("LL ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+        assertEquals("LL ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
 
         fm = gate.Factory.newFeatureMap();
         fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, LL ff");
         fm.put(FeatureKeysName.FIRSTNAME, "Hans");
         fm.put(FeatureKeysName.LASTNAME, "Muster");
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
-        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+        assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
 
         fm = gate.Factory.newFeatureMap();
         fm.put(FeatureKeysName.NAME_FORMAT, "ll ff, ff");
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
-        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+        assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
 
         fm = gate.Factory.newFeatureMap();
         fm.put(FeatureKeysName.NAME_FORMAT, "ff, ff, ll ff, ff");
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
-        Assert.assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+        assertEquals("ll ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
 
         fm = gate.Factory.newFeatureMap();
         fm.put(FeatureKeysName.NAME_FORMAT, "ff ff");
         AnnotationCleanup.cleanupNameAnnotationFeature(fm);
-        Assert.assertEquals("ff ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
+        assertEquals("ff ff", fm.getOrDefault(FeatureKeysName.NAME_FORMAT, ""));
     }
 
     private AnnotationSet runTest() {

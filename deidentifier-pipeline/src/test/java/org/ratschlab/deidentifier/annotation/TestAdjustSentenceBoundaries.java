@@ -5,11 +5,12 @@ import gate.*;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestAdjustSentenceBoundaries extends AnalyserTestBase{
 
@@ -55,7 +56,7 @@ public class TestAdjustSentenceBoundaries extends AnalyserTestBase{
             AnnotationSet output = doc.getAnnotations(OUTPUT_AS_NAME);
 
             // expecting sentence annotation to be split up
-            Assert.assertEquals(2, output.size());
+            assertEquals(2, output.size());
 
             AnnotationSet origAnnots = doc.getAnnotations(GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME);
 
@@ -63,9 +64,9 @@ public class TestAdjustSentenceBoundaries extends AnalyserTestBase{
                 Annotation fieldAn = origAnnots.get(field).iterator().next(); // assume there is exactly one
                 AnnotationSet adjSents = output.get(fieldAn.getStartNode().getOffset(), fieldAn.getEndNode().getOffset());
 
-                Assert.assertEquals(1, adjSents.size());
+                assertEquals(1, adjSents.size());
 
-                adjSents.stream().forEach(a -> Assert.assertEquals("SentenceAdj", a.getType()));
+                adjSents.stream().forEach(a -> assertEquals("SentenceAdj", a.getType()));
             }
         }
     }
