@@ -44,19 +44,20 @@ public class AnnotationCmd extends DbCommands {
     @CommandLine.Option(names = {"-o"}, description = "Output corpus dir", required = true)
     private File corpusOutputDir = null;
 
-    @CommandLine.Option(names = {"-c"}, description = "Config file", required = true)
+    @CommandLine.Option(names = {"-c"}, description = "Pipeline config file", required = true)
     private File propertiesFile = null;
 
-    @CommandLine.Option(names = {"-m"}, description = "Marked Corpus Dir")
+    @CommandLine.Option(names = {"-m"}, description = "Path to marked/hand annotated corpus dir. " +
+        "Used to measure annotation accuracy of the current pipeline compared to the marked corpus (e.g. gold standard)")
     private String markedCorpusDirPath = null;
 
-    @CommandLine.Option(names = {"--diagnostics-dir"}, description = "Marked Corpus Dir")
+    @CommandLine.Option(names = {"--diagnostics-dir"}, description = "Path to diagnostic output (only in conjunction with the -m option)")
     private String diagnosticsDirPath = null;
 
     @CommandLine.Option(names = {"--fields-blacklist-eval"}, description = "Path to files giving field blacklist used during evaluation")
     private File fieldsBlacklistPath = null;
 
-    @CommandLine.Option(names = {"-t"}, description = "Number of threads")
+    @CommandLine.Option(names = {"-t"}, description = "Number of parallel pipeline annotations (default: number of CPUs available)")
     private int threads = -1;
 
     public static final String PHI_ANNOTATION_NAME = "phi-annotations";

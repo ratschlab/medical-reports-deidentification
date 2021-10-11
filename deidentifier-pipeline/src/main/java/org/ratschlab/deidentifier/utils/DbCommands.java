@@ -6,7 +6,7 @@ import picocli.CommandLine;
 import java.util.stream.Stream;
 
 public class DbCommands extends DeidCmd {
-    @CommandLine.Option(names = {"-d"}, description = "DB config path")
+    @CommandLine.Option(names = {"-d"}, description = "Path to DB config file")
     protected String databaseConfigPath = "";
 
     @CommandLine.Option(names = {"--doc-type-filter"}, description = "Path to file type list to consider")

@@ -3,7 +3,7 @@
 Here few hands-on "exercises" on how to tune the pipeline on a heavily
 simplified version of the USZ deidentification pipeline.
 The goal is to get familiar with the various components in a simplified setting
-without being overwhelmed by all the details of a full fledged pipeline.
+without being overwhelmed by all the details of a full-fledged pipeline.
 
 ### Setup
 
@@ -12,11 +12,11 @@ To test whether modification of the pipeline lead to the desired behavior, we
 are going to use the testing framework included in the deidentification tool.
 Tests for many of the exercises below are already prepared in the
 `configs/tutorial/testcases`, they just need to be uncommented (i.e. removing
-the `#`) 
+the `#`)
 
 The test suite can be run using the following command:
 ```
-java -jar [path to jar file] test [pipeline config file] [test cases directory] 
+java -jar [path to jar file] test [pipeline config file] [test cases directory]
 
 ```
 
@@ -54,7 +54,7 @@ should pass.
 The location `Oberikon` is not recognized in a document. Add a test case for
 it in the `locations.txt` file and run the test suite. It should fail on that test.
 Then, add the place to some appropriate lexikon (e.g. in the already existing
-`locations/additional_locations.lst`). After that, the test suite 
+`locations/additional_locations.lst`). After that, the test suite
 
 
 #### Internal phone number format

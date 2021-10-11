@@ -4,15 +4,9 @@
 In GATE, a lexicon (or gazetteer) consists of a text file with one term per
 line. A term may contain spaces. The terms are treated as case-sensitive.
 
-The lexica compiled for the USZ pipeline have many different sources. Scripts to
-clean and transform the data can be found in the git repository in
-https://gitlab.inf.ethz.ch/marczim/deid-data-staging
-
-The set up/generation of lexica overall could be improved and cleaned up. There
-are historical reasons for the existence of some inefficiencies.
-
-Below tables describing the different lexica along with their provenance. For
-more details, see the scripts processing the data.
+The lexica compiled for the USZ pipeline have many different sources.
+Below tables describing the different lexica along with their provenance.
+Note, that some lexica cannot be published, as they contain hospital internal data.
 Note, that `ANNIE` refers to a GATE plugin, `GeoNames` to the geographical
 database which can be found here `https://www.geonames.org/`.
 
@@ -116,7 +110,7 @@ be a name or not.
 | surnames_usz_seldom.lst             | USZ (KISIM)                                           | Internal only       |
 
 
-### Suffix Lists 
+### Suffix Lists
 
 Instead of using lexica annotating terms 1:1 in the text, a part of the pipeline
 annotates tokens based on suffixes. This is useful for missing terms in the
