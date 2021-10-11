@@ -5,6 +5,7 @@ import gate.*;
 import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
 import org.ratschlab.DeidCmd;
+import org.ratschlab.deidentifier.AnnotationCmd;
 import org.ratschlab.deidentifier.annotation.features.FeatureKeysDate;
 import org.ratschlab.deidentifier.pipelines.PipelineFactory;
 import org.ratschlab.deidentifier.sources.KisimFormat;
@@ -40,22 +41,22 @@ public class SubstitutionCmd extends DeidCmd {
     @CommandLine.Option(names = {"-o"}, description = "Output Dir")
     private File outputDir = null;
 
-    @CommandLine.Option(names = {"--db-config"}, description = "DB config path")
+    @CommandLine.Option(names = {"--db-config"}, description = "Path to DB config file")
     private File databaseConfigPath = null;
 
     @CommandLine.Option(names = {"--doc-type-filter"}, description = "Path to file type list to consider")
     private File docTypeFilterPath = null;
 
-    @CommandLine.Option(names = {"--annotation-name"}, description = "Annotation set name")
-    private String finalAnnotationName = "phi-annotations";
+    @CommandLine.Option(names = {"--annotation-name"}, description = "Annotation set name containing annotations to deidentify")
+    private String finalAnnotationName = AnnotationCmd.PHI_ANNOTATION_NAME;
 
-    @CommandLine.Option(names = {"--rnd-seed"}, description = "Random seed")
+    @CommandLine.Option(names = {"--rnd-seed"}, description = "Random seed used to pick random values for date shifts (keep the value protected!)")
     private int rngSeed = -1;
 
     @CommandLine.Option(names = {"--method"}, description = "Substitution Methods: ${COMPLETION-CANDIDATES}", required = true)
     private SubstitutionMethods substMethod = null;
 
-    @CommandLine.Option(names = {"-t"}, description = "Number of threads")
+    @CommandLine.Option(names = {"-t"}, description = "Number of parallel pipelines (default: 1)")
     private int threads = 1;
 
     @CommandLine.Option(names = {"--min-days-shift"}, description = "Minimum number of days to shift")
@@ -79,7 +80,7 @@ public class SubstitutionCmd extends DeidCmd {
     @CommandLine.Option(names = {"--fields-blacklist"}, description = "Path to files giving field blacklist")
     private File fieldsBlacklistPath = null;
 
-    @CommandLine.Option(names = {"--context-window-size"}, description = "Context window size for replacement tags")
+    @CommandLine.Option(names = {"--context-window-size"}, description = "Context window size for replacement tags (default 0). Number of original tokens to add in replacement tags (in case annotations get split up)")
     private int contextWindowForReplacementTags = 0;
 
 

@@ -9,15 +9,15 @@ import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(mixinStandardHelpOptions = true, description = "Deid entry point", name = "Deid", version="deid dev",
-        subcommands = {
-                SubstitutionCmd.class,
-                AnnotationCmd.class,
-                ImportCmd.class,
-                ConversionCmd.class,
-                DiagnosticsCmd.class,
-                PipelineTesterCmd.class
-        }
+@CommandLine.Command(mixinStandardHelpOptions = true, description = "Deid entry point", name = "Deid", version = "deid dev",
+    subcommands = {
+        AnnotationCmd.class,
+        SubstitutionCmd.class,
+        PipelineTesterCmd.class,
+        ImportCmd.class,
+        ConversionCmd.class,
+        DiagnosticsCmd.class
+    }
 )
 public class DeidMain implements Callable<Integer> {
     @Override
@@ -28,7 +28,7 @@ public class DeidMain implements Callable<Integer> {
 
     public static void main(String[] args) {
         Integer exitCode = CommandLine.call(new DeidMain(), args);
-        if(exitCode == null) {
+        if (exitCode == null) {
             System.exit(2);
         }
         System.exit(exitCode);
