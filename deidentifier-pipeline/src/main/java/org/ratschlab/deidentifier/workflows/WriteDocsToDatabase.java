@@ -51,7 +51,7 @@ public class WriteDocsToDatabase extends DefaultWorkflowConcern {
         }
     }
 
-    private void flushQueue() throws SQLException {
+    private synchronized void flushQueue() throws SQLException {
         List<Pair<String, Map<Object, Object>>> lst = new ArrayList<>();
 
         while (!writeQueue.isEmpty()) {
